@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
@@ -32,28 +32,7 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
   const [currentStep, setCurrentStep] = useState(0)
   const [searchResult, setSearchResult] = useState<{ found: boolean; index: number; comparisons: number } | null>(null)
 
-  useEffect(() => {
-    const array = inputArray
-      .split(" ")
-      .map(Number)
-      .filter((n) => !isNaN(n))
-    const newSteps = generateSteps(algorithm, array, targetValue)
-    setSteps(newSteps)
-    setCurrentStep(0)
-
-    // Calculate search result
-    const lastStep = newSteps[newSteps.length - 1]
-    if (lastStep) {
-      const comparisons = newSteps.filter((step) => step.comparing).length
-      setSearchResult({
-        found: lastStep.found || false,
-        index: lastStep.foundIndex || -1,
-        comparisons,
-      })
-    }
-  }, [algorithm, inputArray, targetValue])
-
-  const generateSteps = (algorithm: string, array: number[], target: number): Step[] => {
+  const generateSteps = useCallback((algorithm: string, array: number[], target: number): Step[] => {
     const steps: Step[] = []
     const arr = [...array]
 
@@ -91,7 +70,28 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
       default:
         return steps
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    const array = inputArray
+      .split(" ")
+      .map(Number)
+      .filter((n) => !isNaN(n))
+    const newSteps = generateSteps(algorithm, array, targetValue)
+    setSteps(newSteps)
+    setCurrentStep(0)
+
+    // Calculate search result
+    const lastStep = newSteps[newSteps.length - 1]
+    if (lastStep) {
+      const comparisons = newSteps.filter((step) => step.comparing).length
+      setSearchResult({
+        found: lastStep.found || false,
+        index: lastStep.foundIndex || -1,
+        comparisons,
+      })
+    }
+  }, [algorithm, inputArray, targetValue, generateSteps])
 
   const linearSearch = (arr: number[], target: number, steps: Step[]): Step[] => {
     steps.push({

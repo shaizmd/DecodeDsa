@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
@@ -33,26 +33,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
   const [currentStep, setCurrentStep] = useState(0)
   const [sortResult, setSortResult] = useState<SortResult | null>(null)
 
-  useEffect(() => {
-    const array = inputArray
-      .split(" ")
-      .map(Number)
-      .filter((n) => !isNaN(n))
-    const newSteps = generateSteps(algorithm, array)
-    setSteps(newSteps)
-    setCurrentStep(0)
-
-    // Calculate sort metrics
-    const comparisons = newSteps.filter((step) => step.comparing?.length).length
-    const swaps = newSteps.filter((step) => step.swapping?.length).length
-    setSortResult({
-      comparisons,
-      swaps,
-      steps: newSteps.length,
-    })
-  }, [algorithm, inputArray])
-
-  const generateSteps = (algorithm: string, array: number[]): Step[] => {
+  const generateSteps = useCallback((algorithm: string, array: number[]): Step[] => {
     const steps: Step[] = []
     const arr = [...array]
 
@@ -78,7 +59,26 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
       default:
         return steps
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    const array = inputArray
+      .split(" ")
+      .map(Number)
+      .filter((n) => !isNaN(n))
+    const newSteps = generateSteps(algorithm, array)
+    setSteps(newSteps)
+    setCurrentStep(0)
+
+    // Calculate sort metrics
+    const comparisons = newSteps.filter((step) => step.comparing?.length).length
+    const swaps = newSteps.filter((step) => step.swapping?.length).length
+    setSortResult({
+      comparisons,
+      swaps,
+      steps: newSteps.length,
+    })
+  }, [algorithm, inputArray, generateSteps])
 
   const bubbleSort = (arr: number[], steps: Step[]): Step[] => {
     const n = arr.length
@@ -381,10 +381,9 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
           } else {
             steps.push({
               array: [...arr],
-              description: `${arr[j]} ≤ ${pivot}, increment i to ${i + 1}`,
-              code: `i++; // i = ${i + 1}`,
+              description: `${arr[j]} ≤ ${pivot}, no swap needed`,
+              code: `i++; // i = ${i}`,
             })
-            i++
           }
         }
       }
