@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Layers, Plus, Minus, Eye, AlertCircle, CheckCircle2 } from "lucide-react"
 
 interface StackOperation {
