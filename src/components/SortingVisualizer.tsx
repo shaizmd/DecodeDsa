@@ -467,7 +467,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
       default:
         return steps
     }
-  }, [bubbleSort, selectionSort, insertionSort, mergeSort, quickSort, heapSort])
+  }, [])
 
   useEffect(() => {
     const array = inputArray
