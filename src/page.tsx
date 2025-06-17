@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { ArrowUpDown, Search, Database, Play, BookOpen, Zap, ChevronRight, Code2, Brain, Target } from "lucide-react"
+import { ArrowUpDown, Search, Database, Play, BookOpen, Zap, ChevronRight, Code2, Brain, Target, Calculator } from "lucide-react"
 
 export default function Page() {
   const categories = [
@@ -26,6 +26,19 @@ export default function Page() {
           name: "Interactive Searching Visualizer",
           path: "/searching",
           description: "Linear and Binary Search with step-by-step visualization",
+        },
+      ],
+    },
+    {
+      title: "Array Algorithms",
+      description: "Visualize two pointer, three pointer, and sliding window techniques",
+      icon: Target,
+      color: "from-orange-500 to-yellow-500",
+      algorithms: [
+        {
+          name: "Array Algorithms Visualizer",
+          path: "/array-algorithms",
+          description: "Two Pointer, Three Pointer, Sliding Window step-by-step visualization",
         },
       ],
     },
