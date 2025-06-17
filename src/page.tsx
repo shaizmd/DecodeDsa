@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { ArrowUpDown, Search, Database, Play, BookOpen, Zap, ChevronRight, Code2, Brain, Target, Calculator } from "lucide-react"
+import { ArrowUpDown, Search, Database, Play, BookOpen, Zap, ChevronRight, Code2, Brain, Target } from "lucide-react"
 
 export default function Page() {
   const categories = [

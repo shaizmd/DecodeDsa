@@ -8,8 +8,6 @@ import {
   TrendingUp, 
   Binary, 
   Layers, 
-  RotateCcw, 
-  List, 
   Grid,
   ArrowRight
 } from "lucide-react"

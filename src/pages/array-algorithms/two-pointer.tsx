@@ -56,17 +56,19 @@ array.sort()`
     })
 
     while (left < right) {
+      const currentLeft = left
+      const currentRight = right
       // Update pointers
       const currentArray = sortedArray.map((num, i) => ({
         value: num,
         isHighlighted: false,
-        isPointer1: i === left,
-        isPointer2: i === right,
+        isPointer1: i === currentLeft,
+        isPointer2: i === currentRight,
         isPointer3: false
       }))
       newSteps.push({
         array: currentArray,
-        description: `Checking ${sortedArray[left]} + ${sortedArray[right]} = ${sortedArray[left] + sortedArray[right]}`,
+        description: `Checking ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${sortedArray[currentLeft] + sortedArray[currentRight]}`,
         code: `# Check sum of elements at left and right pointers
 sum = array[left] + array[right]
 if sum == target:
@@ -82,11 +84,11 @@ else:
         // Found a pair
         const finalArray = currentArray.map((el, i) => ({
           ...el,
-          isHighlighted: i === left || i === right
+          isHighlighted: i === currentLeft || i === currentRight
         }))
         newSteps.push({
           array: finalArray,
-          description: `Found pair: ${sortedArray[left]} + ${sortedArray[right]} = ${target}`,
+          description: `Found pair: ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${target}`,
           code: `# Found the target sum
 return [left, right]`
         })
@@ -139,17 +141,20 @@ array.sort()`
       let right = sortedArray.length - 1
 
       while (left < right) {
+        const currentI = i
+        const currentLeft = left
+        const currentRight = right
         // Update pointers
         const currentArray = sortedArray.map((num, idx) => ({
           value: num,
           isHighlighted: false,
-          isPointer1: idx === i,
-          isPointer2: idx === left,
-          isPointer3: idx === right
+          isPointer1: idx === currentI,
+          isPointer2: idx === currentLeft,
+          isPointer3: idx === currentRight
         }))
         newSteps.push({
           array: currentArray,
-          description: `Checking ${sortedArray[i]} + ${sortedArray[left]} + ${sortedArray[right]} = ${sortedArray[i] + sortedArray[left] + sortedArray[right]}`,
+          description: `Checking ${sortedArray[currentI]} + ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${sortedArray[currentI] + sortedArray[currentLeft] + sortedArray[currentRight]}`,
           code: `# Check sum of three elements
 sum = array[i] + array[left] + array[right]
 if sum == target:
@@ -165,11 +170,11 @@ else:
           // Found a triplet
           const finalArray = currentArray.map((el, idx) => ({
             ...el,
-            isHighlighted: idx === i || idx === left || idx === right
+            isHighlighted: idx === currentI || idx === currentLeft || idx === currentRight
           }))
           newSteps.push({
             array: finalArray,
-            description: `Found triplet: ${sortedArray[i]} + ${sortedArray[left]} + ${sortedArray[right]} = ${target}`,
+            description: `Found triplet: ${sortedArray[currentI]} + ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${target}`,
             code: `# Found the target sum
 return [i, left, right]`
           })
