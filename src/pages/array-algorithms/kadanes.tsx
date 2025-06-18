@@ -36,30 +36,30 @@ function KadanesPage() {
 
   const generateSteps = (array: number[]) => {
     const newSteps: Step[] = []
-    let currentSum = 0
-    let maxSum = -Infinity
+    let currentSum = array[0]
+    let maxSum = array[0]
     let start = 0
     let end = 0
     let tempStart = 0
 
     // Initial state
     newSteps.push({
-      array: array.map(num => ({
+      array: array.map((num, idx) => ({
         value: num,
-        isHighlighted: false,
-        isCurrentSum: false,
-        isMaxSum: false
+        isHighlighted: idx === 0,
+        isCurrentSum: idx === 0,
+        isMaxSum: idx === 0
       })),
-      currentSum: 0,
-      maxSum: -Infinity,
-      description: "Initialize current sum and max sum",
+      currentSum: array[0],
+      maxSum: array[0],
+      description: "Initialize with first element",
       code: `# Initialize variables
-current_sum = 0
-max_sum = float('-inf')`
+current_sum = array[0]
+max_sum = array[0]`
     })
 
-    // Process each element
-    for (let i = 0; i < array.length; i++) {
+    // Process each element starting from the second one
+    for (let i = 1; i < array.length; i++) {
       // Update current sum
       if (currentSum + array[i] > array[i]) {
         currentSum += array[i]
@@ -140,14 +140,14 @@ return max_sum`
   const getFullCode = () => {
     return `def kadanes_algorithm(array):
     # Initialize variables
-    current_sum = 0
-    max_sum = float('-inf')
+    current_sum = array[0]
+    max_sum = array[0]
     start = 0
     end = 0
     temp_start = 0
     
     # Process each element
-    for i in range(len(array)):
+    for i in range(1, len(array)):
         # Update current sum
         if current_sum + array[i] > array[i]:
             current_sum += array[i]
@@ -198,66 +198,35 @@ return max_sum`
                 type="text"
                 value={arrayInput}
                 onChange={(e) => setArrayInput(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500"
                 placeholder="e.g., -2, 1, -3, 4, -1, 2, 1, -5, 4"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
             <button
               onClick={handleVisualize}
               disabled={isVisualizing}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Visualize
+              {isVisualizing ? "Visualizing..." : "Visualize"}
             </button>
           </div>
         </div>
 
+        {/* Visualization Section */}
         {steps.length > 0 && (
-          <>
-            {/* Step Navigation */}
-            <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Step {currentStep + 1} of {steps.length}</h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-                    disabled={currentStep === 0}
-                    className="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
-                  <button
-                    onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
-                    disabled={currentStep === steps.length - 1}
-                    className="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4">{steps[currentStep].description}</p>
-              <div className="flex gap-4 text-sm">
-                <div className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full">
-                  Current Sum: {steps[currentStep].currentSum}
-                </div>
-                <div className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full">
-                  Max Sum: {steps[currentStep].maxSum}
-                </div>
-              </div>
-            </div>
-
+          <div className="space-y-8">
             {/* Array Visualization */}
-            <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Array Visualization</h2>
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Visualization</h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div
                     key={index}
-                    className={`w-16 h-16 flex items-center justify-center rounded-lg text-lg font-bold transition-all duration-300 ${
+                    className={`w-16 h-16 flex items-center justify-center rounded-lg text-lg font-semibold transition-all duration-200 ${
                       element.isMaxSum
-                        ? "bg-pink-500 text-white"
+                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
                         : element.isCurrentSum
-                        ? "bg-purple-500 text-white"
+                        ? "bg-blue-100 text-blue-700"
                         : element.isHighlighted
                         ? "bg-purple-100 text-purple-700"
                         : "bg-gray-100 text-gray-700"
@@ -269,16 +238,49 @@ return max_sum`
               </div>
             </div>
 
-            {/* Code Display */}
-            <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            {/* Step Information */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-600">Current Sum: {steps[currentStep].currentSum}</p>
+                    <p className="text-gray-600">Maximum Sum: {steps[currentStep].maxSum}</p>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <button
+                      onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+                      disabled={currentStep === 0}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="w-6 h-6 text-gray-600" />
+                    </button>
+                    <span className="text-gray-600">
+                      Step {currentStep + 1} of {steps.length}
+                    </span>
+                    <button
+                      onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
+                      disabled={currentStep === steps.length - 1}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="w-6 h-6 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+                <p className="text-gray-700">{steps[currentStep].description}</p>
+              </div>
+            </div>
+
+            {/* Code Section */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-gray-900">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                  className="flex items-center space-x-2 text-purple-600 hover:text-purple-700"
                 >
                   <Code className="w-5 h-5" />
-                  {showFullCode ? "Show Step Code" : "Show Full Code"}
+                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
                 </button>
               </div>
               <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
@@ -287,7 +289,7 @@ return max_sum`
                 </code>
               </pre>
             </div>
-          </>
+          </div>
         )}
       </main>
     </div>
