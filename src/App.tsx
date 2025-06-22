@@ -9,6 +9,7 @@ import TwoPointerPage from "./pages/array-algorithms/two-pointer"
 import PrefixSumPage from "./pages/array-algorithms/prefix-sum"
 import KadanesPage from "./pages/array-algorithms/kadanes"
 import SlidingWindowPage from "./pages/array-algorithms/sliding-window"
+import LinkedListVisualizerPage from "./pages/LinkedListVisualizerPage"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/searching" element={<SearchingAlgorithmsPage />} />
       <Route path="/data-structures/stack" element={<StackVisualizerPage />} />
       <Route path="/data-structures/queue" element={<QueueVisualizerPage />} />
+      <Route path="/data-structures/linked-list" element={<LinkedListVisualizerPage />} />
       <Route path="/array-algorithms" element={<ArrayAlgorithmsPage />} />
       <Route path="/array-algorithms/two-pointer" element={<TwoPointerPage />} />
       <Route path="/array-algorithms/prefix-sum" element={<PrefixSumPage />} />
