@@ -12,22 +12,6 @@ interface ListNode {
 
 type ListType = "singly" | "doubly" | "circular";
 
-interface Operation {
-  name: string;
-  description: string;
-}
-
-const operations: Operation[] = [
-  { name: "Insert at Beginning", description: "Insert a node at the start of the list." },
-  { name: "Insert at End", description: "Insert a node at the end of the list." },
-  { name: "Insert at Position", description: "Insert a node at a specific position." },
-  { name: "Delete at Beginning", description: "Delete the first node." },
-  { name: "Delete at End", description: "Delete the last node." },
-  { name: "Delete at Position", description: "Delete a node at a specific position." },
-  { name: "Modify", description: "Modify the value of a node at a specific position." },
-  { name: "Reverse", description: "Reverse the linked list." },
-];
-
 function LinkedListVisualizerPage() {
   const [listType, setListType] = useState<ListType>("singly");
   const [head, setHead] = useState<ListNode | null>(null);
