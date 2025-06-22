@@ -75,12 +75,17 @@ max_sum = array[0]`
         end = i
       }
 
+      // Capture current values to avoid unsafe references
+      const currentTempStart = tempStart
+      const currentStart = start
+      const currentEnd = end
+
       // Create step
       const currentArray = array.map((num, idx) => ({
         value: num,
-        isHighlighted: idx >= tempStart && idx <= i,
+        isHighlighted: idx >= currentTempStart && idx <= i,
         isCurrentSum: idx === i,
-        isMaxSum: idx >= start && idx <= end
+        isMaxSum: idx >= currentStart && idx <= currentEnd
       }))
 
       newSteps.push({

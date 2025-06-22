@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import type React from "react"
 import { useState } from "react"
@@ -302,4 +302,4 @@ return max_sum`
   )
 }
 
-export default SlidingWindowPage
+export default SlidingWindowPage 
