@@ -6,7 +6,6 @@ import {
   Plus,
   Search,
   RotateCcw,
-  Play,
   Pause,
   SkipForward,
   SkipBack,

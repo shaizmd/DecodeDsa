@@ -98,8 +98,8 @@ const SlidingWindow = () => {
         />
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="windowSizeInput" className="block text-gray-700 text-sm font-bold mb-2">
+      <div className="mb-4" >
+        <label htmlFor="windowSizeInput" className="block text-gray-700 text-sm font-bold mb-2" >
           Window Size:
         </label>
         <input

@@ -23,14 +23,14 @@ const TwoPointer = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [algorithm, setAlgorithm] = useState("Two Sum")
 
-  useEffect(() => {
-    generateRandomArray()
-  }, [arraySize])
-
   const generateRandomArray = () => {
     const newArray: number[] = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 20))
     setArray(newArray)
   }
+
+  useEffect(() => {
+    generateRandomArray()
+  }, [arraySize])
 
   const visualizeTwoSum = () => {
     const arr: number[] = [...array].sort((a, b) => a - b)
@@ -39,26 +39,22 @@ const TwoPointer = () => {
     let right = arr.length - 1
     const newSteps: Step[] = []
 
-    while (left < right) {
-      const currentSum = arr[left] + arr[right]
-
-      const stepArray: ArrayElement[] = arr.map((num, index) => ({
+    // Helper to create step array (moved outside the loop)
+    const makeStepArray = (left: number, right: number, highlight: boolean = false): ArrayElement[] =>
+      arr.map((num, index) => ({
         value: num,
         isPointer1: index === left,
         isPointer2: index === right,
-        isHighlighted: false,
+        isHighlighted: highlight && (index === left || index === right),
       }))
 
-      newSteps.push({ array: stepArray, message: `Checking ${arr[left]} + ${arr[right]} = ${currentSum}` })
+    while (left < right) {
+      const currentSum = arr[left] + arr[right]
+
+      newSteps.push({ array: makeStepArray(left, right), message: `Checking ${arr[left]} + ${arr[right]} = ${currentSum}` })
 
       if (currentSum === target) {
-        const finalStepArray: ArrayElement[] = arr.map((num, index) => ({
-          value: num,
-          isPointer1: index === left,
-          isPointer2: index === right,
-          isHighlighted: index === left || index === right,
-        }))
-        newSteps.push({ array: finalStepArray, message: `Found pair: ${arr[left]} + ${arr[right]} = ${target}` })
+        newSteps.push({ array: makeStepArray(left, right, true), message: `Found pair: ${arr[left]} + ${arr[right]} = ${target}` })
         setSteps(newSteps)
         return
       } else if (currentSum < target) {
@@ -83,6 +79,16 @@ const TwoPointer = () => {
     const target: number = targetSum
     const newSteps: Step[] = []
 
+    // Helper to create step array (moved outside the loop)
+    const makeStepArray = (i: number, left: number, right: number, highlight: boolean = false): ArrayElement[] =>
+      arr.map((num, index) => ({
+        value: num,
+        isPointer1: index === i,
+        isPointer2: index === left,
+        isPointer3: index === right,
+        isHighlighted: highlight && (index === i || index === left || index === right),
+      }))
+
     for (let i = 0; i < arr.length - 2; i++) {
       let left = i + 1
       let right = arr.length - 1
@@ -90,29 +96,14 @@ const TwoPointer = () => {
       while (left < right) {
         const currentSum = arr[i] + arr[left] + arr[right]
 
-        const stepArray: ArrayElement[] = arr.map((num, index) => ({
-          value: num,
-          isPointer1: index === i,
-          isPointer2: index === left,
-          isPointer3: index === right,
-          isHighlighted: false,
-        }))
-
         newSteps.push({
-          array: stepArray,
+          array: makeStepArray(i, left, right),
           message: `Checking ${arr[i]} + ${arr[left]} + ${arr[right]} = ${currentSum}`,
         })
 
         if (currentSum === target) {
-          const finalStepArray: ArrayElement[] = arr.map((num, index) => ({
-            value: num,
-            isPointer1: index === i,
-            isPointer2: index === left,
-            isPointer3: index === right,
-            isHighlighted: index === i || index === left || index === right,
-          }))
           newSteps.push({
-            array: finalStepArray,
+            array: makeStepArray(i, left, right, true),
             message: `Found triplet: ${arr[i]} + ${arr[left]} + ${arr[right]} = ${target}`,
           })
           setSteps(newSteps)

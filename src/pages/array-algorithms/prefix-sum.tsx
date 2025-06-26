@@ -31,16 +31,16 @@ const PrefixSum = () => {
   const [rangeStart, setRangeStart] = useState<number>(0)
   const [rangeEnd, setRangeEnd] = useState<number>(2)
 
-  useEffect(() => {
-    initialize()
-  }, [])
-
   const initialize = () => {
     const initialArray: ArrayElement[] = array.map((value: number) => ({ value, isHighlighted: false, isPrefixSum: false, isRange: false }))
     setSteps([{ array: initialArray, message: "Original array" }])
     setCurrentStep(0)
     calculatePrefixSum(array)
   }
+
+  useEffect(() => {
+    initialize()
+  }, [])
 
   const calculatePrefixSum = (arr: number[]) => {
     const prefix: number[] = []

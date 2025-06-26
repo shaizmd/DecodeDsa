@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Layers, Plus, Minus, Eye, AlertCircle, CheckCircle2, Code, BookOpen, Lightbulb, Target, Clock, Zap, ArrowUp, ArrowDown, RotateCcw } from 'lucide-react'
+import { Layers, Eye, AlertCircle, CheckCircle2, Code, BookOpen, Lightbulb, Target, Clock, Zap, ArrowUp, ArrowDown, RotateCcw } from 'lucide-react'
 
 interface StackOperation {
   name: string

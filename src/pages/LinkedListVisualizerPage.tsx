@@ -42,7 +42,6 @@ function LinkedListVisualizerPage() {
   const [operationHistory, setOperationHistory] = useState<string[]>([])
   const [showCode, setShowCode] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
-  const [selectedOperation, setSelectedOperation] = useState<OperationType | null>(null)
   const [nodeCounter, setNodeCounter] = useState(0)
 
   const [showStepByStep, setShowStepByStep] = useState(false)
