@@ -1,304 +1,183 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, TrendingUp, ChevronLeft, ChevronRight, Code } from "lucide-react"
-
-interface ArrayElement {
-  value: number
-  isHighlighted: boolean
-  isCurrentSum: boolean
-  isMaxSum: boolean
-}
+import { useState, useEffect } from "react"
 
 interface Step {
-  array: ArrayElement[]
-  currentSum: number
-  maxSum: number
-  description: string
-  code: string
+  array: {
+    value: number;
+    isHighlighted: boolean;
+    isCurrentSum: boolean;
+    isMaxSum: boolean;
+  }[];
+  maxSoFar: number;
+  currentMax: number;
+  start: number;
+  end: number;
 }
 
-function KadanesPage() {
-  const [arrayInput, setArrayInput] = useState<string>("")
+const KadanesAlgorithm = () => {
+  const initialArray = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+  const [array, setArray] = useState(initialArray)
   const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
+  const [currentStep, setCurrentStep] = useState(0)
+  const [isRunning, setIsRunning] = useState(false)
 
-  const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
+  useEffect(() => {
+    if (!isRunning) return
 
-  const generateSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    let currentSum = array[0]
-    let maxSum = array[0]
+    const timeoutId = setTimeout(() => {
+      if (currentStep < steps.length - 1) {
+        setCurrentStep(currentStep + 1)
+      } else {
+        setIsRunning(false)
+      }
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [isRunning, currentStep, steps])
+
+  const kadane = () => {
+    let maxSoFar = Number.NEGATIVE_INFINITY
+    let currentMax = 0
     let start = 0
     let end = 0
-    let tempStart = 0
+    let j = 0
 
-    // Initial state
-    newSteps.push({
-      array: array.map((num, idx) => ({
-        value: num,
-        isHighlighted: idx === 0,
-        isCurrentSum: idx === 0,
-        isMaxSum: idx === 0
-      })),
-      currentSum: array[0],
-      maxSum: array[0],
-      description: "Initialize with first element",
-      code: `# Initialize variables
-current_sum = array[0]
-max_sum = array[0]`
-    })
+    const steps = []
+    let tempArray = initialArray.map((value) => ({ value, isHighlighted: false, isCurrentSum: false, isMaxSum: false }))
 
-    // Process each element starting from the second one
-    for (let i = 1; i < array.length; i++) {
-      // Update current sum
-      if (currentSum + array[i] > array[i]) {
-        currentSum += array[i]
-      } else {
-        currentSum = array[i]
-        tempStart = i
-      }
+    for (let i = 0; i < initialArray.length; i++) {
+      tempArray = tempArray.map((item, index) => ({ ...item, isHighlighted: index >= j && index <= i }))
 
-      // Update max sum if needed
-      if (currentSum > maxSum) {
-        maxSum = currentSum
-        start = tempStart
+      currentMax += initialArray[i]
+
+      tempArray = tempArray.map((item, index) => ({ ...item, isCurrentSum: index === i }))
+
+      if (currentMax > maxSoFar) {
+        maxSoFar = currentMax
+        start = j
         end = i
       }
 
-      // Capture current values to avoid unsafe references
-      const currentTempStart = tempStart
-      const currentStart = start
-      const currentEnd = end
-
-      // Create step
-      const currentArray = array.map((num, idx) => ({
-        value: num,
-        isHighlighted: idx >= currentTempStart && idx <= i,
-        isCurrentSum: idx === i,
-        isMaxSum: idx >= currentStart && idx <= currentEnd
-      }))
-
-      newSteps.push({
-        array: currentArray,
-        currentSum,
-        maxSum,
-        description: `Processing element ${array[i]}: current sum = ${currentSum}, max sum = ${maxSum}`,
-        code: `# Update current sum
-if current_sum + array[i] > array[i]:
-    current_sum += array[i]
-else:
-    current_sum = array[i]
-    temp_start = i
-
-# Update max sum if needed
-if current_sum > max_sum:
-    max_sum = current_sum
-    start = temp_start
-    end = i`
-      })
-    }
-
-    // Final state
-    newSteps.push({
-      array: array.map((num, idx) => ({
-        value: num,
-        isHighlighted: idx >= start && idx <= end,
-        isCurrentSum: false,
-        isMaxSum: true
-      })),
-      currentSum,
-      maxSum,
-      description: `Maximum subarray sum: ${maxSum} (from index ${start} to ${end})`,
-      code: `# Return maximum subarray sum
-return max_sum`
-    })
-
-    return newSteps
-  }
-
-  const handleVisualize = () => {
-    try {
-      const numbers = arrayInput.split(',').map(num => parseInt(num.trim()))
-      if (numbers.some(isNaN)) {
-        throw new Error("Invalid number in array")
+      if (currentMax < 0) {
+        currentMax = 0
+        j = i + 1
       }
-      resetVisualization()
-      setIsVisualizing(true)
-      const newSteps = generateSteps(numbers)
-      setSteps(newSteps)
-      setIsVisualizing(false)
-    } catch (err) {
-      alert("Please enter valid numbers separated by commas")
+
+      const maxSumSubarray = tempArray.map((item, index) => ({ ...item, isMaxSum: index >= start && index <= end }))
+      steps.push({ array: maxSumSubarray, maxSoFar, currentMax, start, end })
     }
+
+    setSteps(steps)
   }
 
-  const getFullCode = () => {
-    return `def kadanes_algorithm(array):
-    # Initialize variables
-    current_sum = array[0]
-    max_sum = array[0]
-    start = 0
-    end = 0
-    temp_start = 0
-    
-    # Process each element
-    for i in range(1, len(array)):
-        # Update current sum
-        if current_sum + array[i] > array[i]:
-            current_sum += array[i]
-        else:
-            current_sum = array[i]
-            temp_start = i
-        
-        # Update max sum if needed
-        if current_sum > max_sum:
-            max_sum = current_sum
-            start = temp_start
-            end = i
-    
-    return max_sum, start, end`
+  const handleStart = () => {
+    kadane()
+    setCurrentStep(0)
+    setIsRunning(true)
+  }
+
+  const handlePauseResume = () => {
+    setIsRunning(!isRunning)
+  }
+
+  const handleReset = () => {
+    setIsRunning(false)
+    setCurrentStep(0)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
-              </Link>
-              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Kadane's Algorithm
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="container mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-4 text-gray-900">Kadane's Algorithm Visualization</h1>
 
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Input Section */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input</h2>
-          <div className="flex flex-col gap-4">
-            <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
-                Array (comma-separated numbers)
-              </label>
-              <input
-                id="array-input"
-                type="text"
-                value={arrayInput}
-                onChange={(e) => setArrayInput(e.target.value)}
-                placeholder="e.g., -2, 1, -3, 4, -1, 2, 1, -5, 4"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <button
-              onClick={handleVisualize}
-              disabled={isVisualizing}
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isVisualizing ? "Visualizing..." : "Visualize"}
-            </button>
-          </div>
-        </div>
+      <div className="mb-6">
+        <button
+          onClick={handleStart}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+        >
+          Start
+        </button>
+        <button
+          onClick={handlePauseResume}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+        >
+          {isRunning ? "Pause" : "Resume"}
+        </button>
+        <button onClick={handleReset} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+          Reset
+        </button>
+      </div>
 
-        {/* Visualization Section */}
-        {steps.length > 0 && (
-          <div className="space-y-8">
-            {/* Array Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Visualization</h2>
-              <div className="flex flex-wrap gap-4 justify-center">
-                {steps[currentStep].array.map((element, index) => (
-                  <div
-                    key={index}
-                    className={`w-16 h-16 flex items-center justify-center rounded-lg text-lg font-semibold transition-all duration-200 ${
-                      element.isMaxSum
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-                        : element.isCurrentSum
-                        ? "bg-blue-100 text-blue-700"
+      {steps.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2 text-gray-900">Step {currentStep + 1}</h2>
+          <p className="text-gray-700">
+            Max So Far: {steps[currentStep].maxSoFar}, Current Max: {steps[currentStep].currentMax}, Start:{" "}
+            {steps[currentStep].start}, End: {steps[currentStep].end}
+          </p>
+        </div>
+      )}
+
+      {steps.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-4 justify-center">
+            {steps[currentStep].array.map((element, index) => (
+              <div key={index} className="text-center">
+                <div
+                  className={`w-16 h-16 flex items-center justify-center rounded-lg text-lg font-semibold transition-all duration-300 ${
+                    element.isMaxSum
+                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105"
+                      : element.isCurrentSum
+                        ? "bg-blue-100 text-blue-700 shadow-md border-2 border-blue-300"
                         : element.isHighlighted
-                        ? "bg-purple-100 text-purple-700"
-                        : "bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {element.value}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Step Information */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-gray-600">Current Sum: {steps[currentStep].currentSum}</p>
-                    <p className="text-gray-600">Maximum Sum: {steps[currentStep].maxSum}</p>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-                      disabled={currentStep === 0}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronLeft className="w-6 h-6 text-gray-600" />
-                    </button>
-                    <span className="text-gray-600">
-                      Step {currentStep + 1} of {steps.length}
-                    </span>
-                    <button
-                      onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
-                      disabled={currentStep === steps.length - 1}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronRight className="w-6 h-6 text-gray-600" />
-                    </button>
-                  </div>
-                </div>
-                <p className="text-gray-700">{steps[currentStep].description}</p>
-              </div>
-            </div>
-
-            {/* Code Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
-                <button
-                  onClick={() => setShowFullCode(!showFullCode)}
-                  className="flex items-center space-x-2 text-purple-600 hover:text-purple-700"
+                          ? "bg-purple-100 text-purple-700 shadow-md"
+                          : "bg-gray-100 text-gray-700"
+                  }`}
                 >
-                  <Code className="w-5 h-5" />
-                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
-                </button>
+                  {element.value}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">i={index}</div>
               </div>
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">
-                  {showFullCode ? getFullCode() : steps[currentStep].code}
-                </code>
-              </pre>
+            ))}
+          </div>
+
+          {/* Legend */}
+          <div className="flex justify-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded"></div>
+              <span>Max Subarray</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-blue-100 border-2 border-blue-300 rounded"></div>
+              <span>Current Element</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-purple-100 rounded"></div>
+              <span>Current Subarray</span>
             </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
+
+      {steps.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Algorithm Insight</h2>
+          <div className="space-y-3 text-sm">
+            <div className="p-3 bg-purple-50 rounded-lg">
+              <div className="font-semibold text-purple-800">Key Principle:</div>
+              <div className="text-purple-700">
+                At each position, decide whether to extend the current subarray or start a new one
+              </div>
+            </div>
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <div className="font-semibold text-blue-800">Decision Rule:</div>
+              <div className="text-blue-700">current_sum = max(current_sum + arr[i], arr[i])</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
-export default KadanesPage 
+export default KadanesAlgorithm

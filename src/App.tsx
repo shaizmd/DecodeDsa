@@ -10,6 +10,11 @@ import PrefixSumPage from "./pages/array-algorithms/prefix-sum"
 import KadanesPage from "./pages/array-algorithms/kadanes"
 import SlidingWindowPage from "./pages/array-algorithms/sliding-window"
 import LinkedListVisualizerPage from "./pages/LinkedListVisualizerPage"
+import HashingPage from "./pages/array-algorithms/hashing"
+import MonotonicStackPage from "./pages/array-algorithms/monotonic-stack"
+import BitManipulationPage from "./pages/array-algorithms/bit-manipulation"
+import TwoDArraysPage from "./pages/array-algorithms/2d-arrays"
+import TreeVisualizerPage from "./pages/TreeVisualizerPage"
 
 function App() {
   return (
@@ -25,6 +30,11 @@ function App() {
       <Route path="/array-algorithms/prefix-sum" element={<PrefixSumPage />} />
       <Route path="/array-algorithms/kadanes" element={<KadanesPage />} />
       <Route path="/array-algorithms/sliding-window" element={<SlidingWindowPage />} />
+      <Route path="/array-algorithms/hashing" element={<HashingPage />} />
+      <Route path="/array-algorithms/monotonic-stack" element={<MonotonicStackPage />} />
+      <Route path="/array-algorithms/bit-manipulation" element={<BitManipulationPage />} />
+      <Route path="/array-algorithms/2d-arrays" element={<TwoDArraysPage />} />
+      <Route path="/data-structures/binary-tree" element={<TreeVisualizerPage />} />
     </Routes>
   )
 }

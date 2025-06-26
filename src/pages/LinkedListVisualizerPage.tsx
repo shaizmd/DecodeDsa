@@ -1,678 +1,1114 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { List, Plus, Minus, Edit, RefreshCcw, ArrowLeftRight, ChevronRight, ChevronLeft, Repeat } from "lucide-react";
+import { useState } from "react"
+import { List, Plus, Minus, RotateCcw, Code, BookOpen, Lightbulb, Target, Clock } from "lucide-react"
 
-// Node types
+// Enhanced Node interface with animation states
 interface ListNode {
-  value: number;
-  next: ListNode | null;
-  prev?: ListNode | null; // For doubly linked list
+  id: string
+  value: number
+  next: ListNode | null
+  prev?: ListNode | null
+  isHighlighted?: boolean
+  isNew?: boolean
+  isDeleting?: boolean
+  isModifying?: boolean
+  animationDelay?: number
 }
 
-type ListType = "singly" | "doubly" | "circular";
+type ListType = "singly" | "doubly" | "circular"
+type OperationType =
+  | "insert-beginning"
+  | "insert-end"
+  | "insert-position"
+  | "delete-beginning"
+  | "delete-end"
+  | "delete-position"
+  | "modify"
+  | "reverse"
+  | "search"
+
+// 1. Define a new type for supported code operations:
+type CodeOperationType = "insert-beginning" | "insert-end" | "insert-position" | "delete-beginning" | "delete-end" | "delete-position";
 
 function LinkedListVisualizerPage() {
-  const [listType, setListType] = useState<ListType>("singly");
-  const [head, setHead] = useState<ListNode | null>(null);
-  const [inputValue, setInputValue] = useState("");
-  const [position, setPosition] = useState(1);
-  const [operationHistory, setOperationHistory] = useState<string[]>([]);
-  const [currentCode, setCurrentCode] = useState<string>("");
+  const [listType, setListType] = useState<ListType>("singly")
+  const [head, setHead] = useState<ListNode | null>(null)
+  const [inputValue, setInputValue] = useState("")
+  const [position, setPosition] = useState(1)
+  const [searchTerm, setSearchTerm] = useState("") // Renamed searchValue to searchTerm
 
-  // Helper to create a new node
-  const createNode = (value: number): ListNode => ({ value, next: null });
-  const createDoublyNode = (value: number): ListNode => ({ value, next: null, prev: null });
+  // UI states
+  const [operationHistory, setOperationHistory] = useState<string[]>([])
+  const [showCode, setShowCode] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(false)
+  const [selectedOperation, setSelectedOperation] = useState<OperationType | null>(null)
+  const [nodeCounter, setNodeCounter] = useState(0)
 
-  // Convert list to array for rendering
+  const [showStepByStep, setShowStepByStep] = useState(false)
+  const [currentOperation, setCurrentOperation] = useState<CodeOperationType | "">("")
+
+  // Helper functions
+  const generateNodeId = () => {
+    setNodeCounter((prev) => prev + 1)
+    return `node-${nodeCounter}`
+  }
+
+  const createNode = (value: number): ListNode => ({
+    id: generateNodeId(),
+    value,
+    next: null,
+    isNew: true,
+  })
+
+  const createDoublyNode = (value: number): ListNode => ({
+    id: generateNodeId(),
+    value,
+    next: null,
+    prev: null,
+    isNew: true,
+  })
+
   const toArray = (): ListNode[] => {
-    const arr: ListNode[] = [];
-    let curr = head;
-    if (!curr) return arr;
+    const arr: ListNode[] = []
+    let curr = head
+    if (!curr) return arr
+
     if (listType === "circular") {
       do {
-        arr.push(curr);
-        curr = curr.next;
-      } while (curr && curr !== head);
+        arr.push(curr)
+        curr = curr.next
+      } while (curr && curr !== head && arr.length < 20) // Prevent infinite loop
     } else {
       while (curr) {
-        arr.push(curr);
-        curr = curr.next;
+        arr.push(curr)
+        curr = curr.next
       }
     }
-    return arr;
-  };
-
-  // Operations
-  const insertAtBeginning = (value: number) => {
-    let newNode: ListNode;
-    if (listType === "doubly") {
-      newNode = createDoublyNode(value);
-      if (head) (head as ListNode).prev = newNode;
-      newNode.next = head;
-    } else {
-      newNode = createNode(value);
-      newNode.next = head;
-    }
-    if (listType === "circular") {
-      if (!head) {
-        newNode.next = newNode;
-      } else {
-        let tail = head;
-        while (tail.next && tail.next !== head) tail = tail.next;
-        tail.next = newNode;
-        newNode.next = head;
-      }
-    }
-    setHead(newNode);
-    setOperationHistory((h) => [
-      `Inserted ${value} at beginning`,
-      ...h,
-    ]);
-    setCurrentCode(`function insertAtBeginning(value) {\n  const newNode = { value, next: head };\n  head = newNode;\n}`);
-  };
-
-  const insertAtEnd = (value: number) => {
-    let newNode: ListNode;
-    if (listType === "doubly") newNode = createDoublyNode(value);
-    else newNode = createNode(value);
-    if (!head) {
-      if (listType === "circular") newNode.next = newNode;
-      setHead(newNode);
-      setOperationHistory((h) => [
-        `Inserted ${value} at end (was empty)`,
-        ...h,
-      ]);
-      setCurrentCode(`function insertAtEnd(value) { ... }`);
-      return;
-    }
-    let curr = head;
-    if (listType === "circular") {
-      while (curr.next && curr.next !== head) curr = curr.next;
-      curr.next = newNode;
-      newNode.next = head;
-    } else {
-      while (curr.next) curr = curr.next;
-      curr.next = newNode;
-    }
-    if (listType === "doubly") newNode.prev = curr;
-    setOperationHistory((h) => [
-      `Inserted ${value} at end`,
-      ...h,
-    ]);
-    setCurrentCode(`function insertAtEnd(value) { ... }`);
-  };
-
-  const insertAtPosition = (value: number, pos: number) => {
-    if (pos <= 1) return insertAtBeginning(value);
-    let newNode: ListNode;
-    if (listType === "doubly") newNode = createDoublyNode(value);
-    else newNode = createNode(value);
-    let curr: ListNode | null = head;
-    let prev: ListNode | null = null;
-    let i = 1;
-    while (curr && i < pos) {
-      prev = curr;
-      curr = curr.next;
-      i++;
-    }
-    if (prev) prev.next = newNode;
-    newNode.next = curr;
-    if (listType === "doubly") {
-      newNode.prev = prev;
-      if (curr) curr.prev = newNode;
-    }
-    setOperationHistory((h) => [
-      `Inserted ${value} at position ${pos}`,
-      ...h,
-    ]);
-    if (pos === 1) setHead(newNode);
-    else setHead(head);
-    setCurrentCode(`function insertAtPosition(value, pos) { ... }`);
-  };
-
-  const deleteAtBeginning = () => {
-    if (!head) return;
-    let newHead = head.next;
-    if (listType === "circular") {
-      if (head.next === head) newHead = null;
-      else {
-        let tail = head;
-        while (tail.next && tail.next !== head) tail = tail.next;
-        tail.next = head.next;
-        newHead = head.next;
-      }
-    }
-    setOperationHistory((h) => [
-      `Deleted node at beginning`,
-      ...h,
-    ]);
-    setHead(newHead);
-    setCurrentCode(`function deleteAtBeginning() { ... }`);
-  };
-
-  const deleteAtEnd = () => {
-    if (!head) return;
-    if (!head.next || (listType === "circular" && head.next === head)) {
-      setHead(null);
-      setOperationHistory((h) => [
-        `Deleted last node`,
-        ...h,
-      ]);
-      setCurrentCode(`function deleteAtEnd() { ... }`);
-      return;
-    }
-    let curr = head;
-    let prev: ListNode | null = null;
-    while (curr.next && curr.next !== head) {
-      prev = curr;
-      curr = curr.next;
-    }
-    if (prev) prev.next = listType === "circular" ? head : null;
-    setOperationHistory((h) => [
-      `Deleted node at end`,
-      ...h,
-    ]);
-    setHead(head);
-    setCurrentCode(`function deleteAtEnd() { ... }`);
-  };
-
-  const deleteAtPosition = (pos: number) => {
-    if (!head) return;
-    if (pos <= 1) return deleteAtBeginning();
-    let curr: ListNode | null = head;
-    let prev: ListNode | null = null;
-    let i = 1;
-    while (curr && i < pos) {
-      prev = curr;
-      curr = curr.next;
-      i++;
-    }
-    if (!curr) return;
-    if (prev) prev.next = curr.next;
-    if (listType === "doubly" && curr.next) (curr.next as ListNode).prev = prev;
-    setOperationHistory((h) => [
-      `Deleted node at position ${pos}`,
-      ...h,
-    ]);
-    setHead(head);
-    setCurrentCode(`function deleteAtPosition(pos) { ... }`);
-  };
-
-  const modifyAtPosition = (pos: number, value: number) => {
-    let curr = head;
-    let i = 1;
-    while (curr && i < pos) {
-      curr = curr.next;
-      i++;
-    }
-    if (!curr) return;
-    curr.value = value;
-    setOperationHistory((h) => [
-      `Modified node at position ${pos} to ${value}`,
-      ...h,
-    ]);
-    setCurrentCode(`function modifyAtPosition(pos, value) { ... }`);
-    setHead({ ...head! }); // force re-render
-  };
-
-  const reverseList = () => {
-    let prev: ListNode | null = null;
-    let curr = head;
-    let next: ListNode | null = null;
-    if (listType === "circular") {
-      if (!head || head.next === head) return;
-      let tail = head;
-      while (tail.next && tail.next !== head) tail = tail.next;
-      tail.next = null;
-      // Now treat as singly
-    }
-    while (curr) {
-      next = curr.next;
-      curr.next = prev;
-      if (listType === "doubly") curr.prev = next;
-      prev = curr;
-      curr = next;
-    }
-    if (listType === "circular" && prev) {
-      let tail = prev;
-      while (tail.next) tail = tail.next;
-      tail.next = prev;
-    }
-    setOperationHistory((h) => [
-      `Reversed the list`,
-      ...h,
-    ]);
-    setHead(prev);
-    setCurrentCode(`function reverseList() { ... }`);
-  };
-
-  // UI Handlers
-  const handleInsertBeginning = () => {
-    const val = parseInt(inputValue);
-    if (!isNaN(val)) insertAtBeginning(val);
-    setInputValue("");
-  };
-  const handleInsertEnd = () => {
-    const val = parseInt(inputValue);
-    if (!isNaN(val)) insertAtEnd(val);
-    setInputValue("");
-  };
-  const handleInsertPosition = () => {
-    const val = parseInt(inputValue);
-    if (!isNaN(val)) insertAtPosition(val, position);
-    setInputValue("");
-  };
-  const handleDeleteBeginning = () => deleteAtBeginning();
-  const handleDeleteEnd = () => deleteAtEnd();
-  const handleDeletePosition = () => deleteAtPosition(position);
-  const handleModify = () => {
-    const val = parseInt(inputValue);
-    if (!isNaN(val)) modifyAtPosition(position, val);
-    setInputValue("");
-  };
-  const handleReverse = () => reverseList();
-
-  // Render
-  const nodes = toArray();
-
-  // Add the fullCodeString variable before the return statement
-  const singlyCode = `// Singly Linked List Operations
-function insertAtBeginning(value) {
-  const newNode = { value, next: head };
-  head = newNode;
-}
-function insertAtEnd(value) {
-  const newNode = { value, next: null };
-  if (!head) { head = newNode; return; }
-  let curr = head;
-  while (curr.next) curr = curr.next;
-  curr.next = newNode;
-}
-function insertAtPosition(value, pos) {
-  if (pos <= 1) return insertAtBeginning(value);
-  let curr = head, prev = null, i = 1;
-  while (curr && i < pos) { prev = curr; curr = curr.next; i++; }
-  const newNode = { value, next: curr };
-  if (prev) prev.next = newNode;
-}
-function deleteAtBeginning() {
-  if (!head) return;
-  head = head.next;
-}
-function deleteAtEnd() {
-  if (!head) return;
-  if (!head.next) { head = null; return; }
-  let curr = head, prev = null;
-  while (curr.next) { prev = curr; curr = curr.next; }
-  if (prev) prev.next = null;
-}
-function deleteAtPosition(pos) {
-  if (!head) return;
-  if (pos <= 1) return deleteAtBeginning();
-  let curr = head, prev = null, i = 1;
-  while (curr && i < pos) { prev = curr; curr = curr.next; i++; }
-  if (prev && curr) prev.next = curr.next;
-}
-function modifyAtPosition(pos, value) {
-  let curr = head, i = 1;
-  while (curr && i < pos) { curr = curr.next; i++; }
-  if (curr) curr.value = value;
-}
-function reverseList() {
-  let prev = null, curr = head, next = null;
-  while (curr) { next = curr.next; curr.next = prev; prev = curr; curr = next; }
-  head = prev;
-}`;
-
-  const doublyCode = `// Doubly Linked List Operations
-function insertAtBeginning(value) {
-  const newNode = { value, next: head, prev: null };
-  if (head) head.prev = newNode;
-  head = newNode;
-}
-function insertAtEnd(value) {
-  const newNode = { value, next: null, prev: null };
-  if (!head) { head = newNode; return; }
-  let curr = head;
-  while (curr.next) curr = curr.next;
-  curr.next = newNode;
-  newNode.prev = curr;
-}
-function insertAtPosition(value, pos) {
-  if (pos <= 1) return insertAtBeginning(value);
-  let curr = head, prev = null, i = 1;
-  while (curr && i < pos) { prev = curr; curr = curr.next; i++; }
-  const newNode = { value, next: curr, prev: prev };
-  if (prev) prev.next = newNode;
-  if (curr) curr.prev = newNode;
-}
-function deleteAtBeginning() {
-  if (!head) return;
-  head = head.next;
-  if (head) head.prev = null;
-}
-function deleteAtEnd() {
-  if (!head) return;
-  if (!head.next) { head = null; return; }
-  let curr = head;
-  while (curr.next) curr = curr.next;
-  if (curr.prev) curr.prev.next = null;
-}
-function deleteAtPosition(pos) {
-  if (!head) return;
-  if (pos <= 1) return deleteAtBeginning();
-  let curr = head, i = 1;
-  while (curr && i < pos) { curr = curr.next; i++; }
-  if (!curr) return;
-  if (curr.prev) curr.prev.next = curr.next;
-  if (curr.next) curr.next.prev = curr.prev;
-}
-function modifyAtPosition(pos, value) {
-  let curr = head, i = 1;
-  while (curr && i < pos) { curr = curr.next; i++; }
-  if (curr) curr.value = value;
-}
-function reverseList() {
-  let curr = head, temp = null;
-  while (curr) {
-    temp = curr.prev;
-    curr.prev = curr.next;
-    curr.next = temp;
-    curr = curr.prev;
+    return arr
   }
-  if (temp) head = temp.prev;
-}`;
 
-  const circularCode = `// Circular Linked List Operations
+  const insertAtBeginning = async (value: number) => {
+    const newNode = listType === "doubly" ? createDoublyNode(value) : createNode(value)
+
+    if (!head) {
+      if (listType === "circular") {
+        newNode.next = newNode
+        setHead(newNode)
+      } else {
+        setHead(newNode)
+      }
+    } else {
+      if (listType === "doubly") {
+        newNode.next = head
+        head.prev = newNode
+      } else if (listType === "circular") {
+        // Find tail for circular
+        let tail = head
+        while (tail.next && tail.next !== head) {
+          tail = tail.next
+        }
+        newNode.next = head
+        tail.next = newNode
+      } else {
+        newNode.next = head
+      }
+      setHead(newNode)
+    }
+
+    addToHistory(`Inserted ${value} at beginning`)
+  }
+
+  const insertAtEnd = async (value: number) => {
+    const newNode = listType === "doubly" ? createDoublyNode(value) : createNode(value)
+
+    if (!head) {
+      setHead(newNode)
+    } else {
+      let curr = head
+      if (listType === "circular") {
+        while (curr.next && curr.next !== head) {
+          curr = curr.next
+        }
+        curr.next = newNode
+        newNode.next = head
+      } else {
+        while (curr.next) {
+          curr = curr.next
+        }
+        curr.next = newNode
+        if (listType === "doubly") {
+          newNode.prev = curr
+        }
+      }
+      setHead({ ...head })
+    }
+
+    addToHistory(`Inserted ${value} at end`)
+  }
+
+  const deleteAtBeginning = async () => {
+    if (!head) {
+      addToHistory("Cannot delete from empty list")
+      return
+    }
+
+    if (listType === "circular" && head.next === head) {
+      setHead(null)
+    } else if (listType === "circular") {
+      // Find tail and update its next pointer
+      let tail = head
+      while (tail.next && tail.next !== head) {
+        tail = tail.next
+      }
+      const newHead = head.next
+      tail.next = newHead
+      setHead(newHead)
+    } else {
+      const newHead = head.next
+      if (listType === "doubly" && newHead) {
+        newHead.prev = null
+      }
+      setHead(newHead)
+    }
+
+    addToHistory(`Deleted node from beginning`)
+  }
+
+  const insertAtPosition = async (value: number, pos: number) => {
+    if (pos < 1) {
+      addToHistory("Position must be 1 or greater")
+      return
+    }
+
+    if (pos === 1) {
+      insertAtBeginning(value)
+      return
+    }
+
+    const newNode = listType === "doubly" ? createDoublyNode(value) : createNode(value)
+
+    if (!head) {
+      addToHistory("Cannot insert at position in empty list")
+      return
+    }
+
+    let curr: ListNode | null = head
+    let prev: ListNode | null = null
+    let currentPos = 1
+
+    // Navigate to the position
+    while (curr && currentPos < pos) {
+      prev = curr
+      curr = curr.next
+      currentPos++
+
+      // Prevent infinite loop in circular lists
+      if (listType === "circular" && curr === head) break
+    }
+
+    if (currentPos < pos) {
+      addToHistory(`Position ${pos} is beyond list length`)
+      return
+    }
+
+    // Insert the node
+    if (prev) {
+      prev.next = newNode
+      newNode.next = curr
+
+      if (listType === "doubly") {
+        newNode.prev = prev
+        if (curr) {
+          curr.prev = newNode
+        }
+      }
+    }
+
+    setHead({ ...head })
+    addToHistory(`Inserted ${value} at position ${pos}`)
+  }
+
+  const deleteAtEnd = async () => {
+    if (!head) {
+      addToHistory("Cannot delete from empty list")
+      return
+    }
+
+    // Single node case
+    if (!head.next || (listType === "circular" && head.next === head)) {
+      setHead(null)
+      addToHistory("Deleted last node from list")
+      return
+    }
+
+    if (listType === "circular") {
+      // Find the node before the last node
+      let curr = head
+      let prev: ListNode | null = null
+
+      while (curr.next && curr.next !== head) {
+        prev = curr
+        curr = curr.next
+      }
+
+      if (prev) {
+        prev.next = head
+      }
+    } else {
+      // Find the second-to-last node
+      let curr = head
+      let prev: ListNode | null = null
+
+      while (curr.next) {
+        prev = curr
+        curr = curr.next
+      }
+
+      if (prev) {
+        prev.next = null
+        if (listType === "doubly") {
+          // No need to update curr.prev since we're deleting curr
+        }
+      }
+    }
+
+    setHead({ ...head })
+    addToHistory("Deleted node from end")
+  }
+
+  const deleteAtPosition = async (pos: number) => {
+    if (pos < 1) {
+      addToHistory("Position must be 1 or greater")
+      return
+    }
+
+    if (!head) {
+      addToHistory("Cannot delete from empty list")
+      return
+    }
+
+    if (pos === 1) {
+      deleteAtBeginning()
+      return
+    }
+
+    let curr: ListNode | null = head
+    let prev: ListNode | null = null
+    let currentPos = 1
+
+    // Navigate to the position
+    while (curr && currentPos < pos) {
+      prev = curr
+      curr = curr.next
+      currentPos++
+
+      // Prevent infinite loop in circular lists
+      if (listType === "circular" && curr === head) break
+    }
+
+    if (!curr || currentPos < pos) {
+      addToHistory(`Position ${pos} is beyond list length`)
+      return
+    }
+
+    // Delete the node
+    if (prev) {
+      prev.next = curr.next
+
+      if (listType === "doubly" && curr.next) {
+        curr.next.prev = prev
+      }
+    }
+
+    setHead({ ...head })
+    addToHistory(`Deleted node from position ${pos}`)
+  }
+
+  const search = async (value: number) => {
+    if (!head) {
+      addToHistory("Cannot search in empty list")
+      return
+    }
+
+    let curr: ListNode | null = head
+    let position = 1
+    let found = false
+
+    do {
+      if (!curr) break
+
+      if (curr.value === value) {
+        found = true
+        break
+      }
+
+      curr = curr.next
+      position++
+    } while (curr && (listType !== "circular" || curr !== head))
+
+    if (!found) {
+      addToHistory(`Value ${value} not found in the list`)
+    } else {
+      addToHistory(`Searched for value ${value} - found at position ${position}`)
+    }
+  }
+
+  const addToHistory = (operation: string) => {
+    setOperationHistory((prev) => [`${new Date().toLocaleTimeString()}: ${operation}`, ...prev.slice(0, 19)])
+  }
+
+  const getOperationCode = (operation: CodeOperationType | "") => {
+    const codes = {
+      "insert-beginning": {
+        title: "Insert at Beginning",
+        steps: [
+          "1. Create a new node with the given value",
+          "2. Set new node's next pointer to current head",
+          "3. Update head to point to new node",
+          "4. For doubly linked lists, update prev pointers",
+          "5. For circular lists, update tail's next pointer",
+        ],
+        code: `// Singly Linked List
 function insertAtBeginning(value) {
-  const newNode = { value, next: null };
-  if (!head) { newNode.next = newNode; head = newNode; return; }
-  let tail = head;
-  while (tail.next !== head) tail = tail.next;
-  newNode.next = head;
-  tail.next = newNode;
-  head = newNode;
+    const newNode = new Node(value);
+    newNode.next = head;
+    head = newNode;
 }
-function insertAtEnd(value) {
-  const newNode = { value, next: null };
-  if (!head) { newNode.next = newNode; head = newNode; return; }
-  let tail = head;
-  while (tail.next !== head) tail = tail.next;
-  tail.next = newNode;
-  newNode.next = head;
-}
-function insertAtPosition(value, pos) {
-  if (pos <= 1) return insertAtBeginning(value);
-  let curr = head, prev = null, i = 1;
-  while (curr && curr.next !== head && i < pos) { prev = curr; curr = curr.next; i++; }
-  const newNode = { value, next: curr };
-  if (prev) prev.next = newNode;
-}
-function deleteAtBeginning() {
-  if (!head) return;
-  if (head.next === head) { head = null; return; }
-  let tail = head;
-  while (tail.next !== head) tail = tail.next;
-  head = head.next;
-  tail.next = head;
-}
-function deleteAtEnd() {
-  if (!head) return;
-  if (head.next === head) { head = null; return; }
-  let curr = head;
-  while (curr.next.next !== head) curr = curr.next;
-  curr.next = head;
-}
-function deleteAtPosition(pos) {
-  if (!head) return;
-  if (pos <= 1) return deleteAtBeginning();
-  let curr = head, prev = null, i = 1;
-  while (curr && curr.next !== head && i < pos) { prev = curr; curr = curr.next; i++; }
-  if (prev && curr) prev.next = curr.next;
-}
-function modifyAtPosition(pos, value) {
-  let curr = head, i = 1;
-  while (curr && curr.next !== head && i < pos) { curr = curr.next; i++; }
-  if (curr) curr.value = value;
-}
-function reverseList() {
-  if (!head || head.next === head) return;
-  let prev = null, curr = head, next = null, tail = head;
-  do { tail = tail.next; } while (tail.next !== head);
-  do {
-    next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
-  } while (curr !== head);
-  head.next = prev;
-  head = prev;
-}`;
 
-  const fullCodeString =
-    listType === "doubly"
-      ? doublyCode
-      : listType === "circular"
-      ? circularCode
-      : singlyCode;
+// Doubly Linked List
+function insertAtBeginning(value) {
+    const newNode = new Node(value);
+    newNode.next = head;
+    if (head) {
+        head.prev = newNode;
+    }
+    head = newNode;
+}
+
+// Circular Linked List
+function insertAtBeginning(value) {
+    const newNode = new Node(value);
+    if (!head) {
+        newNode.next = newNode;
+        head = newNode;
+    } else {
+        let tail = head;
+        while (tail.next !== head) {
+            tail = tail.next;
+        }
+        newNode.next = head;
+        tail.next = newNode;
+        head = newNode;
+    }
+}`,
+      },
+      "insert-end": {
+        title: "Insert at End",
+        steps: [
+          "1. Create a new node with the given value",
+          "2. If list is empty, make new node the head",
+          "3. Otherwise, traverse to the last node",
+          "4. Set last node's next pointer to new node",
+          "5. For doubly linked lists, set new node's prev pointer",
+        ],
+        code: `// Singly Linked List
+function insertAtEnd(value) {
+    const newNode = new Node(value);
+    if (!head) {
+        head = newNode;
+        return;
+    }
+    let current = head;
+    while (current.next) {
+        current = current.next;
+    }
+    current.next = newNode;
+}
+
+// Doubly Linked List
+function insertAtEnd(value) {
+    const newNode = new Node(value);
+    if (!head) {
+        head = newNode;
+        return;
+    }
+    let current = head;
+    while (current.next) {
+        current = current.next;
+    }
+    current.next = newNode;
+    newNode.prev = current;
+}
+
+// Circular Linked List
+function insertAtEnd(value) {
+    const newNode = new Node(value);
+    if (!head) {
+        newNode.next = newNode;
+        head = newNode;
+        return;
+    }
+    let current = head;
+    while (current.next !== head) {
+        current = current.next;
+    }
+    current.next = newNode;
+    newNode.next = head;
+}`,
+      },
+      "insert-position": {
+        title: "Insert at Position",
+        steps: [
+          "1. Validate the position (must be >= 1)",
+          "2. If position is 1, insert at beginning",
+          "3. Create a new node with the given value",
+          "4. Traverse to position-1 to find the previous node",
+          "5. Update pointers to insert the new node",
+          "6. Handle edge cases for different list types",
+        ],
+        code: `// Singly Linked List
+function insertAtPosition(value, position) {
+    if (position < 1) return false;
+    if (position === 1) {
+        insertAtBeginning(value);
+        return true;
+    }
+    
+    const newNode = new Node(value);
+    let current = head;
+    
+    // Traverse to position-1
+    for (let i = 1; i < position - 1 && current; i++) {
+        current = current.next;
+    }
+    
+    if (!current) return false; // Position out of bounds
+    
+    newNode.next = current.next;
+    current.next = newNode;
+    return true;
+}
+
+// Doubly Linked List
+function insertAtPosition(value, position) {
+    if (position < 1) return false;
+    if (position === 1) {
+        insertAtBeginning(value);
+        return true;
+    }
+    
+    const newNode = new Node(value);
+    let current = head;
+    
+    for (let i = 1; i < position - 1 && current; i++) {
+        current = current.next;
+    }
+    
+    if (!current) return false;
+    
+    newNode.next = current.next;
+    newNode.prev = current;
+    if (current.next) {
+        current.next.prev = newNode;
+    }
+    current.next = newNode;
+    return true;
+}`,
+      },
+      "delete-beginning": {
+        title: "Delete from Beginning",
+        steps: [
+          "1. Check if list is empty",
+          "2. Store reference to current head",
+          "3. Update head to point to second node",
+          "4. For doubly linked lists, update prev pointer of new head",
+          "5. For circular lists, update tail's next pointer",
+          "6. Free memory of deleted node",
+        ],
+        code: `// Singly Linked List
+function deleteAtBeginning() {
+    if (!head) return null;
+    
+    const deletedValue = head.value;
+    head = head.next;
+    return deletedValue;
+}
+
+// Doubly Linked List
+function deleteAtBeginning() {
+    if (!head) return null;
+    
+    const deletedValue = head.value;
+    head = head.next;
+    if (head) {
+        head.prev = null;
+    }
+    return deletedValue;
+}
+
+// Circular Linked List
+function deleteAtBeginning() {
+    if (!head) return null;
+    
+    const deletedValue = head.value;
+    
+    if (head.next === head) {
+        // Only one node
+        head = null;
+    } else {
+        let tail = head;
+        while (tail.next !== head) {
+            tail = tail.next;
+        }
+        head = head.next;
+        tail.next = head;
+    }
+    return deletedValue;
+}`,
+      },
+      "delete-end": {
+        title: "Delete from End",
+        steps: [
+          "1. Check if list is empty",
+          "2. If only one node, delete it and update head",
+          "3. Traverse to second-to-last node",
+          "4. Update its next pointer to null",
+          "5. For circular lists, update to point to head",
+          "6. Free memory of deleted node",
+        ],
+        code: `// Singly Linked List
+function deleteAtEnd() {
+    if (!head) return null;
+    
+    if (!head.next) {
+        const deletedValue = head.value;
+        head = null;
+        return deletedValue;
+    }
+    
+    let current = head;
+    while (current.next.next) {
+        current = current.next;
+    }
+    
+    const deletedValue = current.next.value;
+    current.next = null;
+    return deletedValue;
+}
+
+// Doubly Linked List
+function deleteAtEnd() {
+    if (!head) return null;
+    
+    if (!head.next) {
+        const deletedValue = head.value;
+        head = null;
+        return deletedValue;
+    }
+    
+    let current = head;
+    while (current.next) {
+        current = current.next;
+    }
+    
+    const deletedValue = current.value;
+    current.prev.next = null;
+    return deletedValue;
+}
+
+// Circular Linked List
+function deleteAtEnd() {
+    if (!head) return null;
+    
+    if (head.next === head) {
+        const deletedValue = head.value;
+        head = null;
+        return deletedValue;
+    }
+    
+    let current = head;
+    let prev = null;
+    
+    while (current.next !== head) {
+        prev = current;
+        current = current.next;
+    }
+    
+    const deletedValue = current.value;
+    prev.next = head;
+    return deletedValue;
+}`,
+      },
+      "delete-position": {
+        title: "Delete from Position",
+        steps: [
+          "1. Validate the position (must be >= 1)",
+          "2. If position is 1, delete from beginning",
+          "3. Traverse to position-1 to find previous node",
+          "4. Store reference to node to be deleted",
+          "5. Update previous node's next pointer",
+          "6. For doubly linked lists, update next node's prev pointer",
+        ],
+        code: `// Singly Linked List
+function deleteAtPosition(position) {
+    if (position < 1 || !head) return null;
+    
+    if (position === 1) {
+        return deleteAtBeginning();
+    }
+    
+    let current = head;
+    
+    // Traverse to position-1
+    for (let i = 1; i < position - 1 && current; i++) {
+        current = current.next;
+    }
+    
+    if (!current || !current.next) return null;
+    
+    const deletedValue = current.next.value;
+    current.next = current.next.next;
+    return deletedValue;
+}
+
+// Doubly Linked List
+function deleteAtPosition(position) {
+    if (position < 1 || !head) return null;
+    
+    if (position === 1) {
+        return deleteAtBeginning();
+    }
+    
+    let current = head;
+    
+    for (let i = 1; i < position && current; i++) {
+        current = current.next;
+    }
+    
+    if (!current) return null;
+    
+    const deletedValue = current.value;
+    
+    if (current.prev) {
+        current.prev.next = current.next;
+    }
+    if (current.next) {
+        current.next.prev = current.prev;
+    }
+    
+    return deletedValue;
+}`,
+      },
+    }
+
+    return codes[operation as CodeOperationType] || { title: "", steps: [], code: "" }
+  }
+
+  const nodes = toArray()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-              <List className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                <List className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Interactive Linked List Visualizer
+                </h1>
+                <p className="mt-1 text-gray-600">Learn linked lists through step-by-step animations</p>
+              </div>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Linked List Visualizer
-            </h1>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setShowTutorial(!showTutorial)}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Tutorial</span>
+              </button>
+              <button
+                onClick={() => setShowCode(!showCode)}
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <Code className="w-4 h-4" />
+                <span>Code</span>
+              </button>
+            </div>
           </div>
-          <p className="mt-2 text-gray-600">Visualize singly, doubly, and circular linked list operations step by step</p>
         </div>
       </header>
 
-      {/* List type selector outside all cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-4 flex flex-wrap gap-2">
-        <button
-          className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${listType === "singly" ? "bg-blue-600 text-white" : "bg-gray-200 hover:bg-blue-100"}`}
-          onClick={() => setListType("singly")}
-        >
-          Singly
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${listType === "doubly" ? "bg-purple-600 text-white" : "bg-gray-200 hover:bg-purple-100"}`}
-          onClick={() => setListType("doubly")}
-        >
-          Doubly
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${listType === "circular" ? "bg-green-600 text-white" : "bg-gray-200 hover:bg-green-100"}`}
-          onClick={() => setListType("circular")}
-        >
-          Circular
-        </button>
-      </div>
-
-      <main className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left: Controls */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col gap-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Linked List Controls</h2>
-            {/* Value and Position Inputs at the top */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              <input
-                type="number"
-                className="border px-2 py-1 rounded w-24 focus:ring-2 focus:ring-blue-500"
-                placeholder="Value"
-                value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
-              />
-              <input
-                type="number"
-                className="border px-2 py-1 rounded w-24 focus:ring-2 focus:ring-blue-500"
-                placeholder="Position"
-                value={position}
-                min={1}
-                onChange={e => setPosition(Number(e.target.value))}
-              />
+      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* Tutorial Panel */}
+        {showTutorial && (
+          <div className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200">
+            <div className="flex items-center space-x-2 mb-4">
+              <Lightbulb className="w-5 h-5 text-blue-600" />
+              <h2 className="text-xl font-bold text-blue-900">
+                {listType === "singly"
+                  ? "Singly Linked List"
+                  : listType === "doubly"
+                    ? "Doubly Linked List"
+                    : "Circular Linked List"}
+              </h2>
             </div>
-            {/* Insertion Controls */}
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-2">Insertion</h3>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <button onClick={handleInsertBeginning} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">
-                  <Plus className="w-5 h-5 inline mr-1" /> Beginning
-                </button>
-                <button onClick={handleInsertEnd} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold">
-                  <Plus className="w-5 h-5 inline mr-1" /> End
-                </button>
-                <button onClick={handleInsertPosition} className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 font-semibold">
-                  <Plus className="w-5 h-5 inline mr-1" /> At Position
-                </button>
+            <p className="text-blue-800 mb-4">
+              {listType === "singly"
+                ? "Each node contains data and a pointer to the next node. The last node points to null."
+                : listType === "doubly"
+                  ? "Each node contains data and pointers to both next and previous nodes."
+                  : "The last node points back to the first node, forming a circle."}
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Clock className="w-4 h-4 text-green-600" />
+                  <span className="font-semibold text-green-800">Time Complexity</span>
+                </div>
+                <p className="text-sm text-green-700">
+                  Insert/Delete at beginning: O(1), Insert/Delete at end: O(n), Search: O(n)
+                </p>
               </div>
-            </div>
-
-            {/* Deletion Controls */}
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-2 mt-4">Deletion</h3>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <button onClick={handleDeleteBeginning} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold">
-                  <Minus className="w-5 h-5 inline mr-1" /> Beginning
-                </button>
-                <button onClick={handleDeleteEnd} className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 font-semibold">
-                  <Minus className="w-5 h-5 inline mr-1" /> End
-                </button>
-                <button onClick={handleDeletePosition} className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-semibold">
-                  <Minus className="w-5 h-5 inline mr-1" /> At Position
-                </button>
-              </div>
-            </div>
-
-            {/* Modify & Reverse Controls */}
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-2 mt-4">Other Operations</h3>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <button onClick={handleModify} className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 font-semibold">
-                  <Edit className="w-5 h-5 inline mr-1" /> Modify
-                </button>
-                <button onClick={handleReverse} className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold">
-                  <RefreshCcw className="w-5 h-5 inline mr-1" /> Reverse
-                </button>
+              <div className="bg-white rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Target className="w-4 h-4 text-purple-600" />
+                  <span className="font-semibold text-purple-800">Use Case</span>
+                </div>
+                <p className="text-sm text-purple-700">
+                  {listType === "singly"
+                    ? "When you need dynamic size and frequent insertions/deletions at the beginning."
+                    : listType === "doubly"
+                      ? "When you need bidirectional traversal and frequent insertions/deletions at both ends."
+                      : "When you need to cycle through elements repeatedly, like in round-robin scheduling."}
+                </p>
               </div>
             </div>
           </div>
+        )}
 
-          {/* Right: Visualization & Legend */}
-          <div className="flex flex-col gap-8">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-4">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Linked List Visualization</h2>
-              <div className="border-2 border-gray-300 rounded-lg p-4 min-h-[120px] flex items-center gap-8 mb-8 overflow-x-auto bg-gradient-to-r from-blue-50 to-purple-50">
-                {nodes.length === 0 ? (
-                  <div className="text-gray-400">List is empty</div>
-                ) : (
-                  nodes.map((node, idx) => (
-                    <div key={idx} className="flex items-center relative">
-                      {/* Node box */}
-                      <div className={`relative px-6 py-3 rounded-lg font-bold shadow-md border-2 ${
-                        listType === "doubly"
-                          ? "bg-purple-100 border-purple-400"
-                          : listType === "circular"
-                          ? "bg-green-100 border-green-400"
-                          : "bg-blue-100 border-blue-400"
-                      }`}>
-                        {/* Doubly: prev arrow */}
-                        {listType === "doubly" && idx !== 0 && (
-                          <ChevronLeft className="w-4 h-4 text-purple-500 absolute left-[-24px] top-1/2 -translate-y-1/2" />
-                        )}
-                        {node.value}
-                        {/* Singly: next arrow, Doubly: next arrow */}
-                        {(listType === "singly" || (listType === "doubly" && idx !== nodes.length - 1)) && (
-                          <ChevronRight className={`w-4 h-4 absolute right-[-24px] top-1/2 -translate-y-1/2 ${listType === "doubly" ? "text-purple-500" : "text-blue-500"}`} />
-                        )}
-                      </div>
-                      {/* Arrows between nodes */}
-                      {idx !== nodes.length - 1 && (
-                        <ArrowLeftRight className={`w-8 h-8 mx-2 ${
-                          listType === "doubly"
-                            ? "text-purple-400"
-                            : listType === "circular"
-                            ? "text-green-400"
-                            : "text-blue-400"
-                        }`} />
-                      )}
-                      {/* Circular loop arrow */}
-                      {listType === "circular" && idx === nodes.length - 1 && (
-                        <div className="flex items-center ml-2">
-                          <Repeat className="w-8 h-8 text-green-500 animate-spin-slow" />
-                          <span className="ml-1 text-green-700 font-semibold">Head</span>
-                        </div>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Legend */}
-              <div className="flex flex-wrap items-center gap-4 text-sm bg-white rounded-lg p-4 shadow-sm border mb-6">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-blue-100 border-2 border-blue-400 rounded"></div>
-                  <span>Node</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <ChevronRight className="w-4 h-4 text-blue-500" />
-                  <span>Next Pointer</span>
-                </div>
-                {listType === "doubly" && (
-                  <>
-                    <ChevronLeft className="w-4 h-4 text-purple-500" />
-                    <span>Prev Pointer</span>
-                  </>
-                )}
-                {listType === "circular" && (
-                  <>
-                    <Repeat className="w-4 h-4 text-green-500" />
-                    <span>Points to Head</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Operation History: full width below both columns */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col mt-8 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Operation History</h2>
-          <div className="h-[300px] overflow-y-auto border rounded-lg p-4 bg-gray-50">
-            {operationHistory.slice(0, 20).map((op, idx) => (
-              <div
-                key={idx}
-                className={`p-2 mb-2 rounded-lg ${
-                  op.startsWith("Error")
-                    ? "bg-red-100 text-red-700"
-                    : "bg-gray-100 text-gray-700"
+        {/* List Type Selector */}
+        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Choose Linked List Type</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(["singly", "doubly", "circular"] as ListType[]).map((type) => (
+              <button
+                key={type}
+                onClick={() => {
+                  setListType(type)
+                  setHead(null)
+                  setOperationHistory([])
+                  setNodeCounter(0)
+                }}
+                className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                  listType === type
+                    ? "border-blue-500 bg-blue-50 text-blue-700"
+                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
-                {op}
-              </div>
+                <div className="text-lg font-semibold capitalize">{type} Linked List</div>
+                <div className="text-sm text-gray-600 mt-1">
+                  {type === "singly" && "→ One-way connections"}
+                  {type === "doubly" && "↔ Two-way connections"}
+                  {type === "circular" && "↻ Circular connections"}
+                </div>
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Code Section: full width below everything */}
-        <details className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 max-w-7xl mx-auto mb-8">
-          <summary className="text-lg font-semibold text-gray-900 mb-2 cursor-pointer select-none">Show/Hide Code for Operations</summary>
-          <div className="mt-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Code for Current Operation</h3>
-            <pre className="bg-gray-100 rounded p-4 text-xs overflow-x-auto mb-4 border border-gray-200 shadow-inner">{currentCode}</pre>
-            <h3 className="font-semibold text-gray-900 mb-2">Full Code for All Operations</h3>
-            <pre className="bg-gray-100 rounded p-4 text-xs overflow-x-auto border border-gray-200 shadow-inner">{fullCodeString}</pre>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Controls Panel */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Operations</h2>
+
+              {/* Input Controls */}
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Value</label>
+                  <input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter value"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Position</label>
+                  <input
+                    type="number"
+                    value={position}
+                    onChange={(e) => setPosition(Number(e.target.value))}
+                    min="1"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Position"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Search Value</label>
+                  <input
+                    type="number"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Search for value"
+                  />
+                </div>
+              </div>
+
+              {/* Operation Buttons */}
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-2">Insert Operations</h3>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      onClick={() => {
+                        const val = Number.parseInt(inputValue)
+                        if (!isNaN(val)) {
+                          setCurrentOperation("insert-beginning")
+                          insertAtBeginning(val)
+                          setInputValue("")
+                        }
+                      }}
+                      disabled={!inputValue}
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Insert at Beginning</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const val = Number.parseInt(inputValue)
+                        if (!isNaN(val)) {
+                          setCurrentOperation("insert-end")
+                          insertAtEnd(val)
+                          setInputValue("")
+                        }
+                      }}
+                      disabled={!inputValue}
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Insert at End</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const val = Number.parseInt(inputValue)
+                        if (!isNaN(val) && position >= 1) {
+                          setCurrentOperation("insert-position")
+                          insertAtPosition(val, position)
+                          setInputValue("")
+                        }
+                      }}
+                      disabled={!inputValue || position < 1}
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Insert at Position {position}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-2">Delete Operations</h3>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      onClick={() => {
+                        setCurrentOperation("delete-beginning")
+                        deleteAtBeginning()
+                      }}
+                      disabled={!head}
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                      <span>Delete from Beginning</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCurrentOperation("delete-end")
+                        deleteAtEnd()
+                      }}
+                      disabled={!head}
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                      <span>Delete from End</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCurrentOperation("delete-position")
+                        deleteAtPosition(position)
+                      }}
+                      disabled={!head || position < 1}
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                      <span>Delete from Position {position}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-2">Other Operations</h3>
+                  <button
+                    onClick={() => {
+                      const val = Number.parseInt(searchTerm)
+                      if (!isNaN(val)) {
+                        search(val)
+                        setSearchTerm("")
+                      }
+                    }}
+                    disabled={!searchTerm || !head}
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Target className="w-4 h-4" />
+                    <span>Search Value</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </details>
+
+          {/* Visualization Panel */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Main Visualization */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">
+                  {listType.charAt(0).toUpperCase() + listType.slice(1)} Linked List
+                </h2>
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <span>Nodes: {nodes.length}</span>
+                </div>
+              </div>
+
+              {/* List Visualization */}
+              <div className="min-h-[200px] bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 overflow-x-auto">
+                {nodes.length === 0 ? (
+                  <div className="flex items-center justify-center h-32 text-gray-500">
+                    <div className="text-center">
+                      <List className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>List is empty. Add some nodes to get started!</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-4">
+                    {nodes.map((node, index) => (
+                      <div key={node.id} className="flex items-center">
+                        {/* Node */}
+                        <div
+                          className={`relative px-6 py-4 rounded-xl border-2 font-bold text-lg transition-all duration-500 ${
+                            index < nodes.length - 1 && "border-blue-400"
+                          }`}
+                        >
+                          <span>{node.value}</span>
+                        </div>
+
+                        {/* Connection line */}
+                        {index < nodes.length - 1 && <div className="w-8 h-0.5 bg-blue-400"></div>}
+
+                        {/* Circular connection indicator */}
+                        {listType === "circular" && index === nodes.length - 1 && (
+                          <div className="flex items-center ml-4">
+                            <div className="w-8 h-0.5 bg-green-400"></div>
+                            <RotateCcw className="w-6 h-6 text-green-500" />
+                            <span className="ml-2 text-sm text-green-700 font-medium">to HEAD</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Operation History */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Operation History</h2>
+              <div className="max-h-60 overflow-y-auto space-y-2">
+                {operationHistory.length === 0 ? (
+                  <p className="text-gray-500 italic">No operations performed yet</p>
+                ) : (
+                  operationHistory.map((operation, index) => (
+                    <div
+                      key={index}
+                      className="p-3 bg-gray-50 rounded-lg text-sm text-gray-700 border-l-4 border-blue-400"
+                    >
+                      {operation}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Code Implementation Section */}
+            {currentOperation && (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {getOperationCode(currentOperation as CodeOperationType).title} - Implementation
+                  </h2>
+                  <button
+                    onClick={() => setShowStepByStep(!showStepByStep)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+                  >
+                    <Code className="w-4 h-4" />
+                    <span>{showStepByStep ? "Hide Steps" : "Show Steps"}</span>
+                  </button>
+                </div>
+
+                {showStepByStep && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Algorithm Steps:</h3>
+                    <ol className="list-decimal list-inside space-y-2">
+                      {getOperationCode(currentOperation as CodeOperationType).steps.map((step: string, index: number) => (
+                        <li key={index} className="text-gray-700">
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+                  <pre className="text-green-400 text-sm">
+                    <code>{getOperationCode(currentOperation as CodeOperationType).code}</code>
+                  </pre>
+                </div>
+
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 mb-2">Time & Space Complexity:</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium text-blue-700">Time Complexity:</span>
+                      <span className="ml-2 text-blue-600">
+                        {currentOperation.includes("position")
+                          ? "O(n)"
+                          : currentOperation.includes("end") && !currentOperation.includes("delete-end")
+                            ? "O(n)"
+                            : "O(1)"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-blue-700">Space Complexity:</span>
+                      <span className="ml-2 text-blue-600">O(1)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </main>
     </div>
-  );
+  )
 }
 
-export default LinkedListVisualizerPage; 
+export default LinkedListVisualizerPage

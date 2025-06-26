@@ -1,8 +1,7 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
-import { Layers, Plus, Minus, Eye, AlertCircle, CheckCircle2 } from "lucide-react"
+import { Layers, Plus, Minus, Eye, AlertCircle, CheckCircle2, Code, BookOpen, Lightbulb, Target, Clock, Zap, ArrowUp, ArrowDown, RotateCcw } from 'lucide-react'
 
 interface StackOperation {
   name: string
@@ -10,6 +9,7 @@ interface StackOperation {
   timeComplexity: string
   spaceComplexity: string
   pythonCode: string
+  realWorldExample: string
 }
 
 const stackOperations: StackOperation[] = [
@@ -18,323 +18,594 @@ const stackOperations: StackOperation[] = [
     description: "Adds an element to the top of the stack.",
     timeComplexity: "O(1)",
     spaceComplexity: "O(1)",
-    pythonCode: 'def push(self, item):\n    if self.is_full():\n        # Handle stack full error\n        return\n    self.stack.append(item)',
+    pythonCode: `def push(self, item):
+    if self.is_full():
+        raise StackOverflowError("Stack is full")
+    self.stack.append(item)
+    self.size += 1`,
+    realWorldExample: "Adding a new browser tab, function call in recursion"
   },
   {
     name: "Pop",
     description: "Removes and returns the top element from the stack.",
     timeComplexity: "O(1)",
     spaceComplexity: "O(1)",
-    pythonCode: 'def pop(self):\n    if self.is_empty():\n        # Handle stack empty error\n        return None\n    return self.stack.pop()',
+    pythonCode: `def pop(self):
+    if self.is_empty():
+        raise StackUnderflowError("Stack is empty")
+    item = self.stack.pop()
+    self.size -= 1
+    return item`,
+    realWorldExample: "Closing the most recent browser tab, returning from function"
   },
   {
-    name: "Peek",
+    name: "Peek/Top",
     description: "Returns the top element without removing it.",
     timeComplexity: "O(1)",
     spaceComplexity: "O(1)",
-    pythonCode: 'def peek(self):\n    if self.is_empty():\n        # Handle stack empty error\n        return None\n    return self.stack[-1]',
+    pythonCode: `def peek(self):
+    if self.is_empty():
+        raise StackUnderflowError("Stack is empty")
+    return self.stack[-1]`,
+    realWorldExample: "Viewing current browser tab without switching"
   },
   {
     name: "Is Empty",
     description: "Checks if the stack has no elements.",
     timeComplexity: "O(1)",
     spaceComplexity: "O(1)",
-    pythonCode: 'def is_empty(self):\n    return len(self.stack) == 0',
-  },
-  {
-    name: "Is Full",
-    description: "Checks if the stack has reached its maximum capacity.",
-    timeComplexity: "O(1)",
-    spaceComplexity: "O(1)",
-    pythonCode: 'def is_full(self):\n    return len(self.stack) == self.capacity',
-  },
-  {
-    name: "Size",
-    description: "Returns the number of elements in the stack.",
-    timeComplexity: "O(1)",
-    spaceComplexity: "O(1)",
-    pythonCode: 'def size(self):\n    return len(self.stack)',
+    pythonCode: `def is_empty(self):
+    return self.size == 0`,
+    realWorldExample: "Checking if there are any function calls to return to"
   },
 ]
 
 interface StackElement {
   value: number
   isHighlighted: boolean
+  isNew: boolean
+  isRemoving: boolean
+  animationDelay: number
 }
 
 function StackVisualizerPage() {
   const [stack, setStack] = useState<StackElement[]>([])
-  const [maxSize, setMaxSize] = useState<number>(10)
+  const [maxSize, setMaxSize] = useState<number>(8)
   const [inputValue, setInputValue] = useState<string>("")
   const [operationHistory, setOperationHistory] = useState<string[]>([])
   const [isAnimating, setIsAnimating] = useState(false)
-  const [showFullPythonCode, setShowFullPythonCode] = useState(false)
-  const [showCodeMap, setShowCodeMap] = useState<Record<string, boolean>>({});
+  const [showTutorial, setShowTutorial] = useState(false)
+  const [showCode, setShowCode] = useState(false)
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(null)
+  const [lastOperation, setLastOperation] = useState<string>("")
 
-  const toggleCodeVisibility = (operationName: string) => {
-    setShowCodeMap(prev => ({
-      ...prev,
-      [operationName]: !prev[operationName]
-    }));
-  };
+  const addToHistory = (operation: string) => {
+    const timestamp = new Date().toLocaleTimeString()
+    setOperationHistory(prev => [`${timestamp}: ${operation}`, ...prev.slice(0, 19)])
+  }
 
   const push = () => {
     if (stack.length >= maxSize) {
-      setOperationHistory(prev => [...prev, "Error: Stack is full!"])
+      addToHistory("❌ Error: Stack Overflow! Cannot push to full stack")
       return
     }
     if (!inputValue || isNaN(Number(inputValue))) {
-      setOperationHistory(prev => [...prev, "Error: Please enter a valid number!"])
+      addToHistory("❌ Error: Please enter a valid number")
       return
     }
 
     setIsAnimating(true)
-    const newElement = { value: Number(inputValue), isHighlighted: true }
+    setLastOperation("push")
+    const newElement: StackElement = { 
+      value: Number(inputValue), 
+      isHighlighted: true, 
+      isNew: true,
+      isRemoving: false,
+      animationDelay: 0
+    }
+    
     setStack(prev => [...prev, newElement])
-    setOperationHistory(prev => [...prev, `Pushed ${inputValue} to stack`])
+    addToHistory(`✅ Pushed ${inputValue} onto stack`)
     setInputValue("")
 
     setTimeout(() => {
-      setStack(prev => prev.map(el => ({ ...el, isHighlighted: false })))
+      setStack(prev => prev.map(el => ({ ...el, isHighlighted: false, isNew: false })))
       setIsAnimating(false)
     }, 1000)
   }
 
   const pop = () => {
     if (stack.length === 0) {
-      setOperationHistory(prev => [...prev, "Error: Stack is empty!"])
+      addToHistory("❌ Error: Stack Underflow! Cannot pop from empty stack")
       return
     }
 
     setIsAnimating(true)
+    setLastOperation("pop")
     const poppedValue = stack[stack.length - 1].value
-    setStack(prev => prev.slice(0, -1))
-    setOperationHistory(prev => [...prev, `Popped ${poppedValue} from stack`])
+    
+    // Mark element as removing
+    setStack(prev => prev.map((el, idx) => 
+      idx === prev.length - 1 ? { ...el, isRemoving: true } : el
+    ))
 
     setTimeout(() => {
+      setStack(prev => prev.slice(0, -1))
+      addToHistory(`✅ Popped ${poppedValue} from stack`)
       setIsAnimating(false)
-    }, 1000)
+    }, 500)
   }
 
   const peek = () => {
     if (stack.length === 0) {
-      setOperationHistory(prev => [...prev, "Error: Stack is empty!"])
+      addToHistory("❌ Error: Cannot peek at empty stack")
       return
     }
 
     setIsAnimating(true)
+    setLastOperation("peek")
     const topValue = stack[stack.length - 1].value
+    
     setStack(prev => prev.map((el, idx) => 
       idx === prev.length - 1 ? { ...el, isHighlighted: true } : el
     ))
-    setOperationHistory(prev => [...prev, `Peeked at ${topValue}`])
+    addToHistory(`👁️ Peeked at top element: ${topValue}`)
 
     setTimeout(() => {
       setStack(prev => prev.map(el => ({ ...el, isHighlighted: false })))
       setIsAnimating(false)
-    }, 1000)
+    }, 1500)
   }
 
   const isEmpty = () => {
     const empty = stack.length === 0
-    setOperationHistory(prev => [...prev, `Stack is ${empty ? "empty" : "not empty"}`])
+    addToHistory(`🔍 Stack is ${empty ? "empty" : "not empty"} (size: ${stack.length})`)
   }
 
   const isFull = () => {
     const full = stack.length >= maxSize
-    setOperationHistory(prev => [...prev, `Stack is ${full ? "full" : "not full"}`])
+    addToHistory(`🔍 Stack is ${full ? "full" : "not full"} (${stack.length}/${maxSize})`)
   }
 
   const size = () => {
-    setOperationHistory(prev => [...prev, `Stack size: ${stack.length}`])
+    addToHistory(`📏 Current stack size: ${stack.length}`)
+  }
+
+  const clearStack = () => {
+    setStack([])
+    addToHistory("🗑️ Stack cleared")
+  }
+
+  const getFullStackCode = () => {
+    return `class Stack:
+    def __init__(self, capacity=10):
+        self.stack = []
+        self.capacity = capacity
+        self.size = 0
+    
+    def push(self, item):
+        """Add item to top of stack"""
+        if self.is_full():
+            raise StackOverflowError("Stack is full")
+        self.stack.append(item)
+        self.size += 1
+        return True
+    
+    def pop(self):
+        """Remove and return top item"""
+        if self.is_empty():
+            raise StackUnderflowError("Stack is empty")
+        item = self.stack.pop()
+        self.size -= 1
+        return item
+    
+    def peek(self):
+        """Return top item without removing"""
+        if self.is_empty():
+            raise StackUnderflowError("Stack is empty")
+        return self.stack[-1]
+    
+    def is_empty(self):
+        """Check if stack is empty"""
+        return self.size == 0
+    
+    def is_full(self):
+        """Check if stack is full"""
+        return self.size >= self.capacity
+    
+    def get_size(self):
+        """Return current size"""
+        return self.size
+    
+    def display(self):
+        """Display stack contents"""
+        if self.is_empty():
+            print("Stack: []")
+        else:
+            print("Stack (top to bottom):")
+            for i in range(len(self.stack) - 1, -1, -1):
+                print(f"  [{i}] {self.stack[i]}")
+
+# Example usage:
+stack = Stack(capacity=5)
+stack.push(10)
+stack.push(20)
+stack.push(30)
+print(f"Top element: {stack.peek()}")  # 30
+print(f"Popped: {stack.pop()}")        # 30
+print(f"Size: {stack.get_size()}")     # 2`
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-              <Layers className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+                <Layers className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Interactive Stack Visualizer
+                </h1>
+                <p className="mt-1 text-gray-600">Master stack operations with visual learning</p>
+              </div>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Stack Operations Visualizer
-            </h1>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setShowTutorial(!showTutorial)}
+                className="flex items-center space-x-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Tutorial</span>
+              </button>
+              <button
+                onClick={() => setShowCode(!showCode)}
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <Code className="w-4 h-4" />
+                <span>Code</span>
+              </button>
+            </div>
           </div>
-          <p className="mt-2 text-gray-600">Visualize stack operations step by step</p>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Stack Operations Information */}
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {stackOperations.map((operation) => {
-            return (
+        {/* Tutorial Panel */}
+        {showTutorial && (
+          <div className="mb-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
+            <div className="flex items-center space-x-2 mb-4">
+              <Lightbulb className="w-5 h-5 text-purple-600" />
+              <h2 className="text-xl font-bold text-purple-900">Stack Data Structure</h2>
+            </div>
+            <p className="text-purple-800 mb-4">
+              A stack is a linear data structure that follows the Last In, First Out (LIFO) principle. 
+              Think of it like a stack of plates - you can only add or remove plates from the top.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Clock className="w-4 h-4 text-green-600" />
+                  <span className="font-semibold text-green-800">Time Complexity</span>
+                </div>
+                <p className="text-sm text-green-700">All operations: O(1) - Constant time</p>
+              </div>
+              <div className="bg-white rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Target className="w-4 h-4 text-blue-600" />
+                  <span className="font-semibold text-blue-800">Use Cases</span>
+                </div>
+                <p className="text-sm text-blue-700">Function calls, undo operations, expression evaluation</p>
+              </div>
+              <div className="bg-white rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Zap className="w-4 h-4 text-orange-600" />
+                  <span className="font-semibold text-orange-800">Key Property</span>
+                </div>
+                <p className="text-sm text-orange-700">LIFO - Last In, First Out</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Operations Overview */}
+        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Stack Operations</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {stackOperations.map((operation) => (
               <div
                 key={operation.name}
-                className="bg-white rounded-lg shadow-md p-4 border border-gray-200"
+                className={`p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
+                  selectedOperation === operation.name
+                    ? "border-purple-500 bg-purple-50"
+                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                }`}
+                onClick={() => setSelectedOperation(selectedOperation === operation.name ? null : operation.name)}
               >
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 flex justify-between items-center">
-                  {operation.name}
-                  <button 
-                    onClick={() => toggleCodeVisibility(operation.name)}
-                    className="text-blue-500 hover:text-blue-700 text-sm"
-                  >
-                    {showCodeMap[operation.name] ? "Hide Code" : "Show Code"}
-                  </button>
-                </h3>
-                <p className="text-gray-600 mb-2">{operation.description}</p>
-                <div className="text-sm text-gray-500">
-                  <div>Time Complexity: {operation.timeComplexity}</div>
-                  <div>Space Complexity: {operation.spaceComplexity}</div>
+                <h3 className="font-semibold text-gray-900 mb-2">{operation.name}</h3>
+                <p className="text-sm text-gray-600 mb-3">{operation.description}</p>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Time:</span>
+                    <span className="font-mono text-green-600">{operation.timeComplexity}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Space:</span>
+                    <span className="font-mono text-blue-600">{operation.spaceComplexity}</span>
+                  </div>
                 </div>
-                {showCodeMap[operation.name] && (
-                  <div className="mt-4 bg-gray-100 p-3 rounded-md overflow-x-auto">
-                    <pre><code className="lang-python text-sm">{operation.pythonCode}</code></pre>
+                {selectedOperation === operation.name && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="mb-3">
+                      <h4 className="text-sm font-semibold text-gray-700 mb-1">Real-world Example:</h4>
+                      <p className="text-xs text-gray-600">{operation.realWorldExample}</p>
+                    </div>
+                    <div className="bg-gray-900 rounded-lg p-3">
+                      <pre className="text-xs text-green-400 overflow-x-auto">
+                        <code>{operation.pythonCode}</code>
+                      </pre>
+                    </div>
                   </div>
                 )}
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
 
-        <div className="mb-8 p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex justify-between items-center">
-            Full Stack Python Implementation
-            <button
-              onClick={() => setShowFullPythonCode(!showFullPythonCode)}
-              className="text-blue-500 hover:text-blue-700 text-sm"
-            >
-              {showFullPythonCode ? "Hide Full Code" : "Show Full Code"}
-            </button>
-          </h2>
-          {showFullPythonCode && (
-            <div className="mt-4 bg-gray-100 p-3 rounded-md overflow-x-auto">
-              <pre><code className="lang-python text-sm">{'class Stack:\n    def __init__(self, capacity=10):\n        self.stack = []\n        self.capacity = capacity\n\n    def is_empty(self):\n        return len(self.stack) == 0\n\n    def is_full(self):\n        return len(self.stack) == self.capacity\n\n    def push(self, item):\n        if self.is_full():\n            print("Error: Stack is full!")\n            return False\n        self.stack.append(item)\n        print(f"Pushed: {item}")\n        return True\n\n    def pop(self):\n        if self.is_empty():\n            print("Error: Stack is empty!")\n            return None\n        item = self.stack.pop()\n        print(f"Popped: {item}")\n        return item\n\n    def peek(self):\n        if self.is_empty():\n            print("Error: Stack is empty!")\n            return None\n        item = self.stack[-1]\n        print(f"Peeked: {item}")\n        return item\n\n    def size(self):\n        return len(self.stack)\n\n    def display(self):\n        if self.is_empty():\n            print("Stack: []")\n        else:\n            print("Stack:", self.stack)'}</code></pre>
-            </div>
-          )}
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Controls Panel */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Stack Controls</h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Stack Visualization */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Stack Visualization</h2>
-            
-            <div className="mb-4">
-              <label htmlFor="max-size" className="block text-sm font-medium text-gray-700 mb-2">
-                Maximum Stack Size
-              </label>
-              <input
-                id="max-size"
-                type="number"
-                value={maxSize}
-                onChange={(e) => setMaxSize(Math.max(1, Number(e.target.value)))}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                min="1"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="input-value" className="block text-sm font-medium text-gray-700 mb-2">
-                Value to Push
-              </label>
-              <input
-                id="input-value"
-                type="number"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter a number"
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-6">
-              <button
-                onClick={push}
-                disabled={isAnimating}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                <Plus className="w-5 h-5 inline mr-1" />
-                Push
-              </button>
-              <button
-                onClick={pop}
-                disabled={isAnimating}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
-              >
-                <Minus className="w-5 h-5 inline mr-1" />
-                Pop
-              </button>
-              <button
-                onClick={peek}
-                disabled={isAnimating}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-              >
-                <Eye className="w-5 h-5 inline mr-1" />
-                Peek
-              </button>
-              <button
-                onClick={isEmpty}
-                disabled={isAnimating}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
-              >
-                <AlertCircle className="w-5 h-5 inline mr-1" />
-                Is Empty
-              </button>
-              <button
-                onClick={isFull}
-                disabled={isAnimating}
-                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50"
-              >
-                <CheckCircle2 className="w-5 h-5 inline mr-1" />
-                Is Full
-              </button>
-              <button
-                onClick={size}
-                disabled={isAnimating}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50"
-              >
-                Size
-              </button>
-            </div>
-
-            {/* Stack Display */}
-            <div className="border-2 border-gray-300 rounded-lg p-4 min-h-[300px] flex flex-col-reverse">
-              {stack.map((element, index) => (
-                <div
-                  key={index}
-                  className={`w-full h-12 mb-2 rounded-lg flex items-center justify-center text-white font-bold transition-all duration-300 ${
-                    element.isHighlighted
-                      ? "bg-green-500 transform scale-105"
-                      : "bg-blue-500"
-                  }`}
-                >
-                  {element.value}
+              {/* Configuration */}
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Stack Capacity
+                  </label>
+                  <input
+                    type="number"
+                    value={maxSize}
+                    onChange={(e) => setMaxSize(Math.max(1, Math.min(15, Number(e.target.value))))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    min="1"
+                    max="15"
+                  />
                 </div>
-              ))}
-              {stack.length === 0 && (
-                <div className="text-gray-400 text-center my-auto">Stack is empty</div>
-              )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Value to Push
+                  </label>
+                  <input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && push()}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Enter a number"
+                  />
+                </div>
+              </div>
+
+              {/* Operation Buttons */}
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-3">Primary Operations</h3>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      onClick={push}
+                      disabled={isAnimating || !inputValue || isNaN(Number(inputValue))}
+                      className="flex items-center justify-center space-x-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ArrowUp className="w-4 h-4" />
+                      <span>Push</span>
+                    </button>
+                    <button
+                      onClick={pop}
+                      disabled={isAnimating || stack.length === 0}
+                      className="flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ArrowDown className="w-4 h-4" />
+                      <span>Pop</span>
+                    </button>
+                    <button
+                      onClick={peek}
+                      disabled={isAnimating || stack.length === 0}
+                      className="flex items-center justify-center space-x-2 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>Peek</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-3">Query Operations</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={isEmpty}
+                      className="flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                    >
+                      <AlertCircle className="w-3 h-3" />
+                      <span>Empty?</span>
+                    </button>
+                    <button
+                      onClick={isFull}
+                      className="flex items-center justify-center space-x-1 px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
+                    >
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>Full?</span>
+                    </button>
+                    <button
+                      onClick={size}
+                      className="flex items-center justify-center space-x-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
+                    >
+                      <span>Size</span>
+                    </button>
+                    <button
+                      onClick={clearStack}
+                      className="flex items-center justify-center space-x-1 px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Clear</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stack Info */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold text-gray-700 mb-2">Stack Status</h4>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>Size:</span>
+                    <span className="font-mono">{stack.length}/{maxSize}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Empty:</span>
+                    <span className={stack.length === 0 ? "text-red-600" : "text-green-600"}>
+                      {stack.length === 0 ? "Yes" : "No"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Full:</span>
+                    <span className={stack.length >= maxSize ? "text-red-600" : "text-green-600"}>
+                      {stack.length >= maxSize ? "Yes" : "No"}
+                    </span>
+                  </div>
+                  {stack.length > 0 && (
+                    <div className="flex justify-between">
+                      <span>Top:</span>
+                      <span className="font-mono">{stack[stack.length - 1].value}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Operation History */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Operation History</h2>
-            <div className="h-[500px] overflow-y-auto border rounded-lg p-4">
-              {operationHistory.map((operation, index) => (
-                <div
-                  key={index}
-                  className={`p-2 mb-2 rounded-lg ${
-                    operation.startsWith("Error")
-                      ? "bg-red-100 text-red-700"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
-                >
-                  {operation}
+          {/* Visualization Panel */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Stack Visualization */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">Stack Visualization</h2>
+                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <span>Capacity: {maxSize}</span>
+                  <span>Size: {stack.length}</span>
                 </div>
-              ))}
+              </div>
+
+              {/* Stack Container */}
+              <div className="flex justify-center">
+                <div className="relative">
+                  {/* Stack Base */}
+                  <div className="w-32 h-8 bg-gray-800 rounded-b-lg"></div>
+                  
+                  {/* Stack Elements */}
+                  <div className="flex flex-col-reverse space-y-reverse space-y-1">
+                    {stack.map((element, index) => (
+                      <div
+                        key={index}
+                        className={`w-32 h-12 flex items-center justify-center text-white font-bold text-lg rounded-lg transition-all duration-500 transform ${
+                          element.isRemoving
+                            ? "scale-110 opacity-0 translate-y-4"
+                            : element.isHighlighted
+                              ? "bg-gradient-to-r from-yellow-400 to-orange-500 scale-105 shadow-lg"
+                              : element.isNew
+                                ? "bg-gradient-to-r from-green-400 to-blue-500 scale-105"
+                                : "bg-gradient-to-r from-purple-500 to-pink-500"
+                        }`}
+                        style={{
+                          animationDelay: `${element.animationDelay}ms`
+                        }}
+                      >
+                        {element.value}
+                        {index === stack.length - 1 && (
+                          <div className="absolute -right-16 top-1/2 transform -translate-y-1/2">
+                            <div className="flex items-center space-x-2">
+                              <ArrowUp className="w-4 h-4 text-purple-600" />
+                              <span className="text-sm font-medium text-purple-600">TOP</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Empty State */}
+                  {stack.length === 0 && (
+                    <div className="w-32 h-32 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 rounded-lg">
+                      <div className="text-center">
+                        <Layers className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">Empty Stack</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Capacity Indicator */}
+                  <div className="absolute -left-16 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-500">
+                    {Array.from({ length: maxSize }, (_, i) => (
+                      <div key={i} className="h-12 flex items-center">
+                        {maxSize - i - 1}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Operation Indicator */}
+              {lastOperation && (
+                <div className="mt-6 text-center">
+                  <div className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-full">
+                    <span className="text-sm font-medium">Last Operation: {lastOperation.toUpperCase()}</span>
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* Operation History */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Operation History</h2>
+              <div className="max-h-60 overflow-y-auto space-y-2">
+                {operationHistory.length === 0 ? (
+                  <p className="text-gray-500 italic text-center py-8">No operations performed yet</p>
+                ) : (
+                  operationHistory.map((operation, index) => (
+                    <div
+                      key={index}
+                      className={`p-3 rounded-lg text-sm border-l-4 ${
+                        operation.includes("❌")
+                          ? "bg-red-50 text-red-700 border-red-400"
+                          : operation.includes("✅")
+                            ? "bg-green-50 text-green-700 border-green-400"
+                            : operation.includes("👁️")
+                              ? "bg-blue-50 text-blue-700 border-blue-400"
+                              : "bg-gray-50 text-gray-700 border-gray-400"
+                      }`}
+                    >
+                      {operation}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Full Code Implementation */}
+            {showCode && (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Complete Stack Implementation</h2>
+                <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+                  <pre className="text-green-400 text-sm">
+                    <code>{getFullStackCode()}</code>
+                  </pre>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -342,4 +613,4 @@ function StackVisualizerPage() {
   )
 }
 
-export default StackVisualizerPage 
+export default StackVisualizerPage

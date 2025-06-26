@@ -1,305 +1,205 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, Grid, ChevronLeft, ChevronRight, Code } from "lucide-react"
-
-interface ArrayElement {
-  value: number
-  isHighlighted: boolean
-  isWindowStart: boolean
-  isWindowEnd: boolean
-}
+import { useState, useEffect } from "react"
 
 interface Step {
-  array: ArrayElement[]
-  windowSum: number
-  maxSum: number
-  description: string
-  code: string
+  array: {
+    value: number;
+    isHighlighted: boolean;
+    isWindowStart: boolean;
+    isWindowEnd: boolean;
+  }[];
+  windowSum: number;
+  maxSum: number;
 }
 
-function SlidingWindowPage() {
-  const [arrayInput, setArrayInput] = useState<string>("")
-  const [windowSize, setWindowSize] = useState<number>(3)
+const SlidingWindow = () => {
+  const [array, setArray] = useState([1, 3, -1, -3, 5, 3, 6, 7])
+  const [windowSize, setWindowSize] = useState(3)
   const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
+  const [currentStep, setCurrentStep] = useState(0)
 
-  const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
+  useEffect(() => {
+    const calculateSlidingWindow = () => {
+      const newSteps = []
+      let currentSum = 0
+      let maxSum = Number.NEGATIVE_INFINITY
 
-  const generateSteps = (array: number[], k: number) => {
-    const newSteps: Step[] = []
-    let windowSum = 0
-    let maxSum = -Infinity
+      // Initialize the first window
+      for (let i = 0; i < windowSize; i++) {
+        currentSum += array[i]
+      }
+      maxSum = currentSum
 
-    // Initial state
-    newSteps.push({
-      array: array.map(num => ({
-        value: num,
-        isHighlighted: false,
-        isWindowStart: false,
-        isWindowEnd: false
-      })),
-      windowSum: 0,
-      maxSum: -Infinity,
-      description: "Initialize window sum and max sum",
-      code: `# Initialize variables
-window_sum = 0
-max_sum = float('-inf')`
-    })
+      let tempArray = array.map((value, index) => ({
+        value: value,
+        isHighlighted: index < windowSize,
+        isWindowStart: index === 0,
+        isWindowEnd: index === windowSize - 1,
+      }))
 
-    // Calculate sum of first window
-    for (let i = 0; i < k; i++) {
-      windowSum += array[i]
-    }
-    maxSum = windowSum
-
-    // Create step for first window
-    newSteps.push({
-      array: array.map((num, idx) => ({
-        value: num,
-        isHighlighted: idx < k,
-        isWindowStart: idx === 0,
-        isWindowEnd: idx === k - 1
-      })),
-      windowSum,
-      maxSum,
-      description: `Initial window sum: ${windowSum}`,
-      code: `# Calculate sum of first window
-for i in range(k):
-    window_sum += array[i]
-max_sum = window_sum`
-    })
-
-    // Slide window and calculate sums
-    for (let i = k; i < array.length; i++) {
-      windowSum = windowSum - array[i - k] + array[i]
-      maxSum = Math.max(maxSum, windowSum)
-
-      // Create step
       newSteps.push({
-        array: array.map((num, idx) => ({
-          value: num,
-          isHighlighted: idx >= i - k + 1 && idx <= i,
-          isWindowStart: idx === i - k + 1,
-          isWindowEnd: idx === i
-        })),
-        windowSum,
-        maxSum,
-        description: `Sliding window: sum = ${windowSum}, max sum = ${maxSum}`,
-        code: `# Slide window and update sum
-window_sum = window_sum - array[i - k] + array[i]
-max_sum = max(max_sum, window_sum)`
+        array: tempArray,
+        windowSum: currentSum,
+        maxSum: maxSum,
       })
-    }
 
-    // Final state
-    newSteps.push({
-      array: array.map((num, idx) => ({
-        value: num,
-        isHighlighted: false,
-        isWindowStart: false,
-        isWindowEnd: false
-      })),
-      windowSum,
-      maxSum,
-      description: `Maximum window sum: ${maxSum}`,
-      code: `# Return maximum window sum
-return max_sum`
-    })
+      // Slide the window
+      for (let i = 1; i <= array.length - windowSize; i++) {
+        currentSum = currentSum - array[i - 1] + array[i + windowSize - 1]
+        maxSum = Math.max(maxSum, currentSum)
 
-    return newSteps
-  }
+        tempArray = array.map((value, index) => ({
+          value: value,
+          isHighlighted: index >= i && index < i + windowSize,
+          isWindowStart: index === i,
+          isWindowEnd: index === i + windowSize - 1,
+        }))
 
-  const handleVisualize = () => {
-    try {
-      const numbers = arrayInput.split(',').map(num => parseInt(num.trim()))
-      if (numbers.some(isNaN)) {
-        throw new Error("Invalid number in array")
+        newSteps.push({
+          array: tempArray,
+          windowSum: currentSum,
+          maxSum: maxSum,
+        })
       }
-      if (windowSize <= 0 || windowSize > numbers.length) {
-        throw new Error("Invalid window size")
-      }
-      resetVisualization()
-      setIsVisualizing(true)
-      const newSteps = generateSteps(numbers, windowSize)
+
       setSteps(newSteps)
-      setIsVisualizing(false)
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Please enter valid numbers separated by commas")
+      setCurrentStep(0)
     }
+
+    calculateSlidingWindow()
+  }, [array, windowSize])
+
+  const handleNextStep = () => {
+    setCurrentStep((prevStep: number) => Math.min(prevStep + 1, steps.length - 1))
   }
 
-  const getFullCode = () => {
-    return `def sliding_window_max_sum(array, k):
-    # Initialize variables
-    window_sum = 0
-    max_sum = float('-inf')
-    
-    # Calculate sum of first window
-    for i in range(k):
-        window_sum += array[i]
-    max_sum = window_sum
-    
-    # Slide window and calculate sums
-    for i in range(k, len(array)):
-        window_sum = window_sum - array[i - k] + array[i]
-        max_sum = max(max_sum, window_sum)
-    
-    return max_sum`
+  const handlePreviousStep = () => {
+    setCurrentStep((prevStep: number) => Math.max(prevStep - 1, 0))
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
-              </Link>
-              <div className="p-2 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg">
-                <Grid className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
-                Sliding Window
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="container mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-4">Sliding Window Algorithm Visualization</h1>
 
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Input Section */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input</h2>
-          <div className="flex flex-col gap-4">
-            <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
-                Array (comma-separated numbers)
-              </label>
-              <input
-                id="array-input"
-                type="text"
-                value={arrayInput}
-                onChange={(e) => setArrayInput(e.target.value)}
-                placeholder="e.g., 2, 1, 5, 1, 3, 2"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label htmlFor="window-size" className="block text-sm font-medium text-gray-700 mb-2">
-                Window Size
-              </label>
-              <input
-                id="window-size"
-                type="number"
-                value={windowSize}
-                onChange={(e) => setWindowSize(parseInt(e.target.value))}
-                min="1"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
-            </div>
-            <button
-              onClick={handleVisualize}
-              disabled={isVisualizing}
-              className="px-6 py-3 bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-semibold rounded-lg hover:from-orange-700 hover:to-yellow-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isVisualizing ? "Visualizing..." : "Visualize"}
-            </button>
-          </div>
-        </div>
+      <div className="mb-4">
+        <label htmlFor="arrayInput" className="block text-gray-700 text-sm font-bold mb-2">
+          Array:
+        </label>
+        <input
+          type="text"
+          id="arrayInput"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          value={array.join(",")}
+          onChange={(e) => {
+            const newArray = e.target.value.split(",").map(Number)
+            setArray(newArray)
+          }}
+        />
+      </div>
 
-        {/* Visualization Section */}
-        {steps.length > 0 && (
-          <div className="space-y-8">
-            {/* Array Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Visualization</h2>
-              <div className="flex flex-wrap gap-4 justify-center">
-                {steps[currentStep].array.map((element, index) => (
+      <div className="mb-4">
+        <label htmlFor="windowSizeInput" className="block text-gray-700 text-sm font-bold mb-2">
+          Window Size:
+        </label>
+        <input
+          type="number"
+          id="windowSizeInput"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          value={windowSize}
+          min={1}
+          max={array.length}
+          onChange={(e) => {
+            const val = Math.max(1, Math.min(array.length, Number(e.target.value)))
+            setWindowSize(val)
+          }}
+        />
+      </div>
+
+      {steps.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-4 justify-center">
+            {steps[currentStep].array.map((element, index) => {
+              const windowStart = steps[currentStep].array.findIndex(el => el.isWindowStart);
+              const windowEnd = steps[currentStep].array.findIndex(el => el.isWindowEnd);
+              return (
+                <div key={index} className="relative">
                   <div
-                    key={index}
-                    className={`w-16 h-16 flex items-center justify-center rounded-lg text-lg font-semibold transition-all duration-200 ${
+                    className={`w-16 h-16 flex items-center justify-center rounded-lg text-lg font-semibold transition-all duration-300 ${
                       element.isWindowStart
-                        ? "bg-orange-500 text-white"
+                        ? "bg-orange-500 text-white shadow-lg border-4 border-orange-300"
                         : element.isWindowEnd
-                        ? "bg-yellow-500 text-white"
-                        : element.isHighlighted
-                        ? "bg-orange-100 text-orange-700"
-                        : "bg-gray-100 text-gray-700"
+                          ? "bg-yellow-500 text-white shadow-lg border-4 border-yellow-300"
+                          : element.isHighlighted
+                            ? "bg-orange-100 text-orange-700 shadow-md"
+                            : "bg-gray-100 text-gray-700"
                     }`}
                   >
                     {element.value}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Step Information */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-gray-600">Window Sum: {steps[currentStep].windowSum}</p>
-                    <p className="text-gray-600">Maximum Sum: {steps[currentStep].maxSum}</p>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-                      disabled={currentStep === 0}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronLeft className="w-6 h-6 text-gray-600" />
-                    </button>
-                    <span className="text-gray-600">
-                      Step {currentStep + 1} of {steps.length}
-                    </span>
-                    <button
-                      onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
-                      disabled={currentStep === steps.length - 1}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronRight className="w-6 h-6 text-gray-600" />
-                    </button>
-                  </div>
+                  {element.isWindowStart && index !== windowEnd && (
+                    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-bold text-orange-600">
+                      START
+                    </div>
+                  )}
+                  {element.isWindowEnd && index !== windowStart && (
+                    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-bold text-yellow-600">
+                      END
+                    </div>
+                  )}
+                  <div className="text-xs text-gray-500 mt-1 text-center">i={index}</div>
                 </div>
-                <p className="text-gray-700">{steps[currentStep].description}</p>
-              </div>
-            </div>
+              );
+            })}
+          </div>
 
-            {/* Code Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
-                <button
-                  onClick={() => setShowFullCode(!showFullCode)}
-                  className="flex items-center space-x-2 text-orange-600 hover:text-orange-700"
-                >
-                  <Code className="w-5 h-5" />
-                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
-                </button>
-              </div>
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">
-                  {showFullCode ? getFullCode() : steps[currentStep].code}
-                </code>
-              </pre>
+          {/* Window size indicator */}
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-lg">
+              <span className="text-orange-800 font-semibold">Window Size: {windowSize}</span>
             </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
+
+      {steps.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Window Analysis</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 bg-orange-50 rounded-lg text-center">
+              <div className="text-2xl font-bold text-orange-600">{steps[currentStep].windowSum}</div>
+              <div className="text-sm text-orange-700">Current Window Sum</div>
+            </div>
+            <div className="p-4 bg-green-50 rounded-lg text-center">
+              <div className="text-2xl font-bold text-green-600">{steps[currentStep].maxSum}</div>
+              <div className="text-sm text-green-700">Maximum Sum Found</div>
+            </div>
+            <div className="p-4 bg-blue-50 rounded-lg text-center">
+              <div className="text-2xl font-bold text-blue-600">{windowSize}</div>
+              <div className="text-sm text-blue-700">Window Size</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-4">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
+          onClick={handlePreviousStep}
+          disabled={currentStep === 0}
+        >
+          Previous
+        </button>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={handleNextStep}
+          disabled={currentStep === steps.length - 1}
+        >
+          Next
+        </button>
+      </div>
     </div>
   )
 }
 
-export default SlidingWindowPage 
+export default SlidingWindow
