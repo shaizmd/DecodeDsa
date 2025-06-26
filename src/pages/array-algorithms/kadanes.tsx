@@ -64,7 +64,8 @@ const KadanesAlgorithm = () => {
       }
 
       const maxSumSubarray = tempArray.map((item, index) => ({ ...item, isMaxSum: index >= start && index <= end }))
-      steps.push({ array: maxSumSubarray, maxSoFar, currentMax, start, end })
+      const step: Step = { array: maxSumSubarray, maxSoFar, currentMax, start, end }
+      steps.push(step)
     }
 
     setSteps(steps)

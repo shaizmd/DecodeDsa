@@ -23,14 +23,13 @@ const TwoPointer = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [algorithm, setAlgorithm] = useState("Two Sum")
 
-  const generateRandomArray = () => {
-    const newArray: number[] = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 20))
-    setArray(newArray)
-  }
-
   useEffect(() => {
+    const generateRandomArray = () => {
+      const newArray: number[] = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 20))
+      setArray(newArray)
+    }
     generateRandomArray()
-  }, [arraySize, generateRandomArray])
+  }, [arraySize])
 
   const visualizeTwoSum = () => {
     const arr: number[] = [...array].sort((a, b) => a - b)
