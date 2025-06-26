@@ -21,7 +21,6 @@ interface Step {
 }
 
 const KadanesAlgorithm = () => {
-  const initialArray = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
   const [arrayInput, setArrayInput] = useState<string>("-2, 1, -3, 4, -1, 2, 1, -5, 4")
   const [steps, setSteps] = useState<Step[]>([])
   const [currentStep, setCurrentStep] = useState<number>(0)
@@ -65,6 +64,8 @@ start = 0, end = 0`,
 
     for (let i = 0; i < array.length; i++) {
       const currentJ = j
+      const stepStart = start
+      const stepEnd = end
       currentMax += array[i]
 
       // Step: Add current element
@@ -72,15 +73,15 @@ start = 0, end = 0`,
         value,
         isHighlighted: index >= currentJ && index <= i,
         isCurrentSum: index === i,
-        isMaxSum: index >= start && index <= end,
+        isMaxSum: index >= stepStart && index <= stepEnd,
       }))
 
       newSteps.push({
         array: currentArray,
         maxSoFar,
         currentMax,
-        start,
-        end,
+        start: stepStart,
+        end: stepEnd,
         description: `Add element ${array[i]} to current sum: ${currentMax - array[i]} + ${array[i]} = ${currentMax}`,
         code: `# Add current element to sum
 currentMax += array[${i}]  # ${currentMax}`,
@@ -91,25 +92,26 @@ currentMax += array[${i}]  # ${currentMax}`,
         maxSoFar = currentMax
         start = j
         end = i
-
+        const maxStart = start
+        const maxEnd = end
         const maxArray = array.map((value, index) => ({
           value,
           isHighlighted: index >= currentJ && index <= i,
           isCurrentSum: index === i,
-          isMaxSum: index >= start && index <= end,
+          isMaxSum: index >= maxStart && index <= maxEnd,
         }))
 
         newSteps.push({
           array: maxArray,
           maxSoFar,
           currentMax,
-          start,
-          end,
-          description: `New maximum found! Update maxSoFar = ${maxSoFar}, subarray from ${start} to ${end}`,
+          start: maxStart,
+          end: maxEnd,
+          description: `New maximum found! Update maxSoFar = ${maxSoFar}, subarray from ${maxStart} to ${maxEnd}`,
           code: `# Update maximum
 if currentMax > maxSoFar:
     maxSoFar = ${maxSoFar}
-    start = ${start}, end = ${end}`,
+    start = ${maxStart}, end = ${maxEnd}`,
         })
       }
 
@@ -117,20 +119,21 @@ if currentMax > maxSoFar:
       if (currentMax < 0) {
         currentMax = 0
         j = i + 1
-
+        const resetStart = start
+        const resetEnd = end
         const resetArray = array.map((value, index) => ({
           value,
           isHighlighted: false,
           isCurrentSum: false,
-          isMaxSum: index >= start && index <= end,
+          isMaxSum: index >= resetStart && index <= resetEnd,
         }))
 
         newSteps.push({
           array: resetArray,
           maxSoFar,
           currentMax,
-          start,
-          end,
+          start: resetStart,
+          end: resetEnd,
           description: `Current sum is negative (${currentMax + array[i]}), reset to 0 and start new subarray`,
           code: `# Reset negative sum
 if currentMax < 0:
@@ -141,19 +144,21 @@ if currentMax < 0:
     }
 
     // Final result
+    const finalStart = start
+    const finalEnd = end
     const finalArray = array.map((value, index) => ({
       value,
       isHighlighted: false,
       isCurrentSum: false,
-      isMaxSum: index >= start && index <= end,
+      isMaxSum: index >= finalStart && index <= finalEnd,
     }))
 
     newSteps.push({
       array: finalArray,
       maxSoFar,
       currentMax,
-      start,
-      end,
+      start: finalStart,
+      end: finalEnd,
       description: `Algorithm complete! Maximum subarray sum is ${maxSoFar}`,
       code: `# Final result
 return maxSoFar  # ${maxSoFar}`,
