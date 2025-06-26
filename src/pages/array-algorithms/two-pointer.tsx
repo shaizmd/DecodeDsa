@@ -30,7 +30,7 @@ const TwoPointer = () => {
 
   useEffect(() => {
     generateRandomArray()
-  }, [arraySize])
+  }, [arraySize, generateRandomArray])
 
   const visualizeTwoSum = () => {
     const arr: number[] = [...array].sort((a, b) => a - b)

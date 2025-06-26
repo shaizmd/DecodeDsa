@@ -17,16 +17,6 @@ interface ListNode {
 }
 
 type ListType = "singly" | "doubly" | "circular"
-type OperationType =
-  | "insert-beginning"
-  | "insert-end"
-  | "insert-position"
-  | "delete-beginning"
-  | "delete-end"
-  | "delete-position"
-  | "modify"
-  | "reverse"
-  | "search"
 
 // 1. Define a new type for supported code operations:
 type CodeOperationType = "insert-beginning" | "insert-end" | "insert-position" | "delete-beginning" | "delete-end" | "delete-position";

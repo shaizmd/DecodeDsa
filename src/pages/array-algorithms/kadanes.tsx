@@ -17,7 +17,6 @@ interface Step {
 
 const KadanesAlgorithm = () => {
   const initialArray = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-  const [array, setArray] = useState(initialArray)
   const [steps, setSteps] = useState<Step[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [isRunning, setIsRunning] = useState(false)

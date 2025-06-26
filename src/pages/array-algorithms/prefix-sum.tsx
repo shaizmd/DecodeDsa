@@ -40,7 +40,7 @@ const PrefixSum = () => {
 
   useEffect(() => {
     initialize()
-  }, [])
+  }, [initialize])
 
   const calculatePrefixSum = (arr: number[]) => {
     const prefix: number[] = []
