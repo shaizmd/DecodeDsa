@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, Calculator, ChevronLeft, ChevronRight, Code, ArrowRight } from 'lucide-react'
+import { ArrowLeft, Calculator, ChevronLeft, ChevronRight, Code } from 'lucide-react'
 
 interface StackElement {
   value: string
