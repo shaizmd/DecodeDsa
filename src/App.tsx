@@ -15,6 +15,7 @@ import MonotonicStackPage from "./pages/array-algorithms/monotonic-stack"
 import BitManipulationPage from "./pages/array-algorithms/bit-manipulation"
 import TwoDArraysPage from "./pages/array-algorithms/2d-arrays"
 import TreeVisualizerPage from "./pages/TreeVisualizerPage"
+import ExpressionConverterPage from "./pages/ExpressionConverterPage"
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Route path="/array-algorithms/bit-manipulation" element={<BitManipulationPage />} />
       <Route path="/array-algorithms/2d-arrays" element={<TwoDArraysPage />} />
       <Route path="/data-structures/binary-tree" element={<TreeVisualizerPage />} />
+      <Route path="/operations/expression-converter" element={<ExpressionConverterPage />} />
     </Routes>
   )
 }

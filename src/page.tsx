@@ -54,6 +54,19 @@ export default function Page() {
         { name: "Queue", path: "/data-structures/queue", description: "FIFO data structure" },
       ],
     },
+    {
+      title: "Operations",
+      description: "Convert between infix, prefix, and postfix expressions",
+      icon: BookOpen,
+      color: "from-teal-500 to-lime-500",
+      algorithms: [
+        {
+          name: "Expression Converter",
+          path: "/operations/expression-converter",
+          description: "Convert infix, prefix, and postfix expressions",
+        },
+      ],
+    },
   ]
 
   const features = [
