@@ -480,7 +480,7 @@ return stack[0]`,
   const generatePostfixToPrefixSteps = (expression: string) => {
     // Convert postfix to infix first, then infix to prefix
     const { result: infixResult } = generatePostfixToInfixSteps(expression)
-    const { steps: prefixSteps, result: prefixResult } = generateInfixToPrefixSteps(infixResult)
+    const { result: prefixResult } = generateInfixToPrefixSteps(infixResult)
     
     const newSteps: Step[] = []
     newSteps.push({
@@ -502,7 +502,7 @@ prefix_result = infix_to_prefix(infix_result)`,
   const generatePrefixToPostfixSteps = (expression: string) => {
     // Convert prefix to infix first, then infix to postfix
     const { result: infixResult } = generatePrefixToInfixSteps(expression)
-    const { steps: postfixSteps, result: postfixResult } = generateInfixToPostfixSteps(infixResult)
+    const { result: postfixResult } = generateInfixToPostfixSteps(infixResult)
     
     const newSteps: Step[] = []
     newSteps.push({
