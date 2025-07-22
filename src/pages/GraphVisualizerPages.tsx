@@ -265,19 +265,6 @@ function GraphVisualizerPage() {
     }, 1000)
   }
 
-  const removeNode = (nodeId: string) => {
-    const node = graph.nodes.find((n) => n.id === nodeId)
-    if (!node) return
-
-    setGraph((prev) => ({
-      ...prev,
-      nodes: prev.nodes.filter((n) => n.id !== nodeId),
-      edges: prev.edges.filter((e) => e.from !== nodeId && e.to !== nodeId),
-    }))
-
-    addToHistory(`🗑️ Removed node ${node.value} and its edges`)
-  }
-
   const clearGraph = () => {
     setGraph({
       nodes: [],
@@ -459,7 +446,6 @@ function GraphVisualizerPage() {
     setIsAnimating(true)
     const steps: any[] = []
     const visited = new Set<string>()
-    const stack = [startNodeObj.id]
 
     const dfsRecursive = (nodeId: string) => {
       if (visited.has(nodeId)) return
@@ -671,7 +657,7 @@ function GraphVisualizerPage() {
     if (isAnimating && !isPaused && algorithmSteps.length > 0) {
       playAnimation()
     }
-  }, [isAnimating, isPaused, playAnimation])
+  }, [isAnimating, isPaused, playAnimation, algorithmSteps.length])
 
   const startAnimation = () => {
     if (algorithmSteps.length === 0) return
