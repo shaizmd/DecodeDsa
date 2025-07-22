@@ -16,6 +16,7 @@ import BitManipulationPage from "./pages/array-algorithms/bit-manipulation"
 import TwoDArraysPage from "./pages/array-algorithms/2d-arrays"
 import TreeVisualizerPage from "./pages/TreeVisualizerPage"
 import ExpressionConverterPage from "./pages/ExpressionConverterPage"
+import GraphVisualizerPage from "./pages/GraphVisualizerPages"
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
       <Route path="/data-structures/stack" element={<StackVisualizerPage />} />
       <Route path="/data-structures/queue" element={<QueueVisualizerPage />} />
       <Route path="/data-structures/linked-list" element={<LinkedListVisualizerPage />} />
+      <Route path="/data-structures/graph" element={<GraphVisualizerPage />} />
       <Route path="/array-algorithms" element={<ArrayAlgorithmsPage />} />
       <Route path="/array-algorithms/two-pointer" element={<TwoPointerPage />} />
       <Route path="/array-algorithms/prefix-sum" element={<PrefixSumPage />} />

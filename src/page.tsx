@@ -52,6 +52,7 @@ export default function Page() {
         { name: "Binary Tree", path: "/data-structures/binary-tree", description: "Hierarchical tree structure" },
         { name: "Stack", path: "/data-structures/stack", description: "LIFO data structure" },
         { name: "Queue", path: "/data-structures/queue", description: "FIFO data structure" },
+        { name: "Graph", path: "/data-structures/graph", description: "Graph data structure and algorithms" },
       ],
     },
     {
