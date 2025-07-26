@@ -89,7 +89,7 @@ Framer Motion – for smooth animations
 
 ---
 
-##📊 Algorithm Complexity Table
+## 📊 Algorithm Complexity Table
 | Algorithm       | Time Complexity | Space Complexity |
 | --------------- | --------------- | ---------------- |
 | Bubble Sort     | O(n²)           | O(1)             |
@@ -118,3 +118,11 @@ Want to add new algorithms or improve visuals? You’re welcome to contribute!
 
 5. Open a Pull Request
 
+---
+
+## Screenshots
+
+<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20180809.png"/>
+<img src= "https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171714.png"/>
+<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171647.png"/>
+<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171508.png"/>
