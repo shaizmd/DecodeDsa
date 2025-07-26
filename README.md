@@ -63,3 +63,58 @@
    ```bash
    git clone https://github.com/your-username/decodedsa.git
    cd decodedsa
+
+2. Install dependencies:
+   ```bash
+   npm install
+   
+3. Start the development server:
+   ```bash
+   npm start
+
+4. Open http://localhost:3000 to view the app.
+
+---
+
+## 💻 Tech Stack
+React.js – for dynamic UI
+
+TypeScript – for type-safe development
+
+Tailwind CSS – for modern responsive styling
+
+Konva.js – for drawing canvas-based visual elements (in advanced sections)
+
+Framer Motion – for smooth animations
+
+---
+
+##📊 Algorithm Complexity Table
+| Algorithm       | Time Complexity | Space Complexity |
+| --------------- | --------------- | ---------------- |
+| Bubble Sort     | O(n²)           | O(1)             |
+| Binary Search   | O(log n)        | O(1)             |
+| BFS / DFS       | O(V + E)        | O(V)             |
+| Tree Traversals | O(n)            | O(h)             |
+
+---
+
+## 🧪 Contributing
+Want to add new algorithms or improve visuals? You’re welcome to contribute!
+
+1. Fork this repository
+
+2. Create your feature branch:
+   ```bash
+    git checkout -b feature/your-feature
+   
+3. Commit your changes:
+   ```bash
+   git commit -m "Add: your feature"
+   
+4. Push to the branch:
+   ```bash
+   git push origin feature/your-feature
+
+5. Open a Pull Request
+
