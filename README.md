@@ -1,144 +1,161 @@
-DecodeDSA 🔍✨
-DecodeDSA is an interactive, visual, and beginner-friendly web application that transforms how you learn Data Structures & Algorithms (DSA). Say goodbye to boring PDFs and static diagrams — here, you can learn DSA by seeing it in action.
+# DecodeDSA 🔍✨
 
-🔗 Live Demo: https://decodedsa.netlify.app
-📦 GitHub Repo: https://github.com/V-Sharanya/DecodeDsa
+**DecodeDSA** is an interactive and visual web application designed to make learning **Data Structures & Algorithms (DSA)** fun, intuitive, and hands-on. It provides step-by-step animated visualizations for core DSA concepts, helping students and developers grasp complex logic through real-time feedback.
 
-🧠 What You Can Learn
-🔢 Sorting Algorithms
-Visualize step-by-step how sorting works:
+🔗 **Live Demo:** [https://decodedsa.netlify.app](https://decodedsa.netlify.app)
 
-Bubble Sort
+---
 
-Selection Sort
+## 🧠 What You Can Learn
 
-Insertion Sort
+### 🔢 Sorting Algorithms
+- Visualize how data is sorted using:
+  - Bubble Sort
+  - Selection Sort
+  - Insertion Sort
+  - Merge Sort
+  - Quick Sort
+  - Heap Sort
 
-Merge Sort
+### 🔍 Searching Algorithms
+- Understand the step-by-step process of:
+  - Linear Search
+  - Binary Search
 
-Quick Sort
+### 🧱 Stack & Queue
+- Push, pop, enqueue, and dequeue operations visualized dynamically.
+- Understand LIFO (Last-In-First-Out) vs FIFO (First-In-First-Out) behavior.
 
-Heap Sort
+### 🌳 Tree Traversals
+- Visualizations of:
+  - Inorder Traversal
+  - Preorder Traversal
+  - Postorder Traversal
 
-🔍 Searching Algorithms
-Understand the logic behind:
+### 🔗 Graph Traversals
+- Explore graphs using:
+  - Breadth-First Search (BFS)
+  - Depth-First Search (DFS)
 
-Linear Search
+---
 
-Binary Search
+## 🚀 Features
 
-🧱 Stack & Queue
-Perform push, pop, enqueue, dequeue operations visually
+- ✅ Choose and interact with multiple DSA algorithms
+- ✅ Enter custom input or generate random data
+- ✅ Visual representation of how the algorithm works step by step
+- ✅ View corresponding **code implementation** in real-time
+- ✅ Time & space complexity details for each algorithm
+- ✅ Beautiful, responsive UI with dark/light theme toggle
+- ✅ Easy-to-navigate tabbed layout for quick access to topics
 
-See how LIFO and FIFO principles work in real time
+---
 
-🌳 Tree Traversals
-Explore depth-first tree traversals:
+## 📦 Getting Started
 
-Inorder
+### Prerequisites
 
-Preorder
+- Node.js (v14 or later)
 
-Postorder
+### Installation
 
-🔗 Graph Traversals
-Visual walkthroughs of:
+1. Clone the repo:
+   
+   ```bash
+   git clone https://github.com/your-username/decodedsa.git
+   cd decodedsa
 
-Breadth-First Search (BFS)
+2. Install dependencies:
+   ```bash
+   npm install
+   
+3. Start the development server:   
+   ```bash
+   npm start
 
-Depth-First Search (DFS)
+4. Open http://localhost:3000 to view the app.
 
-🚀 Features
-✅ Interactive learning experience with animations
+---
 
-✅ Custom input or randomly generated test data
+## 💻 Tech Stack
+React.js – for dynamic UI
 
-✅ Real-time code alongside each algorithm
+TypeScript – for type-safe development
 
-✅ Time & space complexity info provided
+Tailwind CSS – for modern responsive styling
 
-✅ Smooth transitions with Framer Motion
+Konva.js – for drawing canvas-based visual elements (in advanced sections)
 
-✅ Responsive UI with light/dark mode toggle
+Framer Motion – for smooth animations
 
-✅ Organized tab navigation for better UX
+---
 
-📦 Tech Stack
-React.js – dynamic frontend
+## 📊 Algorithm Complexity Table
+| Algorithm       | Time Complexity | Space Complexity |
+| --------------- | --------------- | ---------------- |
+| Bubble Sort     | O(n²)           | O(1)             |
+| Binary Search   | O(log n)        | O(1)             |
+| BFS / DFS       | O(V + E)        | O(V)             |
+| Tree Traversals | O(n)            | O(h)             |
 
-TypeScript – type safety
+---
 
-Tailwind CSS – responsive styling
+## 🧪 Contributing
+Want to add new algorithms or improve visuals? You’re welcome to contribute!
 
-Konva.js – visual rendering of algorithms
+1. Fork this repository
 
-Framer Motion – smooth animations
+2. Create your feature branch:
+    ```bash
+    git checkout -b feature/your-feature
+   
+3. Commit your changes:   
+   ```bash
+   git commit -m "Add: your feature"
+   
+4. Push to the branch:
+   ```bash
+   git push origin feature/your-feature
 
-📊 Algorithm Complexity Reference
-Algorithm	Time Complexity	Space Complexity
-Bubble Sort	O(n²)	O(1)
-Quick Sort	O(n log n)	O(log n)
-Binary Search	O(log n)	O(1)
-BFS / DFS	O(V + E)	O(V)
-Tree Traversals	O(n)	O(h)
+5. Open a Pull Request
 
-🧪 Contributing
-Want to help us make DecodeDSA better? ✨
-We welcome contributions – whether it's fixing a bug, adding a new algorithm, or improving UI.
+---
 
-Steps to Contribute
-Fork the repository
+## Screenshots
 
-Clone your forked repo:
+<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20180809.png"/>
+<img src= "https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171714.png"/>
+<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171647.png"/>
+<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171508.png"/>
 
-bash
-Copy
-Edit
-git clone https://github.com/your-username/DecodeDsa.git
-cd DecodeDsa
-Create a new feature branch:
+---
+## 🪪 License
 
-bash
-Copy
-Edit
-git checkout -b feature/your-feature-name
-Make your changes and commit:
+This project is licensed under the [MIT License](LICENSE).
+Feel free to use, modify, and distribute with credit.
 
-bash
-Copy
-Edit
-git commit -m "Add: [Your Feature Description]"
-Push to GitHub:
+---
 
-bash
-Copy
-Edit
-git push origin feature/your-feature-name
-Open a Pull Request on GitHub with a description of your changes.
+## GitHub Stats
+![GitHub Repo stars](https://img.shields.io/github/stars/V-Sharanya/DecodeDsa?style=social)
+![GitHub forks](https://img.shields.io/github/forks/V-Sharanya/DecodeDsa?style=social)
+![GitHub last commit](https://img.shields.io/github/last-commit/V-Sharanya/DecodeDsa)
 
-📥 How to Use / Run Locally
-Prerequisites
-Node.js (v14 or later)
+---
 
-npm or yarn
+## 👩‍💻 Author
 
-Installation
-bash
-Copy
-Edit
-git clone https://github.com/V-Sharanya/DecodeDsa.git
-cd DecodeDsa
-npm install
-npm start
-Open http://localhost:3000 to view it in your browser.
+Made with ❤️ by [V. Sharanya](https://github.com/V-Sharanya)
 
-🖼️ Screenshots
-Home	Sorting Animation
-<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20180809.png" width="400"/>	<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171714.png" width="400"/>
+- 🔗 [LinkedIn](https://www.linkedin.com/in/v-sharanya/)
+- ✨ Feel free to open issues or feature requests!
 
-Stack vs Queue	Tree Traversal
-<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171647.png" width="400"/>	<img src="https://github.com/V-Sharanya/DecodeDsa/blob/main/Screenshot%202025-07-25%20171508.png" width="400"/>
+---
 
-🌐 Promotion & Community
-Feel free to fork this repository, star it if you liked the project, and share with fellow developers and learners.
-Let’s make DSA learning enjoyable for everyone!
+## 🛣️ Future Scope
+
+- [ ] Add more advanced algorithms (e.g., Dijkstra's, Kruskal's)
+- [ ] Add speed control for visualization
+- [ ] Add time complexity animation chart
+- [ ] Add sound effects for sorting (fun UX!)
+
