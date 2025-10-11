@@ -1,18 +1,19 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useRef, useState } from "react"
-import { ArrowUpDown, Clock, Code2, GitCompare, Eye } from "lucide-react"
-import SortingVisualizer from "../components/SortingVisualizer"
-import ParallelSortingVisualizer from "../components/ParallelSortingVisualizer"
+import type React from "react";
+import { useRef, useState } from "react";
+import { ArrowUpDown, Clock, Code2, GitCompare, Eye } from "lucide-react";
+import SortingVisualizer from "../components/SortingVisualizer";
+import ParallelSortingVisualizer from "../components/ParallelSortingVisualizer";
+import { Link } from "react-router-dom";
 
 interface SortingAlgorithm {
-  name: string
-  description: string
-  timeComplexity: string
-  spaceComplexity: string
-  bestCase: string
-  worstCase: string
+  name: string;
+  description: string;
+  timeComplexity: string;
+  spaceComplexity: string;
+  bestCase: string;
+  worstCase: string;
 }
 
 const sortingAlgorithms: SortingAlgorithm[] = [
@@ -63,42 +64,45 @@ const sortingAlgorithms: SortingAlgorithm[] = [
   },
   {
     name: "Heap Sort",
-    description: "A comparison-based sorting algorithm that uses a binary heap data structure to sort elements.",
+    description:
+      "A comparison-based sorting algorithm that uses a binary heap data structure to sort elements.",
     timeComplexity: "O(n log n)",
     spaceComplexity: "O(1)",
     bestCase: "O(n log n)",
     worstCase: "O(n log n)",
   },
-]
+];
 
 function SortingAlgorithmsPage() {
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<SortingAlgorithm | null>(null)
-  const [selectedAlgorithm2, setSelectedAlgorithm2] = useState<SortingAlgorithm | null>(null)
-  const [inputArray, setInputArray] = useState<string>("")
-  const [showVisualization, setShowVisualization] = useState(false)
-  const [comparisonMode, setComparisonMode] = useState(false)
-  const vizRef = useRef<HTMLDivElement | null>(null)
+  const [selectedAlgorithm, setSelectedAlgorithm] =
+    useState<SortingAlgorithm | null>(null);
+  const [selectedAlgorithm2, setSelectedAlgorithm2] =
+    useState<SortingAlgorithm | null>(null);
+  const [inputArray, setInputArray] = useState<string>("");
+  const [showVisualization, setShowVisualization] = useState(false);
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const vizRef = useRef<HTMLDivElement | null>(null);
 
   const handleAlgorithmSelect = (algorithm: SortingAlgorithm) => {
-    setSelectedAlgorithm(algorithm)
+    setSelectedAlgorithm(algorithm);
     // Set default values based on algorithm
-    setInputArray("64 34 25 12 22 11 90")
+    setInputArray("64 34 25 12 22 11 90");
     // Automatically show visualization and scroll into view
-    setShowVisualization(true)
+    setShowVisualization(true);
     // Scroll after next paint to ensure element exists
     setTimeout(() => {
       if (vizRef.current) {
-        vizRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+        vizRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }, 0)
-  }
+    }, 0);
+  };
 
   const handleInputSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (inputArray.trim()) {
-      setShowVisualization(true)
+      setShowVisualization(true);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -106,29 +110,30 @@ function SortingAlgorithmsPage() {
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                <ArrowUpDown className="w-6 h-6 text-white" />
-              </div>
+              <Link to={"/"}>
+                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                  <ArrowUpDown className="w-6 h-6 text-white" />
+                </div>
+              </Link>
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Sorting Algorithms Visualizer
                 </h1>
                 <p className="mt-2 text-gray-600">
-                  {comparisonMode 
-                    ? "Compare two sorting algorithms side by side" 
-                    : "Explore how different sorting algorithms organize data step by step"
-                  }
+                  {comparisonMode
+                    ? "Compare two sorting algorithms side by side"
+                    : "Explore how different sorting algorithms organize data step by step"}
                 </p>
               </div>
             </div>
-            
+
             {/* Mode Toggle */}
             <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setComparisonMode(false)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
-                  !comparisonMode 
-                    ? "bg-white shadow-sm text-blue-600" 
+                  !comparisonMode
+                    ? "bg-white shadow-sm text-blue-600"
                     : "text-gray-600 hover:text-gray-800"
                 }`}
               >
@@ -138,8 +143,8 @@ function SortingAlgorithmsPage() {
               <button
                 onClick={() => setComparisonMode(true)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
-                  comparisonMode 
-                    ? "bg-white shadow-sm text-purple-600" 
+                  comparisonMode
+                    ? "bg-white shadow-sm text-purple-600"
                     : "text-gray-600 hover:text-gray-800"
                 }`}
               >
@@ -170,70 +175,95 @@ function SortingAlgorithmsPage() {
               onClick={() => {
                 if (comparisonMode) {
                   if (!selectedAlgorithm) {
-                    setSelectedAlgorithm(algorithm)
-                  } else if (!selectedAlgorithm2 && algorithm.name !== selectedAlgorithm.name) {
-                    setSelectedAlgorithm2(algorithm)
+                    setSelectedAlgorithm(algorithm);
+                  } else if (
+                    !selectedAlgorithm2 &&
+                    algorithm.name !== selectedAlgorithm.name
+                  ) {
+                    setSelectedAlgorithm2(algorithm);
                   } else if (selectedAlgorithm.name === algorithm.name) {
-                    setSelectedAlgorithm(null)
+                    setSelectedAlgorithm(null);
                   } else if (selectedAlgorithm2?.name === algorithm.name) {
-                    setSelectedAlgorithm2(null)
+                    setSelectedAlgorithm2(null);
                   } else {
                     // Replace second algorithm if both are selected
-                    setSelectedAlgorithm2(algorithm)
+                    setSelectedAlgorithm2(algorithm);
                   }
                 } else {
-                  handleAlgorithmSelect(algorithm)
+                  handleAlgorithmSelect(algorithm);
                 }
               }}
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-gray-900">{algorithm.name}</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {algorithm.name}
+                  </h3>
                   <div className="flex items-center space-x-2">
-                    {comparisonMode && selectedAlgorithm?.name === algorithm.name && (
-                      <div className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
-                        Algorithm 1
-                      </div>
-                    )}
-                    {comparisonMode && selectedAlgorithm2?.name === algorithm.name && (
-                      <div className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded">
-                        Algorithm 2
-                      </div>
-                    )}
+                    {comparisonMode &&
+                      selectedAlgorithm?.name === algorithm.name && (
+                        <div className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                          Algorithm 1
+                        </div>
+                      )}
+                    {comparisonMode &&
+                      selectedAlgorithm2?.name === algorithm.name && (
+                        <div className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded">
+                          Algorithm 2
+                        </div>
+                      )}
                     <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
                       <ArrowUpDown className="w-5 h-5 text-blue-600" />
                     </div>
                   </div>
                 </div>
 
-                <p className="text-gray-600 mb-6 leading-relaxed">{algorithm.description}</p>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  {algorithm.description}
+                </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center space-x-2 mb-2">
                       <Clock className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm font-medium text-gray-700">Time Complexity</span>
+                      <span className="text-sm font-medium text-gray-700">
+                        Time Complexity
+                      </span>
                     </div>
-                    <p className="text-lg font-bold text-blue-600">{algorithm.timeComplexity}</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      {algorithm.timeComplexity}
+                    </p>
                   </div>
 
                   <div className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center space-x-2 mb-2">
                       <Code2 className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm font-medium text-gray-700">Space Complexity</span>
+                      <span className="text-sm font-medium text-gray-700">
+                        Space Complexity
+                      </span>
                     </div>
-                    <p className="text-lg font-bold text-purple-600">{algorithm.spaceComplexity}</p>
+                    <p className="text-lg font-bold text-purple-600">
+                      {algorithm.spaceComplexity}
+                    </p>
                   </div>
                 </div>
 
                 <div className="mt-4 space-y-2">
                   <div className="text-sm">
-                    <span className="font-medium text-green-700">Best Case:</span>
-                    <span className="text-gray-600 ml-2">{algorithm.bestCase}</span>
+                    <span className="font-medium text-green-700">
+                      Best Case:
+                    </span>
+                    <span className="text-gray-600 ml-2">
+                      {algorithm.bestCase}
+                    </span>
                   </div>
                   <div className="text-sm">
-                    <span className="font-medium text-red-700">Worst Case:</span>
-                    <span className="text-gray-600 ml-2">{algorithm.worstCase}</span>
+                    <span className="font-medium text-red-700">
+                      Worst Case:
+                    </span>
+                    <span className="text-gray-600 ml-2">
+                      {algorithm.worstCase}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -242,19 +272,22 @@ function SortingAlgorithmsPage() {
         </div>
 
         {/* Visualization Section */}
-        {((comparisonMode && selectedAlgorithm && selectedAlgorithm2) || (!comparisonMode && selectedAlgorithm)) && (
+        {((comparisonMode && selectedAlgorithm && selectedAlgorithm2) ||
+          (!comparisonMode && selectedAlgorithm)) && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200">
             <div className="p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
-                {comparisonMode 
+                {comparisonMode
                   ? `Compare ${selectedAlgorithm.name} vs ${selectedAlgorithm2?.name}`
-                  : `Visualize ${selectedAlgorithm.name}`
-                }
+                  : `Visualize ${selectedAlgorithm.name}`}
               </h3>
 
               <form onSubmit={handleInputSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="array-input"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Array Elements
                   </label>
                   <input
@@ -271,21 +304,30 @@ function SortingAlgorithmsPage() {
                   type="submit"
                   className="w-full md:w-auto inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:-translate-y-0.5"
                 >
-                  {comparisonMode ? <GitCompare className="w-5 h-5 mr-2" /> : <ArrowUpDown className="w-5 h-5 mr-2" />}
-                  {comparisonMode ? "Start Comparison" : "Start Sorting Visualization"}
+                  {comparisonMode ? (
+                    <GitCompare className="w-5 h-5 mr-2" />
+                  ) : (
+                    <ArrowUpDown className="w-5 h-5 mr-2" />
+                  )}
+                  {comparisonMode
+                    ? "Start Comparison"
+                    : "Start Sorting Visualization"}
                 </button>
               </form>
 
               {showVisualization && (
                 <div ref={vizRef} className="mt-8 border-t pt-8">
                   {comparisonMode && selectedAlgorithm2 ? (
-                    <ParallelSortingVisualizer 
-                      algorithm1={selectedAlgorithm.name} 
+                    <ParallelSortingVisualizer
+                      algorithm1={selectedAlgorithm.name}
                       algorithm2={selectedAlgorithm2.name}
-                      inputArray={inputArray} 
+                      inputArray={inputArray}
                     />
                   ) : (
-                    <SortingVisualizer algorithm={selectedAlgorithm.name} inputArray={inputArray} />
+                    <SortingVisualizer
+                      algorithm={selectedAlgorithm.name}
+                      inputArray={inputArray}
+                    />
                   )}
                 </div>
               )}
@@ -302,19 +344,18 @@ function SortingAlgorithmsPage() {
                 Select Two Algorithms to Compare
               </h3>
               <p className="text-gray-600">
-                {!selectedAlgorithm 
+                {!selectedAlgorithm
                   ? "Choose your first algorithm from the cards above"
                   : !selectedAlgorithm2
                   ? `Selected: ${selectedAlgorithm.name}. Now choose a second algorithm to compare with.`
-                  : ""
-                }
+                  : ""}
               </p>
             </div>
           </div>
         )}
       </main>
     </div>
-  )
+  );
 }
 
-export default SortingAlgorithmsPage
+export default SortingAlgorithmsPage;
