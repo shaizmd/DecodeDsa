@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { ArrowUpDown, Clock, Code2 } from "lucide-react"
 import SortingVisualizer from "../components/SortingVisualizer"
 
@@ -74,12 +74,20 @@ function SortingAlgorithmsPage() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<SortingAlgorithm | null>(null)
   const [inputArray, setInputArray] = useState<string>("")
   const [showVisualization, setShowVisualization] = useState(false)
+  const vizRef = useRef<HTMLDivElement | null>(null)
 
   const handleAlgorithmSelect = (algorithm: SortingAlgorithm) => {
     setSelectedAlgorithm(algorithm)
-    setShowVisualization(false)
     // Set default values based on algorithm
     setInputArray("64 34 25 12 22 11 90")
+    // Automatically show visualization and scroll into view
+    setShowVisualization(true)
+    // Scroll after next paint to ensure element exists
+    setTimeout(() => {
+      if (vizRef.current) {
+        vizRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+    }, 0)
   }
 
   const handleInputSubmit = (e: React.FormEvent) => {
@@ -190,7 +198,7 @@ function SortingAlgorithmsPage() {
               </form>
 
               {showVisualization && (
-                <div className="mt-8 border-t pt-8">
+                <div ref={vizRef} className="mt-8 border-t pt-8">
                   <SortingVisualizer algorithm={selectedAlgorithm.name} inputArray={inputArray} />
                 </div>
               )}
