@@ -17,8 +17,32 @@ import TwoDArraysPage from "./pages/array-algorithms/2d-arrays"
 import TreeVisualizerPage from "./pages/TreeVisualizerPage"
 import ExpressionConverterPage from "./pages/ExpressionConverterPage"
 import GraphVisualizerPage from "./pages/GraphVisualizerPages"
+import Lenis from 'lenis'
+import { useEffect } from "react"
 
 function App() {
+  useEffect(() => {
+    const lenis = new Lenis(({
+      duration: 2.5,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+      smoothTouch: false,
+      wheelMultiplier: 0.7,
+    } as unknown) as any);
+
+    let rafId = 0;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (typeof (lenis as any).destroy === 'function') (lenis as any).destroy();
+    };
+  }, []);
+// ...existing code...
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
