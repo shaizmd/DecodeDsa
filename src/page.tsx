@@ -265,13 +265,13 @@ export default function Page() {
           </div>
 
           <div className="mt-16 text-center">
-            <Link
-              to="/sorting"
+            <button
+            
               className="inline-flex items-center px-10 py-4 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               Start Learning Now
               <ChevronRight className="w-5 h-5 ml-2" />
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -386,12 +386,12 @@ export default function Page() {
     </div>
 
     <div className="text-center mt-16">
-      <Link
-        to="/contact"
+      <button
+        
         className="inline-flex items-center px-8 py-4 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
       >
         Still have questions? Contact us →
-      </Link>
+      </button>
     </div>
   </div>
 </section>
@@ -431,15 +431,15 @@ export default function Page() {
           <div>
             <h4 className="font-semibold text-white mb-3">Follow Us</h4>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-white">
+              <button className="hover:text-white">
                 <Github className="w-6 h-6" />
-              </a>
-              <a href="#" className="hover:text-white">
+              </button>
+              <button className="hover:text-white">
                 <Linkedin className="w-6 h-6" />
-              </a>
-              <a href="#" className="hover:text-white">
+              </button>
+              <button className="hover:text-white">
                 <Twitter className="w-6 h-6" />
-              </a>
+              </button>
             </div>
           </div>
         </div>
