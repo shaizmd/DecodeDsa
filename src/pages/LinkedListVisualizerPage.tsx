@@ -19,7 +19,7 @@ interface ListNode {
 type ListType = "singly" | "doubly" | "circular"
 
 // 1. Define a new type for supported code operations:
-type CodeOperationType = "insert-beginning" | "insert-end" | "insert-position" | "delete-beginning" | "delete-end" | "delete-position";
+type CodeOperationType = "insert-beginning" | "insert-end" | "insert-position" | "delete-beginning" | "delete-end" | "delete-position" | "search";
 
 function LinkedListVisualizerPage() {
   const [listType, setListType] = useState<ListType>("singly")
@@ -319,6 +319,8 @@ function LinkedListVisualizerPage() {
       addToHistory("Cannot search in empty list")
       return
     }
+
+    setCurrentOperation("search")
 
     let curr: ListNode | null = head
     let position = 1
@@ -687,6 +689,71 @@ function deleteAtPosition(position) {
     }
     
     return deletedValue;
+}`,
+      },
+      "search": {
+        title: "Search Node",
+        steps: [
+          "1. Check if list is empty",
+          "2. Start from head node",
+          "3. Compare current node's value with target",
+          "4. If found, return position",
+          "5. Move to next node",
+          "6. Repeat until target found or end reached",
+          "7. Handle circular list to avoid infinite loop",
+        ],
+        code: `// Singly Linked List
+function search(value) {
+    if (!head) return -1;
+    
+    let current = head;
+    let position = 1;
+    
+    while (current) {
+        if (current.value === value) {
+            return position;
+        }
+        current = current.next;
+        position++;
+    }
+    
+    return -1;
+}
+
+// Doubly Linked List
+function search(value) {
+    if (!head) return -1;
+    
+    let current = head;
+    let position = 1;
+    
+    while (current) {
+        if (current.value === value) {
+            return position;
+        }
+        current = current.next;
+        position++;
+    }
+    
+    return -1;
+}
+
+// Circular Linked List
+function search(value) {
+    if (!head) return -1;
+    
+    let current = head;
+    let position = 1;
+    
+    do {
+        if (current.value === value) {
+            return position;
+        }
+        current = current.next;
+        position++;
+    } while (current && current !== head);
+    
+    return -1;
 }`,
       },
     }
