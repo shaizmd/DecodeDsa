@@ -367,16 +367,16 @@ if (result !== -1) {
       {searchResult && (
         <Card className="border-2 border-dashed border-gray-300">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+            <div className="w-full flex items-center justify-between">
+              <div className="w-full flex items-center space-x-3">
                 {searchResult.found ? (
-                  <CheckCircle className="w-8 h-8 text-green-500" />
+                  <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-green-500" />
                 ) : (
-                  <XCircle className="w-8 h-8 text-red-500" />
+                  <XCircle className="w-6 h-6 md:w-8 md:h-8 text-red-500" />
                 )}
                 <div>
-                  <h3 className="text-lg font-semibold">{searchResult.found ? "Target Found!" : "Target Not Found"}</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold truncate">{searchResult.found ? "Target Found!" : "Target Not Found"}</h3>
+                  <p className="text-sm md:text-base text-gray-600">
                     {searchResult.found
                       ? `Found at index ${searchResult.index}`
                       : "Target value does not exist in the array"}
@@ -393,13 +393,13 @@ if (result !== -1) {
       )}
 
       {/* Array Visualization */}
-      <div className="bg-white rounded-lg p-6 shadow-sm border">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <Target className="w-5 h-5 mr-2 text-green-600" />
-            Array Visualization
+      <div className="w-full bg-white rounded-lg p-6 shadow-sm border">
+        <div className="w-full flex items-center justify-between mb-4">
+          <h3 className="w-[60%] text-lg font-semibold flex items-center">
+            <Target className="w-6 h-6 mr-2 text-green-600" />
+            <span className="truncate">Array Visualization</span>
           </h3>
-          <div className="text-sm text-gray-600">
+          <div className="text-gray-600">
             Target: <span className="font-semibold text-green-600">{targetValue}</span>
           </div>
         </div>
@@ -486,7 +486,7 @@ if (result !== -1) {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm border">
+      <div className="flex items-center justify-center md:justify-between flex-wrap gap-4 md:gap-2 bg-white rounded-lg p-4 shadow-sm border">
         <div className="flex space-x-2">
           <Button onClick={handleReset} variant="secondary">
             Reset
