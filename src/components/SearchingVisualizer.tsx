@@ -74,7 +74,7 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
 
   useEffect(() => {
     const array = inputArray
-      .split(" ")
+      .split(/[\s,]+/).filter(n => n)
       .map(Number)
       .filter((n) => !isNaN(n))
     const newSteps = generateSteps(algorithm, array, targetValue)
