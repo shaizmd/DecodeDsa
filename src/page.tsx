@@ -146,7 +146,7 @@ export default function Page() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/sorting"
+              to="/about"
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
             >
               <Play className="w-5 h-5 mr-2" /> Start Visualizing
@@ -265,13 +265,13 @@ export default function Page() {
           </div>
 
           <div className="mt-16 text-center">
-            <button
-            
+            <Link
+              to="/about"
               className="inline-flex items-center px-10 py-4 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
-              Start Learning Now
+              Begin Your Journey
               <ChevronRight className="w-5 h-5 ml-2" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -412,6 +412,11 @@ export default function Page() {
             <h4 className="font-semibold text-white mb-3">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link to="/" className="hover:text-white">
+                  Home
+                </Link>
+              </li>
+              <li>
                 <Link to="/sorting" className="hover:text-white">
                   Sorting
                 </Link>
@@ -422,8 +427,8 @@ export default function Page() {
                 </Link>
               </li>
               <li>
-                <Link to="/data-structures" className="hover:text-white">
-                  Data Structures
+                <Link to="/about" className="hover:text-white">
+                  About Us
                 </Link>
               </li>
             </ul>
