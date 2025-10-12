@@ -388,21 +388,18 @@ export default function Page() {
     <div className="max-w-3xl mx-auto space-y-6">
       {[
         {
-          q: "What is AlgoVision?",
-          a: "AlgoVision is an interactive platform that helps you learn algorithms and data structures visually. You can explore step-by-step animations, tweak inputs, and deeply understand each concept."
+          q: "What is DecodeDsa?",
+          a: "DecodeDsa is an interactive platform that helps you learn algorithms and data structures visually. You can explore step-by-step animations, tweak inputs, and deeply understand each concept."
         },
         {
-          q: "Is AlgoVision free to use?",
+          q: "Is DecodeDsa free to use?",
           a: "Yes! AlgoVision is completely free for learners. We believe education should be accessible, visual, and engaging for everyone."
         },
         {
           q: "Do I need prior coding knowledge?",
           a: "Not necessarily. We’ve designed visual guides that start from the basics — making it easy for beginners to understand algorithms without heavy math or code."
         },
-        {
-          q: "Can I practice problems here?",
-          a: "Yes! You can solve interactive challenges after visualizing an algorithm. It’s the perfect blend of learning and doing."
-        },
+     
         {
           q: "Will new algorithms be added regularly?",
           a: "Absolutely! We’re constantly adding new visualizations, challenges, and topics to help you stay ahead in your DSA journey."
@@ -439,7 +436,7 @@ export default function Page() {
         <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-bold text-white mb-3">
-              AlgoVisualizer
+              DecodeDsa
             </h3>
             <p className="text-sm text-gray-400">
               Interactive platform to master Data Structures & Algorithms
