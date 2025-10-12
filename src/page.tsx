@@ -12,7 +12,6 @@ import {
   Target,
   Users,
   Award,
-  Star,
   Github,
   Linkedin,
   Twitter,
@@ -117,41 +116,7 @@ export default function Page() {
     { icon: Brain, label: "Visualizations", value: "300+" },
   ];
 
-  const testimonials = [
-    {
-      name: "Aarav Sharma",
-      feedback:
-        "This platform made DSA finally click for me! The visualizations are top-notch.",
-      role: "Student, IIT Delhi",
-    },
-    {
-      name: "Neha Patel",
-      feedback:
-        "Beautiful UI and interactive explanations — makes learning fun again!",
-      role: "Software Engineer, Microsoft",
-    },
-    {
-      name: "Rahul Mehta",
-      feedback:
-        "Perfect for interviews! I understood sorting and trees like never before.",
-      role: "SDE, Amazon",
-    },
-  ];
 
-  const faqs = [
-    {
-      q: "Is this platform free to use?",
-      a: "Yes! You can access all visualizations and explanations for free.",
-    },
-    {
-      q: "Do I need prior coding knowledge?",
-      a: "Basic programming familiarity helps, but our visual guides make it beginner-friendly.",
-    },
-    {
-      q: "Can I contribute algorithms?",
-      a: "Yes! Visit our GitHub repo to contribute new algorithms or visualizations.",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
