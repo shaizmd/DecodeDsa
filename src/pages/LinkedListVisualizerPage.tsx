@@ -37,6 +37,143 @@ function LinkedListVisualizerPage() {
   const [showStepByStep, setShowStepByStep] = useState(false)
   const [currentOperation, setCurrentOperation] = useState<CodeOperationType | "">("")
 
+  // Add these interfaces and types after existing interfaces
+  interface CodeStructure {
+    structure: string;
+    operations: Record<string, string>;
+  }
+
+  interface LinkedListCodes {
+    [key: string]: CodeStructure;
+  }
+
+  // Add this function after the existing state declarations
+  const getLinkedListCode = (type: ListType): CodeStructure => {
+    const codes: LinkedListCodes = {
+      singly: {
+        structure: `class SinglyNode {
+  value: number;
+  next: Node | null;
+  
+  constructor(value: number) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class SinglyLinkedList {
+  head: Node | null;
+  
+  constructor() {
+    this.head = null;
+  }
+}`,
+        operations: {
+          insertAtBeginning: `insertAtBeginning(value: number): void {
+  const newNode = new Node(value);
+  newNode.next = this.head;
+  this.head = newNode;
+}`,
+          insertAtEnd: `insertAtEnd(value: number): void {
+  const newNode = new Node(value);
+  if (!this.head) {
+    this.head = newNode;
+    return;
+  }
+  let current = this.head;
+  while (current.next) {
+    current = current.next;
+  }
+  current.next = newNode;
+}`,
+          deleteAtBeginning: `deleteAtBeginning(): void {
+  if (!this.head) return;
+  this.head = this.head.next;
+}`,
+          deleteAtEnd: `deleteAtEnd(): void {
+  if (!this.head) return;
+  if (!this.head.next) {
+    this.head = null;
+    return;
+  }
+  let current = this.head;
+  while (current.next?.next) {
+    current = current.next;
+  }
+  current.next = null;
+}`
+        }
+      },
+      doubly: {
+        structure: `class DoublyNode {
+  value: number;
+  next: Node | null;
+  prev: Node | null;
+  
+  constructor(value: number) {
+    this.value = value;
+    this.next = null;
+    this.prev = null;
+  }
+}`,
+        operations: {
+          insertAtBeginning: `insertAtBeginning(value: number): void {
+  const newNode = new DoublyNode(value);
+  newNode.next = this.head;
+  if (this.head) {
+    this.head.prev = newNode;
+  }
+  this.head = newNode;
+}`,
+          insertAtEnd: `insertAtEnd(value: number): void {
+  const newNode = new DoublyNode(value);
+  if (!this.head) {
+    this.head = newNode;
+    return;
+  }
+  let current = this.head;
+  while (current.next) {
+    current = current.next;
+  }
+  current.next = newNode;
+  newNode.prev = current;
+}`
+        }
+      },
+      circular: {
+        structure: `class CircularNode {
+  value: number;
+  next: Node;
+  
+  constructor(value: number) {
+    this.value = value;
+    this.next = this;
+  }
+}`,
+        operations: {
+          insertAtBeginning: `insertAtBeginning(value: number): void {
+  const newNode = new CircularNode(value);
+  if (!this.head) {
+    newNode.next = newNode;
+    this.head = newNode;
+    return;
+  }
+  let current = this.head;
+  while (current.next !== this.head) {
+    current = current.next;
+  }
+  newNode.next = this.head;
+  current.next = newNode;
+  this.head = newNode;
+}`
+        }
+      }
+    };
+
+    return codes[type];
+  }
+
+
   // Helper functions
   const generateNodeId = () => {
     setNodeCounter((prev) => prev + 1)
@@ -761,6 +898,9 @@ function search(value) {
     return codes[operation as CodeOperationType] || { title: "", steps: [], code: "" }
   }
 
+  // Add this state near other useState declarations
+  const [selectedOperation, setSelectedOperation] = useState<string>("");
+
   const nodes = toArray()
 
   return (
@@ -789,11 +929,11 @@ function search(value) {
                 <span>Tutorial</span>
               </button>
               <button
-                onClick={() => setShowCode(!showCode)}
+                onClick={() => setShowCode(prev => !prev)}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 <Code className="w-4 h-4" />
-                <span>Code</span>
+                <span>{showCode ? 'Hide Code' : 'Show Code'}</span>
               </button>
             </div>
           </div>
@@ -1163,6 +1303,40 @@ function search(value) {
           </div>
         </div>
       </main>
+
+      {showCode && (
+        <div className="mt-4 bg-gray-800 rounded-lg p-4">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              className={`px-4 py-2 rounded ${
+                !selectedOperation ? 'bg-blue-500' : 'bg-gray-700'
+              } text-white hover:opacity-90 transition-opacity`}
+              onClick={() => setSelectedOperation("")}
+            >
+              Structure
+            </button>
+            {Object.keys(getLinkedListCode(listType).operations).map((op) => (
+              <button
+                key={op}
+                className={`px-4 py-2 rounded ${
+                  selectedOperation === op ? 'bg-blue-500' : 'bg-gray-700'
+                } text-white hover:opacity-90 transition-opacity`}
+                onClick={() => setSelectedOperation(op)}
+              >
+                {op.replace(/([A-Z])/g, ' $1').trim()}
+              </button>
+            ))}
+          </div>
+          
+          <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto">
+            <code className="text-white font-mono text-sm">
+              {selectedOperation
+                ? getLinkedListCode(listType).operations[selectedOperation]
+                : getLinkedListCode(listType).structure}
+            </code>
+          </pre>
+        </div>
+      )}
     </div>
   )
 }
