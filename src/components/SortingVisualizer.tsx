@@ -6,6 +6,7 @@ import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { ArrowUpDown, Code } from "lucide-react"
+import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 
 interface SortingVisualizerProps {
   algorithm: string
@@ -471,7 +472,8 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
 
   useEffect(() => {
     const array = inputArray
-      .split(/[\s,] +/).filter(n=>n)
+      .split(/[\s,]+/)
+      .filter(n => n)
       .map(Number)
       .filter((n) => !isNaN(n))
     const newSteps = generateSteps(algorithm, array)
@@ -514,6 +516,29 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     if (step.pivot === index) return "bg-purple-500"
 
     return "bg-blue-500"
+  }
+
+  const getElementColorHex = (index: number): string => {
+    const step = steps[currentStep]
+    if (!step) return "#3b82f6" // blue-500
+
+    if (step.sorted?.includes(index)) return "#22c55e" // green-500
+    if (step.swapping?.includes(index)) return "#ef4444" // red-500
+    if (step.comparing?.includes(index)) return "#eab308" // yellow-500
+    if (step.pivot === index) return "#a855f7" // purple-500
+
+    return "#3b82f6" // blue-500
+  }
+
+  const prepareCanvasElements = () => {
+    const step = steps[currentStep]
+    if (!step) return []
+
+    return step.array.map((value, index) => ({
+      value,
+      index,
+      color: getElementColorHex(index),
+    }))
   }
 
   const getCompleteAlgorithmCode = (algorithm: string): string => {
@@ -745,18 +770,30 @@ function heapify(arr, n, i) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
-          {steps[currentStep]?.array.map((value, index) => (
-            <div key={index} className="relative">
-              <div
-                className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
-              >
-                {value}
+        {steps[currentStep]?.array.length >= 100 ? (
+          // Canvas-based visualization for large arrays
+          <div className="flex justify-center">
+            <ZoomableArrayCanvas
+              elements={prepareCanvasElements()}
+              width={Math.min(1000, typeof window !== 'undefined' ? window.innerWidth - 100 : 1000)}
+              height={200}
+            />
+          </div>
+        ) : (
+          // DOM-based visualization for small arrays
+          <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
+            {steps[currentStep]?.array.map((value, index) => (
+              <div key={index} className="relative">
+                <div
+                  className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
+                >
+                  {value}
+                </div>
+                <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
               </div>
-              <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Legend */}

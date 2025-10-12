@@ -6,6 +6,7 @@ import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { CheckCircle, XCircle, Search, Target } from "lucide-react"
+import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 
 interface SearchingVisualizerProps {
   algorithm: string
@@ -257,6 +258,32 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
     return "bg-blue-500"
   }
 
+  const getElementColorHex = (index: number): string => {
+    const step = steps[currentStep]
+    if (!step) return "#3b82f6" // blue-500
+
+    if (step.foundIndex === index && step.found) return "#22c55e" // green-500
+    if (step.comparing?.includes(index)) return "#eab308" // yellow-500
+    if (step.currentIndex === index) return "#f97316" // orange-500
+    if (step.mid === index) return "#a855f7" // purple-500
+    if (algorithm === "Binary Search" && step.left !== undefined && step.right !== undefined) {
+      if (index < step.left || index > step.right) return "#9ca3af" // gray-400
+    }
+
+    return "#3b82f6" // blue-500
+  }
+
+  const prepareCanvasElements = () => {
+    const step = steps[currentStep]
+    if (!step) return []
+
+    return step.array.map((value, index) => ({
+      value,
+      index,
+      color: getElementColorHex(index),
+    }))
+  }
+
   const getCompleteAlgorithmCode = (algorithm: string): string => {
     switch (algorithm) {
       case "Linear Search":
@@ -377,39 +404,51 @@ if (result !== -1) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
-          {steps[currentStep]?.array.map((value, index) => (
-            <div key={index} className="relative">
-              <div
-                className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
-              >
-                {value}
-              </div>
-              <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
+        {steps[currentStep]?.array.length >= 100 ? (
+          // Canvas-based visualization for large arrays
+          <div className="flex justify-center">
+            <ZoomableArrayCanvas
+              elements={prepareCanvasElements()}
+              width={Math.min(1000, typeof window !== 'undefined' ? window.innerWidth - 100 : 1000)}
+              height={200}
+            />
+          </div>
+        ) : (
+          // DOM-based visualization for small arrays
+          <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
+            {steps[currentStep]?.array.map((value, index) => (
+              <div key={index} className="relative">
+                <div
+                  className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
+                >
+                  {value}
+                </div>
+                <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
 
-              {/* Binary Search Pointers */}
-              {algorithm === "Binary Search" && steps[currentStep] && (
-                <>
-                  {steps[currentStep].left === index && (
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-blue-600">
-                      L
-                    </div>
-                  )}
-                  {steps[currentStep].right === index && (
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-red-600">
-                      R
-                    </div>
-                  )}
-                  {steps[currentStep].mid === index && (
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-purple-600">
-                      M
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          ))}
-        </div>
+                {/* Binary Search Pointers */}
+                {algorithm === "Binary Search" && steps[currentStep] && (
+                  <>
+                    {steps[currentStep].left === index && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-blue-600">
+                        L
+                      </div>
+                    )}
+                    {steps[currentStep].right === index && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-red-600">
+                        R
+                      </div>
+                    )}
+                    {steps[currentStep].mid === index && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-purple-600">
+                        M
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Legend */}
