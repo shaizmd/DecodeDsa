@@ -1,41 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { List, Plus, Minus, RotateCcw, Code, BookOpen, Lightbulb, Target, Clock } from "lucide-react"
+import { useState } from "react";
+import {
+  List,
+  Plus,
+  Minus,
+  RotateCcw,
+  Code,
+  BookOpen,
+  Lightbulb,
+  Target,
+  Clock,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Enhanced Node interface with animation states
 interface ListNode {
-  id: string
-  value: number
-  next: ListNode | null
-  prev?: ListNode | null
-  isHighlighted?: boolean
-  isNew?: boolean
-  isDeleting?: boolean
-  isModifying?: boolean
-  animationDelay?: number
+  id: string;
+  value: number;
+  next: ListNode | null;
+  prev?: ListNode | null;
+  isHighlighted?: boolean;
+  isNew?: boolean;
+  isDeleting?: boolean;
+  isModifying?: boolean;
+  animationDelay?: number;
 }
 
-type ListType = "singly" | "doubly" | "circular"
+type ListType = "singly" | "doubly" | "circular";
 
 // 1. Define a new type for supported code operations:
 type CodeOperationType = "insert-beginning" | "insert-end" | "insert-position" | "delete-beginning" | "delete-end" | "delete-position" | "search";
 
 function LinkedListVisualizerPage() {
-  const [listType, setListType] = useState<ListType>("singly")
-  const [head, setHead] = useState<ListNode | null>(null)
-  const [inputValue, setInputValue] = useState("")
-  const [position, setPosition] = useState(1)
-  const [searchTerm, setSearchTerm] = useState("") // Renamed searchValue to searchTerm
+  const [listType, setListType] = useState<ListType>("singly");
+  const [head, setHead] = useState<ListNode | null>(null);
+  const [inputValue, setInputValue] = useState("");
+  const [position, setPosition] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(""); // Renamed searchValue to searchTerm
 
   // UI states
-  const [operationHistory, setOperationHistory] = useState<string[]>([])
-  const [showCode, setShowCode] = useState(false)
-  const [showTutorial, setShowTutorial] = useState(false)
-  const [nodeCounter, setNodeCounter] = useState(0)
+  const [operationHistory, setOperationHistory] = useState<string[]>([]);
+  const [showCode, setShowCode] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [nodeCounter, setNodeCounter] = useState(0);
 
-  const [showStepByStep, setShowStepByStep] = useState(false)
-  const [currentOperation, setCurrentOperation] = useState<CodeOperationType | "">("")
+  const [showStepByStep, setShowStepByStep] = useState(false);
+  const [currentOperation, setCurrentOperation] = useState<
+    CodeOperationType | ""
+  >("");
 
   // Add these interfaces and types after existing interfaces
   interface CodeStructure {
@@ -176,16 +189,16 @@ class SinglyLinkedList {
 
   // Helper functions
   const generateNodeId = () => {
-    setNodeCounter((prev) => prev + 1)
-    return `node-${nodeCounter}`
-  }
+    setNodeCounter((prev) => prev + 1);
+    return `node-${nodeCounter}`;
+  };
 
   const createNode = (value: number): ListNode => ({
     id: generateNodeId(),
     value,
     next: null,
     isNew: true,
-  })
+  });
 
   const createDoublyNode = (value: number): ListNode => ({
     id: generateNodeId(),
@@ -193,268 +206,271 @@ class SinglyLinkedList {
     next: null,
     prev: null,
     isNew: true,
-  })
+  });
 
   const toArray = (): ListNode[] => {
-    const arr: ListNode[] = []
-    let curr = head
-    if (!curr) return arr
+    const arr: ListNode[] = [];
+    let curr = head;
+    if (!curr) return arr;
 
     if (listType === "circular") {
       do {
-        arr.push(curr)
-        curr = curr.next
-      } while (curr && curr !== head && arr.length < 20) // Prevent infinite loop
+        arr.push(curr);
+        curr = curr.next;
+      } while (curr && curr !== head && arr.length < 20); // Prevent infinite loop
     } else {
       while (curr) {
-        arr.push(curr)
-        curr = curr.next
+        arr.push(curr);
+        curr = curr.next;
       }
     }
-    return arr
-  }
+    return arr;
+  };
 
   const insertAtBeginning = async (value: number) => {
-    const newNode = listType === "doubly" ? createDoublyNode(value) : createNode(value)
+    const newNode =
+      listType === "doubly" ? createDoublyNode(value) : createNode(value);
 
     if (!head) {
       if (listType === "circular") {
-        newNode.next = newNode
-        setHead(newNode)
+        newNode.next = newNode;
+        setHead(newNode);
       } else {
-        setHead(newNode)
+        setHead(newNode);
       }
     } else {
       if (listType === "doubly") {
-        newNode.next = head
-        head.prev = newNode
+        newNode.next = head;
+        head.prev = newNode;
       } else if (listType === "circular") {
         // Find tail for circular
-        let tail = head
+        let tail = head;
         while (tail.next && tail.next !== head) {
-          tail = tail.next
+          tail = tail.next;
         }
-        newNode.next = head
-        tail.next = newNode
+        newNode.next = head;
+        tail.next = newNode;
       } else {
-        newNode.next = head
+        newNode.next = head;
       }
-      setHead(newNode)
+      setHead(newNode);
     }
 
-    addToHistory(`Inserted ${value} at beginning`)
-  }
+    addToHistory(`Inserted ${value} at beginning`);
+  };
 
   const insertAtEnd = async (value: number) => {
-    const newNode = listType === "doubly" ? createDoublyNode(value) : createNode(value)
+    const newNode =
+      listType === "doubly" ? createDoublyNode(value) : createNode(value);
 
     if (!head) {
-      setHead(newNode)
+      setHead(newNode);
     } else {
-      let curr = head
+      let curr = head;
       if (listType === "circular") {
         while (curr.next && curr.next !== head) {
-          curr = curr.next
+          curr = curr.next;
         }
-        curr.next = newNode
-        newNode.next = head
+        curr.next = newNode;
+        newNode.next = head;
       } else {
         while (curr.next) {
-          curr = curr.next
+          curr = curr.next;
         }
-        curr.next = newNode
+        curr.next = newNode;
         if (listType === "doubly") {
-          newNode.prev = curr
+          newNode.prev = curr;
         }
       }
-      setHead({ ...head })
+      setHead({ ...head });
     }
 
-    addToHistory(`Inserted ${value} at end`)
-  }
+    addToHistory(`Inserted ${value} at end`);
+  };
 
   const deleteAtBeginning = async () => {
     if (!head) {
-      addToHistory("Cannot delete from empty list")
-      return
+      addToHistory("Cannot delete from empty list");
+      return;
     }
 
     if (listType === "circular" && head.next === head) {
-      setHead(null)
+      setHead(null);
     } else if (listType === "circular") {
       // Find tail and update its next pointer
-      let tail = head
+      let tail = head;
       while (tail.next && tail.next !== head) {
-        tail = tail.next
+        tail = tail.next;
       }
-      const newHead = head.next
-      tail.next = newHead
-      setHead(newHead)
+      const newHead = head.next;
+      tail.next = newHead;
+      setHead(newHead);
     } else {
-      const newHead = head.next
+      const newHead = head.next;
       if (listType === "doubly" && newHead) {
-        newHead.prev = null
+        newHead.prev = null;
       }
-      setHead(newHead)
+      setHead(newHead);
     }
 
-    addToHistory(`Deleted node from beginning`)
-  }
+    addToHistory(`Deleted node from beginning`);
+  };
 
   const insertAtPosition = async (value: number, pos: number) => {
     if (pos < 1) {
-      addToHistory("Position must be 1 or greater")
-      return
+      addToHistory("Position must be 1 or greater");
+      return;
     }
 
     if (pos === 1) {
-      insertAtBeginning(value)
-      return
+      insertAtBeginning(value);
+      return;
     }
 
-    const newNode = listType === "doubly" ? createDoublyNode(value) : createNode(value)
+    const newNode =
+      listType === "doubly" ? createDoublyNode(value) : createNode(value);
 
     if (!head) {
-      addToHistory("Cannot insert at position in empty list")
-      return
+      addToHistory("Cannot insert at position in empty list");
+      return;
     }
 
-    let curr: ListNode | null = head
-    let prev: ListNode | null = null
-    let currentPos = 1
+    let curr: ListNode | null = head;
+    let prev: ListNode | null = null;
+    let currentPos = 1;
 
     // Navigate to the position
     while (curr && currentPos < pos) {
-      prev = curr
-      curr = curr.next
-      currentPos++
+      prev = curr;
+      curr = curr.next;
+      currentPos++;
 
       // Prevent infinite loop in circular lists
-      if (listType === "circular" && curr === head) break
+      if (listType === "circular" && curr === head) break;
     }
 
     if (currentPos < pos) {
-      addToHistory(`Position ${pos} is beyond list length`)
-      return
+      addToHistory(`Position ${pos} is beyond list length`);
+      return;
     }
 
     // Insert the node
     if (prev) {
-      prev.next = newNode
-      newNode.next = curr
+      prev.next = newNode;
+      newNode.next = curr;
 
       if (listType === "doubly") {
-        newNode.prev = prev
+        newNode.prev = prev;
         if (curr) {
-          curr.prev = newNode
+          curr.prev = newNode;
         }
       }
     }
 
-    setHead({ ...head })
-    addToHistory(`Inserted ${value} at position ${pos}`)
-  }
+    setHead({ ...head });
+    addToHistory(`Inserted ${value} at position ${pos}`);
+  };
 
   const deleteAtEnd = async () => {
     if (!head) {
-      addToHistory("Cannot delete from empty list")
-      return
+      addToHistory("Cannot delete from empty list");
+      return;
     }
 
     // Single node case
     if (!head.next || (listType === "circular" && head.next === head)) {
-      setHead(null)
-      addToHistory("Deleted last node from list")
-      return
+      setHead(null);
+      addToHistory("Deleted last node from list");
+      return;
     }
 
     if (listType === "circular") {
       // Find the node before the last node
-      let curr = head
-      let prev: ListNode | null = null
+      let curr = head;
+      let prev: ListNode | null = null;
 
       while (curr.next && curr.next !== head) {
-        prev = curr
-        curr = curr.next
+        prev = curr;
+        curr = curr.next;
       }
 
       if (prev) {
-        prev.next = head
+        prev.next = head;
       }
     } else {
       // Find the second-to-last node
-      let curr = head
-      let prev: ListNode | null = null
+      let curr = head;
+      let prev: ListNode | null = null;
 
       while (curr.next) {
-        prev = curr
-        curr = curr.next
+        prev = curr;
+        curr = curr.next;
       }
 
       if (prev) {
-        prev.next = null
+        prev.next = null;
         if (listType === "doubly") {
           // No need to update curr.prev since we're deleting curr
         }
       }
     }
 
-    setHead({ ...head })
-    addToHistory("Deleted node from end")
-  }
+    setHead({ ...head });
+    addToHistory("Deleted node from end");
+  };
 
   const deleteAtPosition = async (pos: number) => {
     if (pos < 1) {
-      addToHistory("Position must be 1 or greater")
-      return
+      addToHistory("Position must be 1 or greater");
+      return;
     }
 
     if (!head) {
-      addToHistory("Cannot delete from empty list")
-      return
+      addToHistory("Cannot delete from empty list");
+      return;
     }
 
     if (pos === 1) {
-      deleteAtBeginning()
-      return
+      deleteAtBeginning();
+      return;
     }
 
-    let curr: ListNode | null = head
-    let prev: ListNode | null = null
-    let currentPos = 1
+    let curr: ListNode | null = head;
+    let prev: ListNode | null = null;
+    let currentPos = 1;
 
     // Navigate to the position
     while (curr && currentPos < pos) {
-      prev = curr
-      curr = curr.next
-      currentPos++
+      prev = curr;
+      curr = curr.next;
+      currentPos++;
 
       // Prevent infinite loop in circular lists
-      if (listType === "circular" && curr === head) break
+      if (listType === "circular" && curr === head) break;
     }
 
     if (!curr || currentPos < pos) {
-      addToHistory(`Position ${pos} is beyond list length`)
-      return
+      addToHistory(`Position ${pos} is beyond list length`);
+      return;
     }
 
     // Delete the node
     if (prev) {
-      prev.next = curr.next
+      prev.next = curr.next;
 
       if (listType === "doubly" && curr.next) {
-        curr.next.prev = prev
+        curr.next.prev = prev;
       }
     }
 
-    setHead({ ...head })
-    addToHistory(`Deleted node from position ${pos}`)
-  }
+    setHead({ ...head });
+    addToHistory(`Deleted node from position ${pos}`);
+  };
 
   const search = async (value: number) => {
     if (!head) {
-      addToHistory("Cannot search in empty list")
-      return
+      addToHistory("Cannot search in empty list");
+      return;
     }
 
     setCurrentOperation("search")
@@ -464,27 +480,32 @@ class SinglyLinkedList {
     let found = false
 
     do {
-      if (!curr) break
+      if (!curr) break;
 
       if (curr.value === value) {
-        found = true
-        break
+        found = true;
+        break;
       }
 
-      curr = curr.next
-      position++
-    } while (curr && (listType !== "circular" || curr !== head))
+      curr = curr.next;
+      position++;
+    } while (curr && (listType !== "circular" || curr !== head));
 
     if (!found) {
-      addToHistory(`Value ${value} not found in the list`)
+      addToHistory(`Value ${value} not found in the list`);
     } else {
-      addToHistory(`Searched for value ${value} - found at position ${position}`)
+      addToHistory(
+        `Searched for value ${value} - found at position ${position}`
+      );
     }
-  }
+  };
 
   const addToHistory = (operation: string) => {
-    setOperationHistory((prev) => [`${new Date().toLocaleTimeString()}: ${operation}`, ...prev.slice(0, 19)])
-  }
+    setOperationHistory((prev) => [
+      `${new Date().toLocaleTimeString()}: ${operation}`,
+      ...prev.slice(0, 19),
+    ]);
+  };
 
   const getOperationCode = (operation: CodeOperationType | "") => {
     const codes = {
@@ -895,8 +916,14 @@ function search(value) {
       },
     }
 
-    return codes[operation as CodeOperationType] || { title: "", steps: [], code: "" }
-  }
+    return (
+      codes[operation as CodeOperationType] || {
+        title: "",
+        steps: [],
+        code: "",
+      }
+    );
+  };
 
   // Add this state near other useState declarations
   const [selectedOperation, setSelectedOperation] = useState<string>("");
@@ -917,7 +944,9 @@ function search(value) {
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Interactive Linked List Visualizer
                 </h1>
-                <p className="mt-1 text-gray-600">Learn linked lists through step-by-step animations</p>
+                <p className="mt-1 text-gray-600">
+                  Learn linked lists through step-by-step animations
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -950,38 +979,43 @@ function search(value) {
                 {listType === "singly"
                   ? "Singly Linked List"
                   : listType === "doubly"
-                    ? "Doubly Linked List"
-                    : "Circular Linked List"}
+                  ? "Doubly Linked List"
+                  : "Circular Linked List"}
               </h2>
             </div>
             <p className="text-blue-800 mb-4">
               {listType === "singly"
                 ? "Each node contains data and a pointer to the next node. The last node points to null."
                 : listType === "doubly"
-                  ? "Each node contains data and pointers to both next and previous nodes."
-                  : "The last node points back to the first node, forming a circle."}
+                ? "Each node contains data and pointers to both next and previous nodes."
+                : "The last node points back to the first node, forming a circle."}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Clock className="w-4 h-4 text-green-600" />
-                  <span className="font-semibold text-green-800">Time Complexity</span>
+                  <span className="font-semibold text-green-800">
+                    Time Complexity
+                  </span>
                 </div>
                 <p className="text-sm text-green-700">
-                  Insert/Delete at beginning: O(1), Insert/Delete at end: O(n), Search: O(n)
+                  Insert/Delete at beginning: O(1), Insert/Delete at end: O(n),
+                  Search: O(n)
                 </p>
               </div>
               <div className="bg-white rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Target className="w-4 h-4 text-purple-600" />
-                  <span className="font-semibold text-purple-800">Use Case</span>
+                  <span className="font-semibold text-purple-800">
+                    Use Case
+                  </span>
                 </div>
                 <p className="text-sm text-purple-700">
                   {listType === "singly"
                     ? "When you need dynamic size and frequent insertions/deletions at the beginning."
                     : listType === "doubly"
-                      ? "When you need bidirectional traversal and frequent insertions/deletions at both ends."
-                      : "When you need to cycle through elements repeatedly, like in round-robin scheduling."}
+                    ? "When you need bidirectional traversal and frequent insertions/deletions at both ends."
+                    : "When you need to cycle through elements repeatedly, like in round-robin scheduling."}
                 </p>
               </div>
             </div>
@@ -990,16 +1024,18 @@ function search(value) {
 
         {/* List Type Selector */}
         <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Choose Linked List Type</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            Choose Linked List Type
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {(["singly", "doubly", "circular"] as ListType[]).map((type) => (
               <button
                 key={type}
                 onClick={() => {
-                  setListType(type)
-                  setHead(null)
-                  setOperationHistory([])
-                  setNodeCounter(0)
+                  setListType(type);
+                  setHead(null);
+                  setOperationHistory([]);
+                  setNodeCounter(0);
                 }}
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   listType === type
@@ -1007,7 +1043,9 @@ function search(value) {
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
-                <div className="text-lg font-semibold capitalize">{type} Linked List</div>
+                <div className="text-lg font-semibold capitalize">
+                  {type} Linked List
+                </div>
                 <div className="text-sm text-gray-600 mt-1">
                   {type === "singly" && "→ One-way connections"}
                   {type === "doubly" && "↔ Two-way connections"}
@@ -1022,12 +1060,16 @@ function search(value) {
           {/* Controls Panel */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Operations</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-6">
+                Operations
+              </h2>
 
               {/* Input Controls */}
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Value</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Value
+                  </label>
                   <input
                     type="number"
                     value={inputValue}
@@ -1037,7 +1079,9 @@ function search(value) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Position</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Position
+                  </label>
                   <input
                     type="number"
                     value={position}
@@ -1048,7 +1092,9 @@ function search(value) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Search Value</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Search Value
+                  </label>
                   <input
                     type="number"
                     value={searchTerm}
@@ -1062,15 +1108,17 @@ function search(value) {
               {/* Operation Buttons */}
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-gray-700 mb-2">Insert Operations</h3>
+                  <h3 className="font-semibold text-gray-700 mb-2">
+                    Insert Operations
+                  </h3>
                   <div className="grid grid-cols-1 gap-2">
                     <button
                       onClick={() => {
-                        const val = Number.parseInt(inputValue)
+                        const val = Number.parseInt(inputValue);
                         if (!isNaN(val)) {
-                          setCurrentOperation("insert-beginning")
-                          insertAtBeginning(val)
-                          setInputValue("")
+                          setCurrentOperation("insert-beginning");
+                          insertAtBeginning(val);
+                          setInputValue("");
                         }
                       }}
                       disabled={!inputValue}
@@ -1081,11 +1129,11 @@ function search(value) {
                     </button>
                     <button
                       onClick={() => {
-                        const val = Number.parseInt(inputValue)
+                        const val = Number.parseInt(inputValue);
                         if (!isNaN(val)) {
-                          setCurrentOperation("insert-end")
-                          insertAtEnd(val)
-                          setInputValue("")
+                          setCurrentOperation("insert-end");
+                          insertAtEnd(val);
+                          setInputValue("");
                         }
                       }}
                       disabled={!inputValue}
@@ -1096,11 +1144,11 @@ function search(value) {
                     </button>
                     <button
                       onClick={() => {
-                        const val = Number.parseInt(inputValue)
+                        const val = Number.parseInt(inputValue);
                         if (!isNaN(val) && position >= 1) {
-                          setCurrentOperation("insert-position")
-                          insertAtPosition(val, position)
-                          setInputValue("")
+                          setCurrentOperation("insert-position");
+                          insertAtPosition(val, position);
+                          setInputValue("");
                         }
                       }}
                       disabled={!inputValue || position < 1}
@@ -1113,12 +1161,14 @@ function search(value) {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-700 mb-2">Delete Operations</h3>
+                  <h3 className="font-semibold text-gray-700 mb-2">
+                    Delete Operations
+                  </h3>
                   <div className="grid grid-cols-1 gap-2">
                     <button
                       onClick={() => {
-                        setCurrentOperation("delete-beginning")
-                        deleteAtBeginning()
+                        setCurrentOperation("delete-beginning");
+                        deleteAtBeginning();
                       }}
                       disabled={!head}
                       className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -1128,8 +1178,8 @@ function search(value) {
                     </button>
                     <button
                       onClick={() => {
-                        setCurrentOperation("delete-end")
-                        deleteAtEnd()
+                        setCurrentOperation("delete-end");
+                        deleteAtEnd();
                       }}
                       disabled={!head}
                       className="flex items-center justify-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -1139,8 +1189,8 @@ function search(value) {
                     </button>
                     <button
                       onClick={() => {
-                        setCurrentOperation("delete-position")
-                        deleteAtPosition(position)
+                        setCurrentOperation("delete-position");
+                        deleteAtPosition(position);
                       }}
                       disabled={!head || position < 1}
                       className="flex items-center justify-center space-x-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -1152,13 +1202,15 @@ function search(value) {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-700 mb-2">Other Operations</h3>
+                  <h3 className="font-semibold text-gray-700 mb-2">
+                    Other Operations
+                  </h3>
                   <button
                     onClick={() => {
-                      const val = Number.parseInt(searchTerm)
+                      const val = Number.parseInt(searchTerm);
                       if (!isNaN(val)) {
-                        search(val)
-                        setSearchTerm("")
+                        search(val);
+                        setSearchTerm("");
                       }
                     }}
                     disabled={!searchTerm || !head}
@@ -1178,7 +1230,8 @@ function search(value) {
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">
-                  {listType.charAt(0).toUpperCase() + listType.slice(1)} Linked List
+                  {listType.charAt(0).toUpperCase() + listType.slice(1)} Linked
+                  List
                 </h2>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
                   <span>Nodes: {nodes.length}</span>
@@ -1208,16 +1261,21 @@ function search(value) {
                         </div>
 
                         {/* Connection line */}
-                        {index < nodes.length - 1 && <div className="w-8 h-0.5 bg-blue-400"></div>}
+                        {index < nodes.length - 1 && (
+                          <div className="w-8 h-0.5 bg-blue-400"></div>
+                        )}
 
                         {/* Circular connection indicator */}
-                        {listType === "circular" && index === nodes.length - 1 && (
-                          <div className="flex items-center ml-4">
-                            <div className="w-8 h-0.5 bg-green-400"></div>
-                            <RotateCcw className="w-6 h-6 text-green-500" />
-                            <span className="ml-2 text-sm text-green-700 font-medium">to HEAD</span>
-                          </div>
-                        )}
+                        {listType === "circular" &&
+                          index === nodes.length - 1 && (
+                            <div className="flex items-center ml-4">
+                              <div className="w-8 h-0.5 bg-green-400"></div>
+                              <RotateCcw className="w-6 h-6 text-green-500" />
+                              <span className="ml-2 text-sm text-green-700 font-medium">
+                                to HEAD
+                              </span>
+                            </div>
+                          )}
                       </div>
                     ))}
                   </div>
@@ -1227,10 +1285,14 @@ function search(value) {
 
             {/* Operation History */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Operation History</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Operation History
+              </h2>
               <div className="max-h-60 overflow-y-auto space-y-2">
                 {operationHistory.length === 0 ? (
-                  <p className="text-gray-500 italic">No operations performed yet</p>
+                  <p className="text-gray-500 italic">
+                    No operations performed yet
+                  </p>
                 ) : (
                   operationHistory.map((operation, index) => (
                     <div
@@ -1249,7 +1311,11 @@ function search(value) {
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-gray-900">
-                    {getOperationCode(currentOperation as CodeOperationType).title} - Implementation
+                    {
+                      getOperationCode(currentOperation as CodeOperationType)
+                        .title
+                    }{" "}
+                    - Implementation
                   </h2>
                   <button
                     onClick={() => setShowStepByStep(!showStepByStep)}
@@ -1262,9 +1328,13 @@ function search(value) {
 
                 {showStepByStep && (
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Algorithm Steps:</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                      Algorithm Steps:
+                    </h3>
                     <ol className="list-decimal list-inside space-y-2">
-                      {getOperationCode(currentOperation as CodeOperationType).steps.map((step: string, index: number) => (
+                      {getOperationCode(
+                        currentOperation as CodeOperationType
+                      ).steps.map((step: string, index: number) => (
                         <li key={index} className="text-gray-700">
                           {step}
                         </li>
@@ -1275,25 +1345,37 @@ function search(value) {
 
                 <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
                   <pre className="text-green-400 text-sm">
-                    <code>{getOperationCode(currentOperation as CodeOperationType).code}</code>
+                    <code>
+                      {
+                        getOperationCode(currentOperation as CodeOperationType)
+                          .code
+                      }
+                    </code>
                   </pre>
                 </div>
 
                 <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 mb-2">Time & Space Complexity:</h4>
+                  <h4 className="font-semibold text-blue-800 mb-2">
+                    Time & Space Complexity:
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="font-medium text-blue-700">Time Complexity:</span>
+                      <span className="font-medium text-blue-700">
+                        Time Complexity:
+                      </span>
                       <span className="ml-2 text-blue-600">
                         {currentOperation.includes("position")
                           ? "O(n)"
-                          : currentOperation.includes("end") && !currentOperation.includes("delete-end")
-                            ? "O(n)"
-                            : "O(1)"}
+                          : currentOperation.includes("end") &&
+                            !currentOperation.includes("delete-end")
+                          ? "O(n)"
+                          : "O(1)"}
                       </span>
                     </div>
                     <div>
-                      <span className="font-medium text-blue-700">Space Complexity:</span>
+                      <span className="font-medium text-blue-700">
+                        Space Complexity:
+                      </span>
                       <span className="ml-2 text-blue-600">O(1)</span>
                     </div>
                   </div>
@@ -1338,7 +1420,7 @@ function search(value) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default LinkedListVisualizerPage
+export default LinkedListVisualizerPage;
