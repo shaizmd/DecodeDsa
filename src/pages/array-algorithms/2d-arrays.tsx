@@ -339,6 +339,7 @@ return False`,
           break
         case "rotate":
           if (matrix.length !== cols) {
+            setIsVisualizing(false)
             throw new Error("Matrix must be square for rotation")
           }
           newSteps = generateRotateSteps(matrix)
