@@ -16,8 +16,8 @@ export class SortingAlgorithmFactory {
     [SortingAlgorithms.BubbleSort, new BubbleSort()],
     [SortingAlgorithms.SelectionSort, new SelectionSort()],
     [SortingAlgorithms.InsertionSort, new InsertionSort()],
-    [SortingAlgorithms.QuickSort, new QuickSort()],
     [SortingAlgorithms.MergeSort, new MergeSort()],
+    [SortingAlgorithms.QuickSort, new QuickSort()],
     [SortingAlgorithms.HeapSort, new HeapSort()],
   ])
 

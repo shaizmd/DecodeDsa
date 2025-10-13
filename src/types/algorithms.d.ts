@@ -8,5 +8,6 @@ export default interface Algorithm<T = SortingAlgorithms> {
   bestCase: string;
   worstCase: string;
   algorithm: T;
+  code: string;
   generateSteps(array: number[]): Step[]
 }

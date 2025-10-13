@@ -11,6 +11,28 @@ export class SelectionSort implements Algorithm<SortingAlgorithms> {
   worstCase = "O(n²) - Not improved by sorted data"
   algorithm = SortingAlgorithms.SelectionSort
 
+  code = `function selectionSort(arr) {
+  const n = arr.length;
+  
+  for (let i = 0; i < n - 1; i++) {
+    let minIdx = i;
+    
+    // Find minimum element in remaining array
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIdx]) {
+        minIdx = j;
+      }
+    }
+    
+    // Swap minimum element with first element
+    if (minIdx !== i) {
+      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+    }
+  }
+  
+  return arr;
+}`
+
   generateSteps(array: number[]): Step[] {
     const steps: Step[] = []
     const arr = [...array]
