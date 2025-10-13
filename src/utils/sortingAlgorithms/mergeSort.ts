@@ -80,6 +80,7 @@ function merge(left, right) {
       array: [...arr],
       description: `Divide: Splitting array from index ${left} to ${right} at middle ${mid}`,
       code: `// Divide phase (depth ${depth})\nlet mid = Math.floor((${left} + ${right}) / 2); // ${mid}`,
+      pivot: mid,
     })
 
     this.mergeSortHelper(arr, left, mid, steps, depth + 1)
@@ -93,6 +94,7 @@ function merge(left, right) {
       array: [...arr],
       description: `Merge: Combining [${leftArr.join(", ")}] and [${rightArr.join(", ")}]`,
       code: `// Merge phase\nleft = [${leftArr.join(", ")}]\nright = [${rightArr.join(", ")}]`,
+      comparing: Array.from({ length: leftArr.length }, (_, i) => left + i).concat(Array.from({ length: rightArr.length }, (_, i) => mid + 1 + i)),
     })
 
     let i = 0,
@@ -106,6 +108,7 @@ function merge(left, right) {
           array: [...arr],
           description: `${leftArr[i]} ≤ ${rightArr[j]}, so place ${leftArr[i]} at position ${k}`,
           code: `arr[${k}] = ${leftArr[i]}; // ${leftArr[i]} ≤ ${rightArr[j]}`,
+          sorted: [k + i],
         })
         i++
       } else {
@@ -114,6 +117,7 @@ function merge(left, right) {
           array: [...arr],
           description: `${rightArr[j]} < ${leftArr[i]}, so place ${rightArr[j]} at position ${k}`,
           code: `arr[${k}] = ${rightArr[j]}; // ${rightArr[j]} < ${leftArr[i]}`,
+          sorted: [k + i],
         })
         j++
       }
@@ -126,6 +130,7 @@ function merge(left, right) {
         array: [...arr],
         description: `Copy remaining element ${leftArr[i]} to position ${k}`,
         code: `arr[${k}] = ${leftArr[i]}; // Copy remaining`,
+        sorted: Array.from({ length: k + 1 }, (_, idx) => idx).filter(idx => idx >= left),
       })
       i++
       k++
@@ -137,6 +142,7 @@ function merge(left, right) {
         array: [...arr],
         description: `Copy remaining element ${rightArr[j]} to position ${k}`,
         code: `arr[${k}] = ${rightArr[j]}; // Copy remaining`,
+        sorted: Array.from({ length: k + 1 }, (_, idx) => idx).filter(idx => idx >= mid + 1),
       })
       j++
       k++
