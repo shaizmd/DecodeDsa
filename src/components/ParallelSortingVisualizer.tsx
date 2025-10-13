@@ -6,12 +6,15 @@ import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { ArrowUpDown, Code, Play, Pause, RotateCcw, Zap } from "lucide-react"
-import { generateSteps, type Step } from "../utils/sortingAlgorithms"
+import { generateSteps } from "../utils/sortingAlgorithms"
 import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
+import Algorithm from "../types/algorithms"
+import { SortingAlgorithms } from "../enums/SortingAlgorithms"
+import Step from "../types/steps"
 
 interface ParallelSortingVisualizerProps {
-  algorithm1: string
-  algorithm2: string
+  algorithm1: Algorithm<SortingAlgorithms>
+  algorithm2: Algorithm<SortingAlgorithms>
   inputArray: string
 }
 
@@ -40,10 +43,10 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
       .filter(n => n)
       .map(Number)
       .filter((n) => !isNaN(n))
-    
-    const newSteps1 = generateSteps(algorithm1, array)
-    const newSteps2 = generateSteps(algorithm2, array)
-    
+
+    const newSteps1 = generateSteps(algorithm1.algorithm, array)
+    const newSteps2 = generateSteps(algorithm2.algorithm, array)
+
     setSteps1(newSteps1)
     setSteps2(newSteps2)
     setCurrentStep(0)
@@ -151,12 +154,12 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
               </div>
               <div>
                 <h3 className="text-lg font-semibold">Parallel Algorithm Comparison</h3>
-                <p className="text-gray-600">{algorithm1} vs {algorithm2}</p>
+                <p className="text-gray-600">{algorithm1.name} vs {algorithm2.name}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-6 text-center">
               <div className="bg-white rounded-lg p-3 shadow-sm">
-                <div className="text-sm font-medium text-gray-700 mb-1">{algorithm1}</div>
+                <div className="text-sm font-medium text-gray-700 mb-1">{algorithm1.name}</div>
                 <div className="grid grid-cols-3 gap-2 text-xs">
                   <div>
                     <div className="text-lg font-bold text-blue-600">{sortResult1?.comparisons || 0}</div>
@@ -173,7 +176,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
                 </div>
               </div>
               <div className="bg-white rounded-lg p-3 shadow-sm">
-                <div className="text-sm font-medium text-gray-700 mb-1">{algorithm2}</div>
+                <div className="text-sm font-medium text-gray-700 mb-1">{algorithm2.name}</div>
                 <div className="grid grid-cols-3 gap-2 text-xs">
                   <div>
                     <div className="text-lg font-bold text-blue-600">{sortResult2?.comparisons || 0}</div>
@@ -201,7 +204,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center">
               <ArrowUpDown className="w-5 h-5 mr-2 text-blue-600" />
-              {algorithm1}
+              {algorithm1.name}
             </h3>
             <Badge variant="default">
               Step {currentStep1 + 1} of {steps1.length}
@@ -241,7 +244,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center">
               <ArrowUpDown className="w-5 h-5 mr-2 text-purple-600" />
-              {algorithm2}
+              {algorithm2.name}
             </h3>
             <Badge variant="default">
               Step {currentStep2 + 1} of {steps2.length}
@@ -352,7 +355,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
           <CardHeader>
             <CardTitle className="text-lg flex items-center">
               <Code className="w-5 h-5 mr-2" />
-              {algorithm1} Code
+              {algorithm1.name} Code
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -366,7 +369,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
           <CardHeader>
             <CardTitle className="text-lg flex items-center">
               <Code className="w-5 h-5 mr-2" />
-              {algorithm2} Code
+              {algorithm2.name} Code
             </CardTitle>
           </CardHeader>
           <CardContent>

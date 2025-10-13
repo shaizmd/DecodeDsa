@@ -1,7 +1,15 @@
-import { Step, Algorithm } from "./index"
+import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
+import type Algorithm from "../../types/algorithms"
+import Step from "../../types/steps"
 
-export class QuickSort implements Algorithm {
+export class QuickSort implements Algorithm<SortingAlgorithms> {
   name = "Quick Sort"
+  description = "A divide-and-conquer algorithm that picks an element as pivot and partitions the array around the pivot."
+  timeComplexity = "O(n log n)"
+  spaceComplexity = "O(log n)"
+  bestCase = "O(n log n)"
+  worstCase = "O(n²) - Poor pivot choices"
+  algorithm = SortingAlgorithms.QuickSort
 
   generateSteps(array: number[]): Step[] {
     const steps: Step[] = []

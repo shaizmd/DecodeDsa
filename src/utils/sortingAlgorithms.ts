@@ -5,13 +5,10 @@
  * Individual algorithm implementations are located in ./sortingAlgorithms/
  */
 
-import { SortingAlgorithmFactory, SortingAlgorithms } from "./sortingAlgorithms/index"
-import type { Step } from "./sortingAlgorithms/index"
-
-// Re-export for backward compatibility
-export type { Step }
-export { SortingAlgorithms }
-
+import { SortingAlgorithmFactory } from "./sortingAlgorithms/factory"
+import { SortingAlgorithms } from "../enums/SortingAlgorithms"
+import type Algorithm from "../types/algorithms"
+import Step from "../types/steps"
 
 /**
  * Generate sorting steps for a given algorithm
@@ -20,13 +17,9 @@ export { SortingAlgorithms }
  * @returns Array of steps showing the sorting process
  * @throws Error if algorithm is not found
  */
-export const generateSteps = (algorithm: string, array: number[]): Step[] => {
+export const generateSteps = (algorithm: SortingAlgorithms, array: number[]): Step[] => {
   try {
-    // Convert algorithm name to enum key format. Kept for backward compatibility
-    algorithm = algorithm.replace(/\s+/g, '')
-    const algoEnum = SortingAlgorithms[algorithm as keyof typeof SortingAlgorithms] as SortingAlgorithms
-    
-    const sortingAlgorithm = SortingAlgorithmFactory.getAlgorithm(algoEnum)
+    const sortingAlgorithm = SortingAlgorithmFactory.getAlgorithm(algorithm)
     return sortingAlgorithm.generateSteps(array)
   } catch (error) {
     console.error(`Error generating steps for ${algorithm}:`, error)
@@ -39,4 +32,8 @@ export const generateSteps = (algorithm: string, array: number[]): Step[] => {
       },
     ]
   }
+}
+
+export const getAvailableAlgorithms = (): Algorithm<SortingAlgorithms>[] => {
+  return SortingAlgorithmFactory.getAvailableAlgorithms()
 }

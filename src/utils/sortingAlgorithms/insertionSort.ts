@@ -1,7 +1,15 @@
-import { Step, Algorithm } from "./index"
+import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
+import type Algorithm from "../../types/algorithms"
+import Step from "../../types/steps"
 
-export class InsertionSort implements Algorithm {
+export class InsertionSort implements Algorithm<SortingAlgorithms> {
   name = "Insertion Sort"
+  description = "A simple sorting algorithm that builds the final sorted array one item at a time by comparing each new item with the already sorted portion."
+  timeComplexity = "O(n²)"
+  spaceComplexity = "O(1)"
+  bestCase = "O(n) - Already sorted"
+  worstCase = "O(n²) - Reverse sorted"
+  algorithm = SortingAlgorithms.InsertionSort
 
   generateSteps(array: number[]): Step[] {
     const steps: Step[] = []

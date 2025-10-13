@@ -1,7 +1,15 @@
-import { Step, Algorithm } from "./index"
+import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
+import type Algorithm from "../../types/algorithms"
+import Step from "../../types/steps"
 
-export class MergeSort implements Algorithm {
+export class MergeSort implements Algorithm<SortingAlgorithms> {
   name = "Merge Sort"
+  description = "A divide-and-conquer algorithm that recursively breaks down the problem into smaller subproblems until they become simple enough to solve directly."
+  timeComplexity = "O(n log n)"
+  spaceComplexity = "O(n)"
+  bestCase = "O(n log n)"
+  worstCase = "O(n log n)"
+  algorithm = SortingAlgorithms.MergeSort
 
   generateSteps(array: number[]): Step[] {
     const steps: Step[] = []

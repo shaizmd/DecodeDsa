@@ -1,7 +1,15 @@
-import { Step, Algorithm } from "./index"
+import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
+import type Algorithm from "../../types/algorithms"
+import Step from "../../types/steps"
 
-export class SelectionSort implements Algorithm {
+export class SelectionSort implements Algorithm<SortingAlgorithms> {
   name = "Selection Sort"
+  description = "A simple sorting algorithm that divides the input into a sorted and unsorted region, and repeatedly selects the smallest element from the unsorted region."
+  timeComplexity = "O(n²)"
+  spaceComplexity = "O(1)"
+  bestCase = "O(n²) - Not improved by sorted data"
+  worstCase = "O(n²) - Not improved by sorted data"
+  algorithm = SortingAlgorithms.SelectionSort
 
   generateSteps(array: number[]): Step[] {
     const steps: Step[] = []

@@ -1,7 +1,15 @@
-import { Step, Algorithm } from "./index"
+import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
+import type Algorithm from "../../types/algorithms"
+import Step from "../../types/steps"
 
-export class HeapSort implements Algorithm {
+export class HeapSort implements Algorithm<SortingAlgorithms> {
   name = "Heap Sort"
+  description = "A comparison-based sorting algorithm that uses a binary heap data structure to sort elements."
+  timeComplexity = "O(n log n)"
+  spaceComplexity = "O(1)"
+  bestCase = "O(n log n)"
+  worstCase = "O(n log n)"
+  algorithm = SortingAlgorithms.HeapSort
 
   generateSteps(array: number[]): Step[] {
     const steps: Step[] = []
