@@ -401,13 +401,13 @@ export default function Page() {
       ))}
     </div>
 
-    <div className="text-center mt-16">
-      <button
-        
+    <div className="mt-16 text-center">
+      <Link
+        to="/contact"
         className="inline-flex items-center px-8 py-4 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
       >
         Still have questions? Contact us →
-      </button>
+      </Link>
     </div>
   </div>
 </section>
