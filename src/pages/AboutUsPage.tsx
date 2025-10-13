@@ -219,37 +219,75 @@ export default function AboutUsPage() {
               From a simple idea to a thriving learning platform
             </p>
           </div>
-          <div className="max-w-4xl mx-auto">
+          
+          <div className="max-w-5xl mx-auto">
             <div className="relative">
-              {/* Timeline line */}
-              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-500 to-purple-500"></div>
+              {/* Enhanced Timeline line with gradient and glow - starts from first dot and ends at last dot */}
+              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-blue-400 via-purple-500 to-pink-500 shadow-lg shadow-purple-500/30" style={{ top: '3rem', height: `calc(100% - 16rem)` }}></div>
 
               {milestones.map((milestone, index) => (
                 <div
                   key={index}
-                  className={`relative mb-12 ${
+                  className={`relative mb-16 md:mb-20 group ${
                     index % 2 === 0 ? "md:text-right" : "md:text-left"
                   }`}
                 >
                   <div
                     className={`md:w-1/2 ${
-                      index % 2 === 0 ? "md:pr-12 md:ml-auto" : "md:pl-12"
+                      index % 2 === 0 ? "md:pr-16 md:ml-auto" : "md:pl-16"
                     }`}
                   >
-                    <div className="bg-gradient-to-br from-slate-50 to-white border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
-                      <div
-                        className={`inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-bold mb-3`}
-                      >
-                        {milestone.year}
+                    {/* Enhanced Card with gradient border */}
+                    <div className="relative">
+                      {/* Gradient border effect */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl opacity-75 group-hover:opacity-100 blur-sm group-hover:blur transition-all duration-500"></div>
+                      
+                      {/* Card content */}
+                      <div className="relative bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] border-2 border-transparent group-hover:border-purple-200">
+                        {/* Subtle corner gradient accent */}
+                        <div className={`absolute ${index % 2 === 0 ? 'top-0 right-0' : 'top-0 left-0'} w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full filter blur-3xl opacity-40 group-hover:opacity-60 transition-opacity duration-500 -z-10`}></div>
+                        
+                        {/* Year badge with icon */}
+                        <div className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-2xl font-bold mb-4 text-lg shadow-lg shadow-purple-500/30 group-hover:shadow-purple-500/50 group-hover:scale-105 transition-all duration-300">
+                          <Award className="w-5 h-5 mr-2" />
+                          {milestone.year}
+                        </div>
+                        
+                        {/* Title with gradient on hover */}
+                        <h3 className="text-2xl font-bold text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 mb-3 transition-all duration-300">
+                          {milestone.title}
+                        </h3>
+                        
+                        {/* Description */}
+                        <p className="text-gray-600 text-lg leading-relaxed">
+                          {milestone.description}
+                        </p>
+                        
+                        {/* Bottom accent line */}
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-b-3xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {milestone.title}
-                      </h3>
-                      <p className="text-gray-600">{milestone.description}</p>
                     </div>
                   </div>
-                  {/* Timeline dot */}
-                  <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 -translate-y-4 w-4 h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full border-4 border-white shadow-lg"></div>
+                  
+                  {/* Enhanced Timeline dot with multi-layer pulse */}
+                  <div className="hidden md:block absolute left-1/2 top-12 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="relative flex items-center justify-center">
+                      {/* Outer pulse ring */}
+                      <div className="absolute w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-20 group-hover:opacity-40 animate-ping"></div>
+                      
+                      {/* Middle glow ring */}
+                      <div className="absolute w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full opacity-40 group-hover:scale-125 group-hover:opacity-60 transition-all duration-500"></div>
+                      
+                      {/* Inner dot with icon */}
+                      <div className="relative w-8 h-8 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full border-4 border-white shadow-xl shadow-purple-500/50 group-hover:shadow-purple-500/80 group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                        <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Mobile enhanced indicator */}
+                  <div className="md:hidden absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 rounded-full shadow-lg shadow-purple-500/30"></div>
+                  <div className="md:hidden absolute left-0 top-12 transform -translate-x-1/2 w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full border-3 border-white shadow-lg shadow-purple-500/50"></div>
                 </div>
               ))}
             </div>
