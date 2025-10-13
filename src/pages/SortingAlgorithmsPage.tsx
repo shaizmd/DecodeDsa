@@ -6,6 +6,7 @@ import { ArrowUpDown, Clock, Code2, GitCompare, Eye } from "lucide-react";
 import SortingVisualizer from "../components/SortingVisualizer";
 import ParallelSortingVisualizer from "../components/ParallelSortingVisualizer";
 import { Link } from "react-router-dom";
+import { SortingAlgorithms } from "../utils/sortingAlgorithms";
 
 interface SortingAlgorithm {
   name: string;
@@ -14,6 +15,7 @@ interface SortingAlgorithm {
   spaceComplexity: string;
   bestCase: string;
   worstCase: string;
+  algorithm: SortingAlgorithms;
 }
 
 const sortingAlgorithms: SortingAlgorithm[] = [
@@ -25,6 +27,7 @@ const sortingAlgorithms: SortingAlgorithm[] = [
     spaceComplexity: "O(1)",
     bestCase: "O(n) - Already sorted",
     worstCase: "O(n²) - Reverse sorted",
+    algorithm: SortingAlgorithms.BubbleSort,
   },
   {
     name: "Selection Sort",
@@ -34,6 +37,7 @@ const sortingAlgorithms: SortingAlgorithm[] = [
     spaceComplexity: "O(1)",
     bestCase: "O(n²) - Not improved by sorted data",
     worstCase: "O(n²) - Not improved by sorted data",
+    algorithm: SortingAlgorithms.SelectionSort,
   },
   {
     name: "Insertion Sort",
@@ -43,6 +47,7 @@ const sortingAlgorithms: SortingAlgorithm[] = [
     spaceComplexity: "O(1)",
     bestCase: "O(n) - Already sorted",
     worstCase: "O(n²) - Reverse sorted",
+    algorithm: SortingAlgorithms.InsertionSort,
   },
   {
     name: "Merge Sort",
@@ -52,6 +57,7 @@ const sortingAlgorithms: SortingAlgorithm[] = [
     spaceComplexity: "O(n)",
     bestCase: "O(n log n)",
     worstCase: "O(n log n)",
+    algorithm: SortingAlgorithms.MergeSort,
   },
   {
     name: "Quick Sort",
@@ -61,6 +67,7 @@ const sortingAlgorithms: SortingAlgorithm[] = [
     spaceComplexity: "O(log n)",
     bestCase: "O(n log n)",
     worstCase: "O(n²) - Poor pivot choices",
+    algorithm: SortingAlgorithms.QuickSort,
   },
   {
     name: "Heap Sort",
@@ -70,6 +77,7 @@ const sortingAlgorithms: SortingAlgorithm[] = [
     spaceComplexity: "O(1)",
     bestCase: "O(n log n)",
     worstCase: "O(n log n)",
+    algorithm: SortingAlgorithms.HeapSort,
   },
 ];
 
