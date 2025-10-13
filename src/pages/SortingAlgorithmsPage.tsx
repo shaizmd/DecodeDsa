@@ -110,20 +110,20 @@ function SortingAlgorithmsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white border-b shadow-sm">
-        <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto py-4 px-4 md:p-6 lg:px-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
+            <div className="flex items-center space-x-3 min-h-[110px]">
               <Link to={"/"}>
                 <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">
                   <ArrowUpDown className="w-6 h-6 text-white" />
                 </div>
               </Link>
               <div className="p-2">
-                <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Sorting Algorithms Visualizer
                 </h1>
-                <p className="hidden mt-2 text-gray-600 md:block">
+                <p className="text-sm md:text-base mt-2 text-gray-600">
                   {comparisonMode
                     ? "Compare two sorting algorithms side by side"
                     : "Explore how different sorting algorithms organize data step by step"}
@@ -131,7 +131,8 @@ function SortingAlgorithmsPage() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center p-1 space-x-2 bg-gray-100 rounded-lg lg:flex-row">
+            {/* Mode Toggle */}
+            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setComparisonMode(false)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${!comparisonMode
@@ -139,7 +140,7 @@ function SortingAlgorithmsPage() {
                     : "text-gray-600 hover:text-gray-800"
                   }`}
               >
-                <Eye className="w-4 h-4" />
+                <Eye className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="text-sm font-medium">Single View</span>
               </button>
               <button
@@ -149,7 +150,7 @@ function SortingAlgorithmsPage() {
                     : "text-gray-600 hover:text-gray-800"
                   }`}
               >
-                <GitCompare className="w-4 h-4" />
+                <GitCompare className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="text-sm font-medium">Compare</span>
               </button>
             </div>

@@ -135,16 +135,15 @@ function ArrayAlgorithmsPage() {
       </header>
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        
         {/* Difficulty Filter */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 px-4 py-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Filter by Difficulty</h2>
           <div className="flex flex-wrap gap-3">
             {["All", "Easy", "Medium", "Hard"].map((difficulty) => (
               <button
                 key={difficulty}
                 onClick={() => setSelectedDifficulty(difficulty)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3.5 py-2 rounded-lg font-medium transition-all duration-200 ${
                   selectedDifficulty === difficulty
                     ? "bg-blue-600 text-white shadow-md"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
