@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   ListOrdered,
   Eye,
@@ -15,15 +15,16 @@ import {
   ArrowRight,
   ArrowLeft,
   RotateCcw,
-} from "lucide-react"
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface QueueOperation {
-  name: string
-  description: string
-  timeComplexity: string
-  spaceComplexity: string
-  pythonCode: string
-  realWorldExample: string
+  name: string;
+  description: string;
+  timeComplexity: string;
+  spaceComplexity: string;
+  pythonCode: string;
+  realWorldExample: string;
 }
 
 const queueOperations: QueueOperation[] = [
@@ -37,11 +38,13 @@ const queueOperations: QueueOperation[] = [
         raise QueueOverflowError("Queue is full")
     self.queue.append(item)
     self.size += 1`,
-    realWorldExample: "Person joining the end of a line, adding print job to printer queue",
+    realWorldExample:
+      "Person joining the end of a line, adding print job to printer queue",
   },
   {
     name: "Dequeue",
-    description: "Removes and returns the front (first) element from the queue.",
+    description:
+      "Removes and returns the front (first) element from the queue.",
     timeComplexity: "O(1)",
     spaceComplexity: "O(1)",
     pythonCode: `def dequeue(self):
@@ -50,7 +53,8 @@ const queueOperations: QueueOperation[] = [
     item = self.queue.pop(0)
     self.size -= 1
     return item`,
-    realWorldExample: "First person in line being served, processing oldest print job",
+    realWorldExample:
+      "First person in line being served, processing oldest print job",
   },
   {
     name: "Front/Peek",
@@ -72,119 +76,136 @@ const queueOperations: QueueOperation[] = [
     return self.size == 0`,
     realWorldExample: "Checking if there are any customers waiting in line",
   },
-]
+];
 
 interface QueueElement {
-  value: number
-  isHighlighted: boolean
-  isNew: boolean
-  isRemoving: boolean
-  animationDelay: number
+  value: number;
+  isHighlighted: boolean;
+  isNew: boolean;
+  isRemoving: boolean;
+  animationDelay: number;
 }
 
 function QueueVisualizerPage() {
-  const [queue, setQueue] = useState<QueueElement[]>([])
-  const [maxSize, setMaxSize] = useState<number>(8)
-  const [inputValue, setInputValue] = useState<string>("")
-  const [operationHistory, setOperationHistory] = useState<string[]>([])
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [showTutorial, setShowTutorial] = useState(false)
-  const [showCode, setShowCode] = useState(false)
-  const [selectedOperation, setSelectedOperation] = useState<string | null>(null)
-  const [lastOperation, setLastOperation] = useState<string>("")
+  const [queue, setQueue] = useState<QueueElement[]>([]);
+  const [maxSize, setMaxSize] = useState<number>(8);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [operationHistory, setOperationHistory] = useState<string[]>([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [showCode, setShowCode] = useState(false);
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(
+    null
+  );
+  const [lastOperation, setLastOperation] = useState<string>("");
 
   const addToHistory = (operation: string) => {
-    const timestamp = new Date().toLocaleTimeString()
-    setOperationHistory((prev) => [`${timestamp}: ${operation}`, ...prev.slice(0, 19)])
-  }
+    const timestamp = new Date().toLocaleTimeString();
+    setOperationHistory((prev) => [
+      `${timestamp}: ${operation}`,
+      ...prev.slice(0, 19),
+    ]);
+  };
 
   const enqueue = () => {
     if (queue.length >= maxSize) {
-      addToHistory("❌ Error: Queue Overflow! Cannot enqueue to full queue")
-      return
+      addToHistory("❌ Error: Queue Overflow! Cannot enqueue to full queue");
+      return;
     }
     if (!inputValue || isNaN(Number(inputValue))) {
-      addToHistory("❌ Error: Please enter a valid number")
-      return
+      addToHistory("❌ Error: Please enter a valid number");
+      return;
     }
 
-    setIsAnimating(true)
-    setLastOperation("enqueue")
+    setIsAnimating(true);
+    setLastOperation("enqueue");
     const newElement: QueueElement = {
       value: Number(inputValue),
       isHighlighted: true,
       isNew: true,
       isRemoving: false,
       animationDelay: 0,
-    }
+    };
 
-    setQueue((prev) => [...prev, newElement])
-    addToHistory(`✅ Enqueued ${inputValue} to rear of queue`)
-    setInputValue("")
+    setQueue((prev) => [...prev, newElement]);
+    addToHistory(`✅ Enqueued ${inputValue} to rear of queue`);
+    setInputValue("");
 
     setTimeout(() => {
-      setQueue((prev) => prev.map((el) => ({ ...el, isHighlighted: false, isNew: false })))
-      setIsAnimating(false)
-    }, 1000)
-  }
+      setQueue((prev) =>
+        prev.map((el) => ({ ...el, isHighlighted: false, isNew: false }))
+      );
+      setIsAnimating(false);
+    }, 1000);
+  };
 
   const dequeue = () => {
     if (queue.length === 0) {
-      addToHistory("❌ Error: Queue Underflow! Cannot dequeue from empty queue")
-      return
+      addToHistory(
+        "❌ Error: Queue Underflow! Cannot dequeue from empty queue"
+      );
+      return;
     }
 
-    setIsAnimating(true)
-    setLastOperation("dequeue")
-    const dequeuedValue = queue[0].value
+    setIsAnimating(true);
+    setLastOperation("dequeue");
+    const dequeuedValue = queue[0].value;
 
     // Mark element as removing
-    setQueue((prev) => prev.map((el, idx) => (idx === 0 ? { ...el, isRemoving: true } : el)))
+    setQueue((prev) =>
+      prev.map((el, idx) => (idx === 0 ? { ...el, isRemoving: true } : el))
+    );
 
     setTimeout(() => {
-      setQueue((prev) => prev.slice(1))
-      addToHistory(`✅ Dequeued ${dequeuedValue} from front of queue`)
-      setIsAnimating(false)
-    }, 500)
-  }
+      setQueue((prev) => prev.slice(1));
+      addToHistory(`✅ Dequeued ${dequeuedValue} from front of queue`);
+      setIsAnimating(false);
+    }, 500);
+  };
 
   const front = () => {
     if (queue.length === 0) {
-      addToHistory("❌ Error: Cannot peek at empty queue")
-      return
+      addToHistory("❌ Error: Cannot peek at empty queue");
+      return;
     }
 
-    setIsAnimating(true)
-    setLastOperation("front")
-    const frontValue = queue[0].value
+    setIsAnimating(true);
+    setLastOperation("front");
+    const frontValue = queue[0].value;
 
-    setQueue((prev) => prev.map((el, idx) => (idx === 0 ? { ...el, isHighlighted: true } : el)))
-    addToHistory(`👁️ Front element: ${frontValue}`)
+    setQueue((prev) =>
+      prev.map((el, idx) => (idx === 0 ? { ...el, isHighlighted: true } : el))
+    );
+    addToHistory(`👁️ Front element: ${frontValue}`);
 
     setTimeout(() => {
-      setQueue((prev) => prev.map((el) => ({ ...el, isHighlighted: false })))
-      setIsAnimating(false)
-    }, 1500)
-  }
+      setQueue((prev) => prev.map((el) => ({ ...el, isHighlighted: false })));
+      setIsAnimating(false);
+    }, 1500);
+  };
 
   const isEmpty = () => {
-    const empty = queue.length === 0
-    addToHistory(`🔍 Queue is ${empty ? "empty" : "not empty"} (size: ${queue.length})`)
-  }
+    const empty = queue.length === 0;
+    addToHistory(
+      `🔍 Queue is ${empty ? "empty" : "not empty"} (size: ${queue.length})`
+    );
+  };
 
   const isFull = () => {
-    const full = queue.length >= maxSize
-    addToHistory(`🔍 Queue is ${full ? "full" : "not full"} (${queue.length}/${maxSize})`)
-  }
+    const full = queue.length >= maxSize;
+    addToHistory(
+      `🔍 Queue is ${full ? "full" : "not full"} (${queue.length}/${maxSize})`
+    );
+  };
 
   const size = () => {
-    addToHistory(`📏 Current queue size: ${queue.length}`)
-  }
+    addToHistory(`📏 Current queue size: ${queue.length}`);
+  };
 
   const clearQueue = () => {
-    setQueue([])
-    addToHistory("🗑️ Queue cleared")
-  }
+    setQueue([]);
+    addToHistory("🗑️ Queue cleared");
+  };
 
   const getFullQueueCode = () => {
     return `class Queue:
@@ -276,8 +297,8 @@ queue.enqueue(20)
 queue.enqueue(30)
 print(f"Front element: {queue.front()}")    # 10
 print(f"Dequeued: {queue.dequeue()}")       # 10
-print(f"Size: {queue.get_size()}")          # 2`
-  }
+print(f"Size: {queue.get_size()}")          # 2`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -286,14 +307,18 @@ print(f"Size: {queue.get_size()}")          # 2`
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg">
-                <ListOrdered className="w-6 h-6 text-white" />
-              </div>
+              <Link to={"/"}>
+                <div className="p-2 cursor-pointer bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg">
+                  <ListOrdered className="w-6 h-6 text-white" />
+                </div>
+              </Link>
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                   Interactive Queue Visualizer
                 </h1>
-                <p className="mt-1 text-gray-600">Master queue operations with visual learning</p>
+                <p className="mt-1 text-gray-600">
+                  Master queue operations with visual learning
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -322,33 +347,46 @@ print(f"Size: {queue.get_size()}")          # 2`
           <div className="mb-8 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200">
             <div className="flex items-center space-x-2 mb-4">
               <Lightbulb className="w-5 h-5 text-blue-600" />
-              <h2 className="text-xl font-bold text-blue-900">Queue Data Structure</h2>
+              <h2 className="text-xl font-bold text-blue-900">
+                Queue Data Structure
+              </h2>
             </div>
             <p className="text-blue-800 mb-4">
-              A queue is a linear data structure that follows the First In, First Out (FIFO) principle. Think of it like
-              a line at a store - the first person in line is the first to be served.
+              A queue is a linear data structure that follows the First In,
+              First Out (FIFO) principle. Think of it like a line at a store -
+              the first person in line is the first to be served.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-white rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Clock className="w-4 h-4 text-green-600" />
-                  <span className="font-semibold text-green-800">Time Complexity</span>
+                  <span className="font-semibold text-green-800">
+                    Time Complexity
+                  </span>
                 </div>
-                <p className="text-sm text-green-700">All operations: O(1) - Constant time</p>
+                <p className="text-sm text-green-700">
+                  All operations: O(1) - Constant time
+                </p>
               </div>
               <div className="bg-white rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Target className="w-4 h-4 text-blue-600" />
                   <span className="font-semibold text-blue-800">Use Cases</span>
                 </div>
-                <p className="text-sm text-blue-700">Task scheduling, breadth-first search, print queues</p>
+                <p className="text-sm text-blue-700">
+                  Task scheduling, breadth-first search, print queues
+                </p>
               </div>
               <div className="bg-white rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Zap className="w-4 h-4 text-orange-600" />
-                  <span className="font-semibold text-orange-800">Key Property</span>
+                  <span className="font-semibold text-orange-800">
+                    Key Property
+                  </span>
                 </div>
-                <p className="text-sm text-orange-700">FIFO - First In, First Out</p>
+                <p className="text-sm text-orange-700">
+                  FIFO - First In, First Out
+                </p>
               </div>
             </div>
           </div>
@@ -356,7 +394,9 @@ print(f"Size: {queue.get_size()}")          # 2`
 
         {/* Operations Overview */}
         <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Queue Operations</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-6">
+            Queue Operations
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {queueOperations.map((operation) => (
               <div
@@ -366,25 +406,41 @@ print(f"Size: {queue.get_size()}")          # 2`
                     ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
-                onClick={() => setSelectedOperation(selectedOperation === operation.name ? null : operation.name)}
+                onClick={() =>
+                  setSelectedOperation(
+                    selectedOperation === operation.name ? null : operation.name
+                  )
+                }
               >
-                <h3 className="font-semibold text-gray-900 mb-2">{operation.name}</h3>
-                <p className="text-sm text-gray-600 mb-3">{operation.description}</p>
+                <h3 className="font-semibold text-gray-900 mb-2">
+                  {operation.name}
+                </h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  {operation.description}
+                </p>
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
                     <span className="text-gray-500">Time:</span>
-                    <span className="font-mono text-green-600">{operation.timeComplexity}</span>
+                    <span className="font-mono text-green-600">
+                      {operation.timeComplexity}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Space:</span>
-                    <span className="font-mono text-blue-600">{operation.spaceComplexity}</span>
+                    <span className="font-mono text-blue-600">
+                      {operation.spaceComplexity}
+                    </span>
                   </div>
                 </div>
                 {selectedOperation === operation.name && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <div className="mb-3">
-                      <h4 className="text-sm font-semibold text-gray-700 mb-1">Real-world Example:</h4>
-                      <p className="text-xs text-gray-600">{operation.realWorldExample}</p>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-1">
+                        Real-world Example:
+                      </h4>
+                      <p className="text-xs text-gray-600">
+                        {operation.realWorldExample}
+                      </p>
                     </div>
                     <div className="bg-gray-900 rounded-lg p-3">
                       <pre className="text-xs text-green-400 overflow-x-auto">
@@ -402,23 +458,33 @@ print(f"Size: {queue.get_size()}")          # 2`
           {/* Controls Panel */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Queue Controls</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-6">
+                Queue Controls
+              </h2>
 
               {/* Configuration */}
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Queue Capacity</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Queue Capacity
+                  </label>
                   <input
                     type="number"
                     value={maxSize}
-                    onChange={(e) => setMaxSize(Math.max(1, Math.min(15, Number(e.target.value))))}
+                    onChange={(e) =>
+                      setMaxSize(
+                        Math.max(1, Math.min(15, Number(e.target.value)))
+                      )
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     min="1"
                     max="15"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Value to Enqueue</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Value to Enqueue
+                  </label>
                   <input
                     type="number"
                     value={inputValue}
@@ -433,11 +499,15 @@ print(f"Size: {queue.get_size()}")          # 2`
               {/* Operation Buttons */}
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-gray-700 mb-3">Primary Operations</h3>
+                  <h3 className="font-semibold text-gray-700 mb-3">
+                    Primary Operations
+                  </h3>
                   <div className="grid grid-cols-1 gap-2">
                     <button
                       onClick={enqueue}
-                      disabled={isAnimating || !inputValue || isNaN(Number(inputValue))}
+                      disabled={
+                        isAnimating || !inputValue || isNaN(Number(inputValue))
+                      }
                       className="flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ArrowRight className="w-4 h-4" />
@@ -463,7 +533,9 @@ print(f"Size: {queue.get_size()}")          # 2`
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-700 mb-3">Query Operations</h3>
+                  <h3 className="font-semibold text-gray-700 mb-3">
+                    Query Operations
+                  </h3>
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={isEmpty}
@@ -498,7 +570,9 @@ print(f"Size: {queue.get_size()}")          # 2`
 
               {/* Queue Info */}
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold text-gray-700 mb-2">Queue Status</h4>
+                <h4 className="font-semibold text-gray-700 mb-2">
+                  Queue Status
+                </h4>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
                     <span>Size:</span>
@@ -508,13 +582,23 @@ print(f"Size: {queue.get_size()}")          # 2`
                   </div>
                   <div className="flex justify-between">
                     <span>Empty:</span>
-                    <span className={queue.length === 0 ? "text-red-600" : "text-green-600"}>
+                    <span
+                      className={
+                        queue.length === 0 ? "text-red-600" : "text-green-600"
+                      }
+                    >
                       {queue.length === 0 ? "Yes" : "No"}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Full:</span>
-                    <span className={queue.length >= maxSize ? "text-red-600" : "text-green-600"}>
+                    <span
+                      className={
+                        queue.length >= maxSize
+                          ? "text-red-600"
+                          : "text-green-600"
+                      }
+                    >
                       {queue.length >= maxSize ? "Yes" : "No"}
                     </span>
                   </div>
@@ -526,7 +610,9 @@ print(f"Size: {queue.get_size()}")          # 2`
                       </div>
                       <div className="flex justify-between">
                         <span>Rear:</span>
-                        <span className="font-mono">{queue[queue.length - 1].value}</span>
+                        <span className="font-mono">
+                          {queue[queue.length - 1].value}
+                        </span>
                       </div>
                     </>
                   )}
@@ -540,7 +626,9 @@ print(f"Size: {queue.get_size()}")          # 2`
             {/* Queue Visualization */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Queue Visualization</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Queue Visualization
+                </h2>
                 <div className="flex items-center space-x-4 text-sm text-gray-600">
                   <span>Capacity: {maxSize}</span>
                   <span>Size: {queue.length}</span>
@@ -567,10 +655,10 @@ print(f"Size: {queue.get_size()}")          # 2`
                             element.isRemoving
                               ? "scale-110 opacity-0 -translate-x-8"
                               : element.isHighlighted
-                                ? "bg-gradient-to-r from-yellow-400 to-orange-500 scale-105 shadow-lg"
-                                : element.isNew
-                                  ? "bg-gradient-to-r from-green-400 to-blue-500 scale-105"
-                                  : "bg-gradient-to-r from-blue-500 to-cyan-500"
+                              ? "bg-gradient-to-r from-yellow-400 to-orange-500 scale-105 shadow-lg"
+                              : element.isNew
+                              ? "bg-gradient-to-r from-green-400 to-blue-500 scale-105"
+                              : "bg-gradient-to-r from-blue-500 to-cyan-500"
                           }`}
                           style={{
                             animationDelay: `${element.animationDelay}ms`,
@@ -582,7 +670,9 @@ print(f"Size: {queue.get_size()}")          # 2`
                           {index === 0 && (
                             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                               <div className="flex flex-col items-center">
-                                <span className="text-xs font-medium text-blue-600">FRONT</span>
+                                <span className="text-xs font-medium text-blue-600">
+                                  FRONT
+                                </span>
                                 <ArrowLeft className="w-3 h-3 text-blue-600" />
                               </div>
                             </div>
@@ -593,7 +683,9 @@ print(f"Size: {queue.get_size()}")          # 2`
                             <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
                               <div className="flex flex-col items-center">
                                 <ArrowRight className="w-3 h-3 text-green-600" />
-                                <span className="text-xs font-medium text-green-600">REAR</span>
+                                <span className="text-xs font-medium text-green-600">
+                                  REAR
+                                </span>
                               </div>
                             </div>
                           )}
@@ -627,7 +719,9 @@ print(f"Size: {queue.get_size()}")          # 2`
               {lastOperation && (
                 <div className="mt-6 text-center">
                   <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full">
-                    <span className="text-sm font-medium">Last Operation: {lastOperation.toUpperCase()}</span>
+                    <span className="text-sm font-medium">
+                      Last Operation: {lastOperation.toUpperCase()}
+                    </span>
                   </div>
                 </div>
               )}
@@ -635,10 +729,14 @@ print(f"Size: {queue.get_size()}")          # 2`
 
             {/* Operation History */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Operation History</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Operation History
+              </h2>
               <div className="max-h-60 overflow-y-auto space-y-2">
                 {operationHistory.length === 0 ? (
-                  <p className="text-gray-500 italic text-center py-8">No operations performed yet</p>
+                  <p className="text-gray-500 italic text-center py-8">
+                    No operations performed yet
+                  </p>
                 ) : (
                   operationHistory.map((operation, index) => (
                     <div
@@ -647,10 +745,10 @@ print(f"Size: {queue.get_size()}")          # 2`
                         operation.includes("❌")
                           ? "bg-red-50 text-red-700 border-red-400"
                           : operation.includes("✅")
-                            ? "bg-green-50 text-green-700 border-green-400"
-                            : operation.includes("👁️")
-                              ? "bg-blue-50 text-blue-700 border-blue-400"
-                              : "bg-gray-50 text-gray-700 border-gray-400"
+                          ? "bg-green-50 text-green-700 border-green-400"
+                          : operation.includes("👁️")
+                          ? "bg-blue-50 text-blue-700 border-blue-400"
+                          : "bg-gray-50 text-gray-700 border-gray-400"
                       }`}
                     >
                       {operation}
@@ -663,7 +761,9 @@ print(f"Size: {queue.get_size()}")          # 2`
             {/* Full Code Implementation */}
             {showCode && (
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Complete Queue Implementation</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  Complete Queue Implementation
+                </h2>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
                   <pre className="text-green-400 text-sm">
                     <code>{getFullQueueCode()}</code>
@@ -675,7 +775,7 @@ print(f"Size: {queue.get_size()}")          # 2`
         </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default QueueVisualizerPage
+export default QueueVisualizerPage;
