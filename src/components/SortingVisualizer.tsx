@@ -1,11 +1,10 @@
-"use client"
-
 import type React from "react"
 import { useEffect, useState, useCallback } from "react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { ArrowUpDown, Code } from "lucide-react"
+import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 
 interface SortingVisualizerProps {
   algorithm: string
@@ -28,7 +27,6 @@ interface SortResult {
   steps: number
 }
 
-// Move sorting functions outside the component
 const bubbleSort = (arr: number[], steps: Step[]): Step[] => {
   const n = arr.length
 
@@ -205,7 +203,6 @@ const mergeSort = (arr: number[], steps: Step[]): Step[] => {
     mergeSortHelper(arr, left, mid, depth + 1)
     mergeSortHelper(arr, mid + 1, right, depth + 1)
 
-    // Merge phase
     const leftArr = arr.slice(left, mid + 1)
     const rightArr = arr.slice(mid + 1, right + 1)
 
@@ -362,7 +359,6 @@ const quickSort = (arr: number[], steps: Step[]): Step[] => {
 const heapSort = (arr: number[], steps: Step[]): Step[] => {
   const n = arr.length
 
-  // Build max heap
   steps.push({
     array: [...arr],
     description: `Building max heap from array`,
@@ -379,7 +375,6 @@ const heapSort = (arr: number[], steps: Step[]): Step[] => {
     code: `// Max heap construction complete`,
   })
 
-  // Extract elements from heap one by one
   for (let i = n - 1; i > 0; i--) {
     steps.push({
       array: [...arr],
@@ -436,6 +431,94 @@ const heapify = (arr: number[], n: number, i: number, steps: Step[]): void => {
   }
 }
 
+const radixSort = (arr: number[], steps: Step[]): Step[] => {
+  const getMax = (arr: number[]): number => {
+    let max = arr[0]
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] > max) {
+        max = arr[i]
+      }
+    }
+    return max
+  }
+
+  const countingSort = (arr: number[], exp: number): void => {
+    const n = arr.length
+    const output = new Array(n)
+    const count = new Array(10).fill(0)
+
+    steps.push({
+      array: [...arr],
+      description: `Processing digit at position ${exp} (ones, tens, hundreds, etc.)`,
+      code: `// Counting sort for digit position ${exp}\nlet count = new Array(10).fill(0);`,
+    })
+
+    for (let i = 0; i < n; i++) {
+      const digit = Math.floor(arr[i] / exp) % 10
+      count[digit]++
+    }
+
+    steps.push({
+      array: [...arr],
+      description: `Count array for current digit: [${count.join(", ")}]`,
+      code: `// Count occurrences of each digit\ncount = [${count.join(", ")}]`,
+    })
+
+    for (let i = 1; i < 10; i++) {
+      count[i] += count[i - 1]
+    }
+
+    steps.push({
+      array: [...arr],
+      description: `Cumulative count array: [${count.join(", ")}]`,
+      code: `// Build cumulative count array\ncount = [${count.join(", ")}]`,
+    })
+
+    for (let i = n - 1; i >= 0; i--) {
+      const digit = Math.floor(arr[i] / exp) % 10
+      output[count[digit] - 1] = arr[i]
+      count[digit]--
+
+      steps.push({
+        array: [...output.map(v => v ?? 0)],
+        description: `Placing ${arr[i]} at position based on digit ${digit}`,
+        code: `output[${count[digit]}] = ${arr[i]}; // digit: ${digit}`,
+      })
+    }
+
+    for (let i = 0; i < n; i++) {
+      arr[i] = output[i]
+    }
+
+    steps.push({
+      array: [...arr],
+      description: `Array after sorting by digit position ${exp}: [${arr.join(", ")}]`,
+      code: `// Copy output back to arr\narr = [${arr.join(", ")}]`,
+    })
+  }
+
+  const max = getMax(arr)
+
+  steps.push({
+    array: [...arr],
+    description: `Starting Radix Sort. Maximum value: ${max}`,
+    code: `// Find maximum number to know number of digits\nlet max = ${max};`,
+  })
+
+  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+    countingSort(arr, exp)
+  }
+
+  steps.push({
+    array: [...arr],
+    description: `Radix sort complete! Final sorted array: [${arr.join(", ")}]`,
+    code: `// Radix sort completed\n// Final array: [${arr.join(", ")}]`,
+    sorted: Array.from({ length: arr.length }, (_, i) => i),
+  })
+
+  return steps
+}
+
 const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputArray }) => {
   const [steps, setSteps] = useState<Step[]>([])
   const [currentStep, setCurrentStep] = useState(0)
@@ -464,6 +547,8 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         return quickSort(arr, steps)
       case "Heap Sort":
         return heapSort(arr, steps)
+      case "Radix Sort":
+        return radixSort(arr, steps)
       default:
         return steps
     }
@@ -471,14 +556,14 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
 
   useEffect(() => {
     const array = inputArray
-      .split(" ")
+      .split(/[\s,]+/)
+      .filter(n => n)
       .map(Number)
       .filter((n) => !isNaN(n))
     const newSteps = generateSteps(algorithm, array)
     setSteps(newSteps)
     setCurrentStep(0)
 
-    // Calculate sort metrics
     const comparisons = newSteps.filter((step) => step.comparing?.length).length
     const swaps = newSteps.filter((step) => step.swapping?.length).length
     setSortResult({
@@ -516,134 +601,157 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     return "bg-blue-500"
   }
 
+  const getElementColorHex = (index: number): string => {
+    const step = steps[currentStep]
+    if (!step) return "#3b82f6"
+
+    if (step.sorted?.includes(index)) return "#22c55e"
+    if (step.swapping?.includes(index)) return "#ef4444"
+    if (step.comparing?.includes(index)) return "#eab308"
+    if (step.pivot === index) return "#a855f7"
+
+    return "#3b82f6"
+  }
+
+  const prepareCanvasElements = () => {
+    const step = steps[currentStep]
+    if (!step) return []
+
+    return step.array.map((value, index) => ({
+      value,
+      index,
+      color: getElementColorHex(index),
+    }))
+  }
+
   const getCompleteAlgorithmCode = (algorithm: string): string => {
     switch (algorithm) {
       case "Bubble Sort":
         return `function bubbleSort(arr) {
-  const n = arr.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let swapped = false;
-    
-    for (let j = 0; j < n - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        swapped = true;
-      }
-    }
-    
-    // If no swapping occurred, array is sorted
-    if (!swapped) break;
-  }
-  
-  return arr;
-}`
+          const n = arr.length;
+          
+          for (let i = 0; i < n - 1; i++) {
+            let swapped = false;
+            
+            for (let j = 0; j < n - i - 1; j++) {
+              if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+              }
+            }
+            
+            // If no swapping occurred, array is sorted
+            if (!swapped) break;
+          }
+          
+          return arr;
+        }`
 
-      case "Selection Sort":
-        return `function selectionSort(arr) {
-  const n = arr.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let minIdx = i;
-    
-    // Find minimum element in remaining array
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIdx]) {
-        minIdx = j;
-      }
-    }
-    
-    // Swap minimum element with first element
-    if (minIdx !== i) {
-      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
-    }
-  }
-  
-  return arr;
-}`
+        case "Selection Sort":
+          return `function selectionSort(arr) {
+            const n = arr.length;
+            
+            for (let i = 0; i < n - 1; i++) {
+              let minIdx = i;
+              
+              // Find minimum element in remaining array
+              for (let j = i + 1; j < n; j++) {
+                if (arr[j] < arr[minIdx]) {
+                  minIdx = j;
+                }
+              }
+              
+              // Swap minimum element with first element
+              if (minIdx !== i) {
+                [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+              }
+            }
+          
+            return arr;
+          }`
 
-      case "Insertion Sort":
-        return `function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
-    
-    // Move elements greater than key one position ahead
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-    
-    // Insert key at correct position
-    arr[j + 1] = key;
-  }
-  
-  return arr;
-}`
+        case "Insertion Sort":
+          return `function insertionSort(arr) {
+            for (let i = 1; i < arr.length; i++) {
+              let key = arr[i];
+              let j = i - 1;
+              
+              // Move elements greater than key one position ahead
+              while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+              }
+              
+              // Insert key at correct position
+              arr[j + 1] = key;
+            }
+          
+            return arr;
+          }`
 
       case "Merge Sort":
         return `function mergeSort(arr) {
-  if (arr.length <= 1) return arr;
+          if (arr.length <= 1) return arr;
   
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
+          const mid = Math.floor(arr.length / 2);
+          const left = mergeSort(arr.slice(0, mid));
+          const right = mergeSort(arr.slice(mid));
   
-  return merge(left, right);
-}
+          return merge(left, right);
+        }
 
-function merge(left, right) {
-  let result = [];
-  let i = 0, j = 0;
+        function merge(left, right) {
+        let result = [];
+        let i = 0, j = 0;
+        
+        while (i < left.length && j < right.length) {
+          if (left[i] <= right[j]) {
+            result.push(left[i]);
+            i++;
+          } else {
+            result.push(right[j]);
+            j++;
+          }
+        }
   
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
-    }
-  }
-  
-  // Add remaining elements
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
-  }
-  
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-  
-  return result;
-}`
+        // Add remaining elements
+        while (i < left.length) {
+          result.push(left[i]);
+          i++;
+        }
+        
+        while (j < right.length) {
+          result.push(right[j]);
+          j++;
+        }
+        
+        return result;
+      }`
 
       case "Quick Sort":
         return `function quickSort(arr, low = 0, high = arr.length - 1) {
-  if (low < high) {
-    const pi = partition(arr, low, high);
+    if (low < high) {
+      const pi = partition(arr, low, high);
+      
+      quickSort(arr, low, pi - 1);
+      quickSort(arr, pi + 1, high);
+    }
     
-    quickSort(arr, low, pi - 1);
-    quickSort(arr, pi + 1, high);
+    return arr;
   }
-  
-  return arr;
-}
 
 function partition(arr, low, high) {
   const pivot = arr[high];
   let i = low - 1;
-  
+
   for (let j = low; j < high; j++) {
     if (arr[j] <= pivot) {
       i++;
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
   }
-  
+
   [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
   return i + 1;
 }`
@@ -651,18 +759,16 @@ function partition(arr, low, high) {
       case "Heap Sort":
         return `function heapSort(arr) {
   const n = arr.length;
-  
-  // Build max heap
+
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
     heapify(arr, n, i);
   }
-  
-  // Extract elements from heap one by one
+
   for (let i = n - 1; i > 0; i--) {
     [arr[0], arr[i]] = [arr[i], arr[0]];
     heapify(arr, i, 0);
   }
-  
+
   return arr;
 }
 
@@ -670,18 +776,54 @@ function heapify(arr, n, i) {
   let largest = i;
   const left = 2 * i + 1;
   const right = 2 * i + 2;
-  
+
   if (left < n && arr[left] > arr[largest]) {
     largest = left;
   }
-  
+
   if (right < n && arr[right] > arr[largest]) {
     largest = right;
   }
-  
+
   if (largest !== i) {
     [arr[i], arr[largest]] = [arr[largest], arr[i]];
     heapify(arr, n, largest);
+  }
+}`
+
+      case "Radix Sort":
+        return `function radixSort(arr) {
+  const max = Math.max(...arr);
+
+  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+    countingSort(arr, exp);
+  }
+
+  return arr;
+}
+
+function countingSort(arr, exp) {
+  const n = arr.length;
+  const output = new Array(n);
+  const count = new Array(10).fill(0);
+
+  for (let i = 0; i < n; i++) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    count[digit]++;
+  }
+
+  for (let i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
+
+  for (let i = n - 1; i >= 0; i--) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    output[count[digit] - 1] = arr[i];
+    count[digit]--;
+  }
+
+  for (let i = 0; i < n; i++) {
+    arr[i] = output[i];
   }
 }`
 
@@ -700,12 +842,11 @@ function heapify(arr, n, i) {
 
   return (
     <div className="space-y-6">
-      {/* Sort Result Summary */}
       {sortResult && (
         <Card className="border-2 border-dashed border-gray-300">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+          <CardContent className="p-4 md:p-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-2">
+              <div className="flex items-center justify-between space-x-3">
                 <div className="p-2 bg-blue-100 rounded-full">
                   <ArrowUpDown className="w-6 h-6 text-blue-600" />
                 </div>
@@ -714,16 +855,16 @@ function heapify(arr, n, i) {
                   <p className="text-gray-600">Step-by-step visualization of the sorting process</p>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
+              <div className="grid grid-cols-3 gap-4 text-center mt-3">
+                <div className="flex flex-col gap-1 md:gap-0">
                   <div className="text-2xl font-bold text-blue-600">{sortResult.comparisons}</div>
                   <div className="text-sm text-gray-500">Comparisons</div>
                 </div>
-                <div>
+                <div className="flex flex-col gap-1 md:gap-0">
                   <div className="text-2xl font-bold text-red-600">{sortResult.swaps}</div>
                   <div className="text-sm text-gray-500">Swaps</div>
                 </div>
-                <div>
+                <div className="flex flex-col gap-1 md:gap-0">
                   <div className="text-2xl font-bold text-purple-600">{sortResult.steps}</div>
                   <div className="text-sm text-gray-500">Total Steps</div>
                 </div>
@@ -733,33 +874,42 @@ function heapify(arr, n, i) {
         </Card>
       )}
 
-      {/* Array Visualization */}
-      <div className="bg-white rounded-lg p-6 shadow-sm border">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <ArrowUpDown className="w-5 h-5 mr-2 text-blue-600" />
-            Array Visualization
+      <div className="w-full bg-white rounded-lg p-4 md:p-6 shadow-sm border">
+        <div className="w-full flex items-center justify-between mb-4">
+          <h3 className="w-[60%] text-base md:text-lg font-semibold flex items-center" title="Array Visualization">
+            <ArrowUpDown className="w-6 h-6 mr-2 text-blue-600" />
+            <span className="truncate">Array Visualization</span>
           </h3>
-          <div className="text-sm text-gray-600">
-            Algorithm: <span className="font-semibold text-blue-600">{algorithm}</span>
+          <div className="text-sm md:text-base text-gray-600 text-right flex flex-col md:flex-row md:gap-1">
+            <span>Algorithm:</span>
+            <span className="font-semibold text-blue-600">{algorithm}</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
-          {steps[currentStep]?.array.map((value, index) => (
-            <div key={index} className="relative">
-              <div
-                className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
-              >
-                {value}
+        {steps[currentStep]?.array.length >= 100 ? (
+          <div className="flex justify-center">
+            <ZoomableArrayCanvas
+              elements={prepareCanvasElements()}
+              width={Math.min(1000, typeof window !== 'undefined' ? window.innerWidth - 100 : 1000)}
+              height={200}
+            />
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
+            {steps[currentStep]?.array.map((value, index) => (
+              <div key={index} className="relative">
+                <div
+                  className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
+                >
+                  {value}
+                </div>
+                <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
               </div>
-              <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Legend */}
       <div className="flex flex-wrap items-center justify-center gap-4 text-sm bg-white rounded-lg p-4 shadow-sm border">
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-blue-500 rounded"></div>
@@ -783,8 +933,7 @@ function heapify(arr, n, i) {
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm border">
+      <div className="flex items-center justify-center md:justify-between flex-wrap gap-4 md:gap-2 bg-white rounded-lg p-4 shadow-sm border">
         <div className="flex space-x-2">
           <Button onClick={handleReset} variant="secondary">
             Reset
@@ -801,7 +950,6 @@ function heapify(arr, n, i) {
         </Badge>
       </div>
 
-      {/* Step Description */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center">
@@ -814,7 +962,6 @@ function heapify(arr, n, i) {
         </CardContent>
       </Card>
 
-      {/* Code Display */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Code Execution</CardTitle>
@@ -826,7 +973,6 @@ function heapify(arr, n, i) {
         </CardContent>
       </Card>
 
-      {/* Complete Algorithm Code - Show only when at the last step */}
       {currentStep === steps.length - 1 && (
         <Card>
           <CardHeader>
@@ -838,7 +984,7 @@ function heapify(arr, n, i) {
             </pre>
             <div className="mt-4 p-3 bg-blue-50 rounded-md">
               <p className="text-sm text-blue-800">
-                <strong>💡 Complete Implementation:</strong> This is the full {algorithm} algorithm that you just
+                <strong>Complete Implementation:</strong> This is the full {algorithm} algorithm that you just
                 visualized step by step. You can copy this code and use it in your own projects!
               </p>
             </div>
