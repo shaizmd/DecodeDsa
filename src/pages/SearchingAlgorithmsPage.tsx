@@ -71,17 +71,17 @@ function SearchingAlgorithmsPage() {
   return (
      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+        <div className="max-w-7xl mx-auto py-4 px-4 md:p-6 lg:px-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
+            <div className="flex items-center space-x-3 min-h-[110px]">
               <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
                 <Search className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   Searching Algorithms Visualizer
                 </h1>
-                <p className="mt-2 text-gray-600">
+                <p className="text-sm md:text-base md:mt-2 text-gray-600">
                   {comparisonMode ? "Compare Linear Search vs. Binary Search" : "Explore how different searching algorithms find elements in arrays"}
                 </p>
               </div>
@@ -94,7 +94,7 @@ function SearchingAlgorithmsPage() {
                   !comparisonMode ? "bg-white shadow-sm text-green-600" : "text-gray-600 hover:text-gray-800"
                 }`}
               >
-                <Eye className="w-4 h-4" />
+                <Eye className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="text-sm font-medium">Single View</span>
               </button>
               <button
@@ -103,7 +103,7 @@ function SearchingAlgorithmsPage() {
                   comparisonMode ? "bg-white shadow-sm text-emerald-600" : "text-gray-600 hover:text-gray-800"
                 }`}
               >
-                <GitCompare className="w-4 h-4" />
+                <GitCompare className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="text-sm font-medium">Compare</span>
               </button>
             </div>
