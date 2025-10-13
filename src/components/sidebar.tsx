@@ -1,0 +1,227 @@
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import {
+  Home,
+  ArrowUpDown,
+  Search,
+  Target,
+  Database,
+  BookOpen,
+  Menu,
+  X,
+  ChevronDown,
+  ChevronRight,
+  Brain,
+} from "lucide-react";
+
+interface SubItem {
+  name: string;
+  path: string;
+}
+
+interface NavItem {
+  name: string;
+  icon: any;
+  path?: string;
+  subItems?: SubItem[];
+}
+
+export default function Sidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
+  const location = useLocation();
+
+  const navItems: NavItem[] = [
+    {
+      name: "Home",
+      icon: Home,
+      path: "/",
+    },
+    {
+      name: "Sorting Algorithms",
+      icon: ArrowUpDown,
+      path: "/sorting",
+    },
+    {
+      name: "Searching Algorithms",
+      icon: Search,
+      path: "/searching",
+    },
+    {
+      name: "Array Algorithms",
+      icon: Target,
+      subItems: [
+        { name: "Overview", path: "/array-algorithms" },
+        { name: "Two Pointer", path: "/array-algorithms/two-pointer" },
+        { name: "Prefix Sum", path: "/array-algorithms/prefix-sum" },
+        { name: "Kadane's Algorithm", path: "/array-algorithms/kadanes" },
+        { name: "Sliding Window", path: "/array-algorithms/sliding-window" },
+        { name: "Hashing", path: "/array-algorithms/hashing" },
+        { name: "Monotonic Stack", path: "/array-algorithms/monotonic-stack" },
+        { name: "Bit Manipulation", path: "/array-algorithms/bit-manipulation" },
+        { name: "2D Arrays", path: "/array-algorithms/2d-arrays" },
+      ],
+    },
+    {
+      name: "Data Structures",
+      icon: Database,
+      subItems: [
+        { name: "Linked List", path: "/data-structures/linked-list" },
+        { name: "Binary Tree", path: "/data-structures/binary-tree" },
+        { name: "Stack", path: "/data-structures/stack" },
+        { name: "Queue", path: "/data-structures/queue" },
+        { name: "Graph", path: "/data-structures/graph" },
+      ],
+    },
+    {
+      name: "Operations",
+      icon: BookOpen,
+      subItems: [
+        {
+          name: "Expression Converter",
+          path: "/operations/expression-converter",
+        },
+      ],
+    },
+  ];
+
+  const toggleSection = (name: string) => {
+    setExpandedSections((prev) =>
+      prev.includes(name) ? prev.filter((s) => s !== name) : [...prev, name]
+    );
+  };
+
+  const isActive = (path?: string) => {
+    if (!path) return false;
+    return location.pathname === path;
+  };
+
+  const isParentActive = (subItems?: SubItem[]) => {
+    if (!subItems) return false;
+    return subItems.some((item) => location.pathname === item.path);
+  };
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed z-50 p-3 text-white transition-all shadow-lg top-4 left-4 lg:hidden bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:shadow-xl"
+        aria-label="Toggle menu"
+      >
+        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 h-screen w-72 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl z-40 transition-transform duration-300 flex flex-col ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
+      >
+        {/* Logo */}
+        <div className="p-6 border-b border-slate-700/50">
+          <Link
+            to="/"
+            className="flex items-center gap-3 group"
+            onClick={() => setIsOpen(false)}
+          >
+            <div className="flex items-center justify-center w-10 h-10 transition-transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 group-hover:scale-110">
+              <Brain className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
+                DecodeDsa
+              </h1>
+              <p className="text-xs text-slate-400">Master Algorithms</p>
+            </div>
+          </Link>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+          {navItems.map((item) => (
+            <div key={item.name}>
+              {item.subItems ? (
+                // Expandable Section
+                <div>
+                  <button
+                    onClick={() => toggleSection(item.name)}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
+                      isParentActive(item.subItems)
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                        : "text-slate-300 hover:bg-slate-800/50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <item.icon className="w-5 h-5" />
+                      <span className="text-sm font-medium">{item.name}</span>
+                    </div>
+                    {expandedSections.includes(item.name) ? (
+                      <ChevronDown className="w-4 h-4" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  {/* Sub Items */}
+                  {expandedSections.includes(item.name) && (
+                    <div className="pl-4 mt-2 ml-4 space-y-1 border-l-2 border-slate-700">
+                      {item.subItems.map((subItem) => (
+                        <Link
+                          key={subItem.path}
+                          to={subItem.path}
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-4 py-2 rounded-lg text-sm transition-all ${
+                            isActive(subItem.path)
+                              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                              : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                          }`}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                // Direct Link
+                <Link
+                  to={item.path || "/"}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                    isActive(item.path)
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                      : "text-slate-300 hover:bg-slate-800/50"
+                  }`}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span className="text-sm font-medium">{item.name}</span>
+                </Link>
+              )}
+            </div>
+          ))}
+        </nav>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-slate-700/50">
+          <div className="p-4 border bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl backdrop-blur-sm border-blue-500/20">
+            <p className="mb-2 text-xs text-slate-300">
+              Interactive DSA Learning
+            </p>
+            <p className="text-xs text-slate-400">
+              Visualize, Learn, Master
+            </p>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+}
