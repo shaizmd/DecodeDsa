@@ -5,7 +5,8 @@ import { useEffect, useState, useCallback } from "react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
-import { CheckCircle, XCircle, Search, Target } from "lucide-react"
+import { CheckCircle, XCircle, Search, Target, Play, Pause, RotateCcw } from "lucide-react"
+import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 
 interface SearchingVisualizerProps {
   algorithm: string
@@ -30,6 +31,8 @@ interface Step {
 const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, inputArray, targetValue }) => {
   const [steps, setSteps] = useState<Step[]>([])
   const [currentStep, setCurrentStep] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [playSpeed, setPlaySpeed] = useState(1000) // milliseconds
   const [searchResult, setSearchResult] = useState<{ found: boolean; index: number; comparisons: number } | null>(null)
 
   const generateSteps = useCallback((algorithm: string, array: number[], target: number): Step[] => {
@@ -74,7 +77,7 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
 
   useEffect(() => {
     const array = inputArray
-      .split(" ")
+      .split(/[\s,]+/).filter(n => n)
       .map(Number)
       .filter((n) => !isNaN(n))
     const newSteps = generateSteps(algorithm, array, targetValue)
@@ -92,6 +95,19 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
       })
     }
   }, [algorithm, inputArray, targetValue, generateSteps])
+
+  // Auto-play functionality
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isPlaying && currentStep < steps.length - 1) {
+      interval = setInterval(() => {
+        setCurrentStep(prev => prev + 1)
+      }, playSpeed)
+    } else if (currentStep >= steps.length - 1) {
+      setIsPlaying(false)
+    }
+    return () => clearInterval(interval)
+  }, [isPlaying, currentStep, steps.length, playSpeed])
 
   const linearSearch = (arr: number[], target: number, steps: Step[]): Step[] => {
     steps.push({
@@ -240,6 +256,11 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
 
   const handleReset = () => {
     setCurrentStep(0)
+    setIsPlaying(false)
+  }
+
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying)
   }
 
   const getElementColor = (index: number): string => {
@@ -255,6 +276,32 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
     }
 
     return "bg-blue-500"
+  }
+
+  const getElementColorHex = (index: number): string => {
+    const step = steps[currentStep]
+    if (!step) return "#3b82f6" // blue-500
+
+    if (step.foundIndex === index && step.found) return "#22c55e" // green-500
+    if (step.comparing?.includes(index)) return "#eab308" // yellow-500
+    if (step.currentIndex === index) return "#f97316" // orange-500
+    if (step.mid === index) return "#a855f7" // purple-500
+    if (algorithm === "Binary Search" && step.left !== undefined && step.right !== undefined) {
+      if (index < step.left || index > step.right) return "#9ca3af" // gray-400
+    }
+
+    return "#3b82f6" // blue-500
+  }
+
+  const prepareCanvasElements = () => {
+    const step = steps[currentStep]
+    if (!step) return []
+
+    return step.array.map((value, index) => ({
+      value,
+      index,
+      color: getElementColorHex(index),
+    }))
   }
 
   const getCompleteAlgorithmCode = (algorithm: string): string => {
@@ -340,16 +387,16 @@ if (result !== -1) {
       {searchResult && (
         <Card className="border-2 border-dashed border-gray-300">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+            <div className="w-full flex items-center justify-between">
+              <div className="w-full flex items-center space-x-3">
                 {searchResult.found ? (
-                  <CheckCircle className="w-8 h-8 text-green-500" />
+                  <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-green-500" />
                 ) : (
-                  <XCircle className="w-8 h-8 text-red-500" />
+                  <XCircle className="w-6 h-6 md:w-8 md:h-8 text-red-500" />
                 )}
                 <div>
-                  <h3 className="text-lg font-semibold">{searchResult.found ? "Target Found!" : "Target Not Found"}</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold truncate">{searchResult.found ? "Target Found!" : "Target Not Found"}</h3>
+                  <p className="text-sm md:text-base text-gray-600">
                     {searchResult.found
                       ? `Found at index ${searchResult.index}`
                       : "Target value does not exist in the array"}
@@ -366,50 +413,62 @@ if (result !== -1) {
       )}
 
       {/* Array Visualization */}
-      <div className="bg-white rounded-lg p-6 shadow-sm border">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <Target className="w-5 h-5 mr-2 text-green-600" />
-            Array Visualization
+      <div className="w-full bg-white rounded-lg p-6 shadow-sm border">
+        <div className="w-full flex items-center justify-between mb-4">
+          <h3 className="w-[60%] text-lg font-semibold flex items-center">
+            <Target className="w-6 h-6 mr-2 text-green-600" />
+            <span className="truncate">Array Visualization</span>
           </h3>
-          <div className="text-sm text-gray-600">
+          <div className="text-gray-600">
             Target: <span className="font-semibold text-green-600">{targetValue}</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
-          {steps[currentStep]?.array.map((value, index) => (
-            <div key={index} className="relative">
-              <div
-                className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
-              >
-                {value}
-              </div>
-              <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
+        {steps[currentStep]?.array.length >= 100 ? (
+          // Canvas-based visualization for large arrays
+          <div className="flex justify-center">
+            <ZoomableArrayCanvas
+              elements={prepareCanvasElements()}
+              width={Math.min(1000, typeof window !== 'undefined' ? window.innerWidth - 100 : 1000)}
+              height={200}
+            />
+          </div>
+        ) : (
+          // DOM-based visualization for small arrays
+          <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
+            {steps[currentStep]?.array.map((value, index) => (
+              <div key={index} className="relative">
+                <div
+                  className={`w-12 h-12 flex items-center justify-center text-white rounded-md font-semibold transition-all duration-300 ${getElementColor(index)}`}
+                >
+                  {value}
+                </div>
+                <div className="text-xs text-gray-500 text-center mt-1">{index}</div>
 
-              {/* Binary Search Pointers */}
-              {algorithm === "Binary Search" && steps[currentStep] && (
-                <>
-                  {steps[currentStep].left === index && (
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-blue-600">
-                      L
-                    </div>
-                  )}
-                  {steps[currentStep].right === index && (
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-red-600">
-                      R
-                    </div>
-                  )}
-                  {steps[currentStep].mid === index && (
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-purple-600">
-                      M
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          ))}
-        </div>
+                {/* Binary Search Pointers */}
+                {algorithm === "Binary Search" && steps[currentStep] && (
+                  <>
+                    {steps[currentStep].left === index && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-blue-600">
+                        L
+                      </div>
+                    )}
+                    {steps[currentStep].right === index && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-red-600">
+                        R
+                      </div>
+                    )}
+                    {steps[currentStep].mid === index && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-purple-600">
+                        M
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Legend */}
@@ -447,21 +506,48 @@ if (result !== -1) {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm border">
-        <div className="flex space-x-2">
-          <Button onClick={handleReset} variant="secondary">
-            Reset
-          </Button>
-          <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary">
-            Previous
-          </Button>
-          <Button onClick={handleNext} disabled={currentStep === steps.length - 1}>
-            Next
-          </Button>
+      <div className="bg-white rounded-lg p-4 shadow-sm border">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center space-x-2">
+            <Button onClick={handleReset} variant="secondary" size="sm">
+              <RotateCcw className="w-4 h-4 mr-1" />
+              Reset
+            </Button>
+            <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary" size="sm">
+              Previous
+            </Button>
+            <Button 
+              onClick={togglePlay} 
+              variant={isPlaying ? "secondary" : "primary"}
+              size="sm"
+            >
+              {isPlaying ? <Pause className="w-4 h-4 mr-1" /> : <Play className="w-4 h-4 mr-1" />}
+              {isPlaying ? "Pause" : "Play"}
+            </Button>
+            <Button onClick={handleNext} disabled={currentStep === steps.length - 1} size="sm">
+              Next
+            </Button>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <label className="text-sm text-gray-600">Speed:</label>
+              <select 
+                value={playSpeed} 
+                onChange={(e) => setPlaySpeed(Number(e.target.value))}
+                className="text-sm border rounded px-2 py-1"
+              >
+                <option value={2000}>0.5x</option>
+                <option value={1000}>1x</option>
+                <option value={500}>2x</option>
+                <option value={250}>4x</option>
+              </select>
+            </div>
+            <Badge variant="default" className="text-sm">
+              Step {currentStep + 1} of {steps.length}
+            </Badge>
+          </div>
         </div>
-        <Badge variant="default" className="text-sm">
-          Step {currentStep + 1} of {steps.length}
-        </Badge>
       </div>
 
       {/* Step Description */}

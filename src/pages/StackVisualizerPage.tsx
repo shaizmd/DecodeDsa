@@ -271,16 +271,14 @@ print(f"Size: {stack.get_size()}")     # 2`;
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Link to={"/"}>
-                <div className="p-2 cursor-pointer bg-gradient-to-r  from-purple-500 to-pink-500 rounded-lg">
-                  <Layers className="w-6 h-6 text-white" />
-                </div>
-              </Link>
+        <div className="max-w-7xl mx-auto p-4 md:p-6 lg:px-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
+            <div className="flex items-center space-x-3 min-h-[110px]">
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+                <Layers className="w-6 h-6 text-white" />
+              </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Interactive Stack Visualizer
                 </h1>
                 <p className="mt-1 text-gray-600">
@@ -293,14 +291,14 @@ print(f"Size: {stack.get_size()}")     # 2`;
                 onClick={() => setShowTutorial(!showTutorial)}
                 className="flex items-center space-x-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
               >
-                <BookOpen className="w-4 h-4" />
+                <BookOpen className="w-5 h-5 md:w-6 md:h-6" />
                 <span>Tutorial</span>
               </button>
               <button
                 onClick={() => setShowCode(!showCode)}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
-                <Code className="w-4 h-4" />
+                <Code className="w-5 h-5 md:w-6 md:h-6" />
                 <span>Code</span>
               </button>
             </div>
