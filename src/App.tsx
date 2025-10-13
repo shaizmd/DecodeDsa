@@ -18,6 +18,7 @@ import TreeVisualizerPage from "./pages/TreeVisualizerPage"
 import ExpressionConverterPage from "./pages/ExpressionConverterPage"
 import GraphVisualizerPage from "./pages/GraphVisualizerPages"
 import AboutUsPage from "./pages/AboutUsPage"
+import ContactPage from "./pages/ContactPage"
 import Lenis from 'lenis'
 import { useEffect } from "react"
 
@@ -65,6 +66,7 @@ function App() {
       <Route path="/data-structures/binary-tree" element={<TreeVisualizerPage />} />
       <Route path="/operations/expression-converter" element={<ExpressionConverterPage />} />
       <Route path="/about" element={<AboutUsPage />} />
+      <Route path="/contact" element={<ContactPage />} />
     </Routes>
   )
 }
