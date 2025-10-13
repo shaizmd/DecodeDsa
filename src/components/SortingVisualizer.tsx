@@ -572,118 +572,118 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     switch (algorithm) {
       case "Bubble Sort":
         return `function bubbleSort(arr) {
-  const n = arr.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let swapped = false;
-    
-    for (let j = 0; j < n - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        swapped = true;
-      }
-    }
-    
-    // If no swapping occurred, array is sorted
-    if (!swapped) break;
-  }
-  
-  return arr;
-}`
+          const n = arr.length;
+          
+          for (let i = 0; i < n - 1; i++) {
+            let swapped = false;
+            
+            for (let j = 0; j < n - i - 1; j++) {
+              if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+              }
+            }
+            
+            // If no swapping occurred, array is sorted
+            if (!swapped) break;
+          }
+          
+          return arr;
+        }`
 
-      case "Selection Sort":
-        return `function selectionSort(arr) {
-  const n = arr.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let minIdx = i;
-    
-    // Find minimum element in remaining array
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIdx]) {
-        minIdx = j;
-      }
-    }
-    
-    // Swap minimum element with first element
-    if (minIdx !== i) {
-      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
-    }
-  }
-  
-  return arr;
-}`
+        case "Selection Sort":
+          return `function selectionSort(arr) {
+            const n = arr.length;
+            
+            for (let i = 0; i < n - 1; i++) {
+              let minIdx = i;
+              
+              // Find minimum element in remaining array
+              for (let j = i + 1; j < n; j++) {
+                if (arr[j] < arr[minIdx]) {
+                  minIdx = j;
+                }
+              }
+              
+              // Swap minimum element with first element
+              if (minIdx !== i) {
+                [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+              }
+            }
+          
+            return arr;
+          }`
 
-      case "Insertion Sort":
-        return `function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
-    
-    // Move elements greater than key one position ahead
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-    
-    // Insert key at correct position
-    arr[j + 1] = key;
-  }
-  
-  return arr;
-}`
+        case "Insertion Sort":
+          return `function insertionSort(arr) {
+            for (let i = 1; i < arr.length; i++) {
+              let key = arr[i];
+              let j = i - 1;
+              
+              // Move elements greater than key one position ahead
+              while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+              }
+              
+              // Insert key at correct position
+              arr[j + 1] = key;
+            }
+          
+            return arr;
+          }`
 
       case "Merge Sort":
         return `function mergeSort(arr) {
-  if (arr.length <= 1) return arr;
+          if (arr.length <= 1) return arr;
   
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
+          const mid = Math.floor(arr.length / 2);
+          const left = mergeSort(arr.slice(0, mid));
+          const right = mergeSort(arr.slice(mid));
   
-  return merge(left, right);
-}
+          return merge(left, right);
+        }
 
-function merge(left, right) {
-  let result = [];
-  let i = 0, j = 0;
+        function merge(left, right) {
+        let result = [];
+        let i = 0, j = 0;
+        
+        while (i < left.length && j < right.length) {
+          if (left[i] <= right[j]) {
+            result.push(left[i]);
+            i++;
+          } else {
+            result.push(right[j]);
+            j++;
+          }
+        }
   
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
-    }
-  }
-  
-  // Add remaining elements
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
-  }
-  
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-  
-  return result;
-}`
+        // Add remaining elements
+        while (i < left.length) {
+          result.push(left[i]);
+          i++;
+        }
+        
+        while (j < right.length) {
+          result.push(right[j]);
+          j++;
+        }
+        
+        return result;
+      }`
 
       case "Quick Sort":
         return `function quickSort(arr, low = 0, high = arr.length - 1) {
-  if (low < high) {
-    const pi = partition(arr, low, high);
+    if (low < high) {
+      const pi = partition(arr, low, high);
+      
+      quickSort(arr, low, pi - 1);
+      quickSort(arr, pi + 1, high);
+    }
     
-    quickSort(arr, low, pi - 1);
-    quickSort(arr, pi + 1, high);
+    return arr;
   }
-  
-  return arr;
-}
 
 function partition(arr, low, high) {
   const pivot = arr[high];
