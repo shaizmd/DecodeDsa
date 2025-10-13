@@ -15,6 +15,7 @@ import {
   Linkedin,
   Twitter,
   Mail,
+  ChevronRight,
 } from "lucide-react";
 
 export default function AboutUsPage() {
@@ -384,65 +385,144 @@ export default function AboutUsPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="text-xl font-bold text-white mb-3">DecodeDSA</h3>
-            <p className="text-sm text-gray-400">
-              Interactive platform to master Data Structures & Algorithms
-              through visualization.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-3">Quick Links</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/" className="hover:text-white">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/sorting" className="hover:text-white">
-                  Sorting
-                </Link>
-              </li>
-              <li>
-                <Link to="/searching" className="hover:text-white">
-                  Searching
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="hover:text-white">
-                  About Us
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-3">Connect With Us</h4>
-            <div className="flex space-x-4 mb-4">
-              <button className="hover:text-white transition-colors">
-                <Github className="w-6 h-6" />
-              </button>
-              <button className="hover:text-white transition-colors">
-                <Linkedin className="w-6 h-6" />
-              </button>
-              <button className="hover:text-white transition-colors">
-                <Twitter className="w-6 h-6" />
-              </button>
-              <button className="hover:text-white transition-colors">
-                <Mail className="w-6 h-6" />
-              </button>
+      <footer className="relative bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 text-gray-300 py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+            {/* Brand Section */}
+            <div className="sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">
+                  DecodeDsa
+                </h3>
+              </div>
+              <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                Interactive platform to master Data Structures & Algorithms through visualization. Learn, practice, and excel.
+              </p>
+              <div className="flex gap-3">
+                <button className="w-10 h-10 bg-gray-800 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 rounded-lg flex items-center justify-center transition-all transform hover:scale-110">
+                  <Github className="w-5 h-5" />
+                </button>
+                <button className="w-10 h-10 bg-gray-800 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 rounded-lg flex items-center justify-center transition-all transform hover:scale-110">
+                  <Linkedin className="w-5 h-5" />
+                </button>
+                <button className="w-10 h-10 bg-gray-800 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 rounded-lg flex items-center justify-center transition-all transform hover:scale-110">
+                  <Twitter className="w-5 h-5" />
+                </button>
+              </div>
             </div>
-            <p className="text-sm text-gray-400">
-              Have questions? We'd love to hear from you!
-            </p>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-bold text-white mb-4 text-lg">Quick Links</h4>
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <Link to="/sorting" className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    Sorting Algorithms
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/searching" className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    Searching Algorithms
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/array-algorithms" className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    Array Algorithms
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/data-structures" className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    Data Structures
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h4 className="font-bold text-white mb-4 text-lg">Resources</h4>
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <a href="#features" className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <button className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    How It Works
+                  </button>
+                </li>
+                <li>
+                  <button className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    FAQ
+                  </button>
+                </li>
+                <li>
+                  <button className="hover:text-white hover:translate-x-1 inline-flex items-center transition-all group">
+                    <ChevronRight className="w-4 h-4 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    Documentation
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-bold text-white mb-4 text-lg">Get in Touch</h4>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">📧</span>
+                  </div>
+                  <span className="text-gray-400">contact@decodedsa.com</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">💬</span>
+                  </div>
+                  <span className="text-gray-400">Join our Discord community</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">📍</span>
+                  </div>
+                  <span className="text-gray-400">Hyderabad, India</span>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-        <div className="text-center text-gray-500 text-sm mt-10 border-t border-gray-700 pt-6">
-          © {new Date().getFullYear()} DecodeDSA. All rights reserved. Made
-          with <Heart className="w-4 h-4 inline text-red-500" /> for learners
-          worldwide.
+
+          {/* Bottom Bar */}
+          <div className="border-t border-gray-800 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-gray-500 text-sm text-center md:text-left">
+                © {new Date().getFullYear()} DecodeDsa. All rights reserved. Made with ❤️ for learners worldwide.
+              </p>
+              <div className="flex gap-6 text-sm">
+                <button className="text-gray-500 hover:text-white transition-colors">
+                  Privacy Policy
+                </button>
+                <button className="text-gray-500 hover:text-white transition-colors">
+                  Terms of Service
+                </button>
+                <button className="text-gray-500 hover:text-white transition-colors">
+                  Cookie Policy
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
