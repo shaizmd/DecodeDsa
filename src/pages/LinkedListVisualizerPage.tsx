@@ -19,7 +19,7 @@ interface ListNode {
 type ListType = "singly" | "doubly" | "circular"
 
 // 1. Define a new type for supported code operations:
-type CodeOperationType = "insert-beginning" | "insert-end" | "insert-position" | "delete-beginning" | "delete-end" | "delete-position";
+type CodeOperationType = "insert-beginning" | "insert-end" | "insert-position" | "delete-beginning" | "delete-end" | "delete-position" | "search";
 
 function LinkedListVisualizerPage() {
   const [listType, setListType] = useState<ListType>("singly")
@@ -36,6 +36,143 @@ function LinkedListVisualizerPage() {
 
   const [showStepByStep, setShowStepByStep] = useState(false)
   const [currentOperation, setCurrentOperation] = useState<CodeOperationType | "">("")
+
+  // Add these interfaces and types after existing interfaces
+  interface CodeStructure {
+    structure: string;
+    operations: Record<string, string>;
+  }
+
+  interface LinkedListCodes {
+    [key: string]: CodeStructure;
+  }
+
+  // Add this function after the existing state declarations
+  const getLinkedListCode = (type: ListType): CodeStructure => {
+    const codes: LinkedListCodes = {
+      singly: {
+        structure: `class SinglyNode {
+  value: number;
+  next: Node | null;
+  
+  constructor(value: number) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class SinglyLinkedList {
+  head: Node | null;
+  
+  constructor() {
+    this.head = null;
+  }
+}`,
+        operations: {
+          insertAtBeginning: `insertAtBeginning(value: number): void {
+  const newNode = new Node(value);
+  newNode.next = this.head;
+  this.head = newNode;
+}`,
+          insertAtEnd: `insertAtEnd(value: number): void {
+  const newNode = new Node(value);
+  if (!this.head) {
+    this.head = newNode;
+    return;
+  }
+  let current = this.head;
+  while (current.next) {
+    current = current.next;
+  }
+  current.next = newNode;
+}`,
+          deleteAtBeginning: `deleteAtBeginning(): void {
+  if (!this.head) return;
+  this.head = this.head.next;
+}`,
+          deleteAtEnd: `deleteAtEnd(): void {
+  if (!this.head) return;
+  if (!this.head.next) {
+    this.head = null;
+    return;
+  }
+  let current = this.head;
+  while (current.next?.next) {
+    current = current.next;
+  }
+  current.next = null;
+}`
+        }
+      },
+      doubly: {
+        structure: `class DoublyNode {
+  value: number;
+  next: Node | null;
+  prev: Node | null;
+  
+  constructor(value: number) {
+    this.value = value;
+    this.next = null;
+    this.prev = null;
+  }
+}`,
+        operations: {
+          insertAtBeginning: `insertAtBeginning(value: number): void {
+  const newNode = new DoublyNode(value);
+  newNode.next = this.head;
+  if (this.head) {
+    this.head.prev = newNode;
+  }
+  this.head = newNode;
+}`,
+          insertAtEnd: `insertAtEnd(value: number): void {
+  const newNode = new DoublyNode(value);
+  if (!this.head) {
+    this.head = newNode;
+    return;
+  }
+  let current = this.head;
+  while (current.next) {
+    current = current.next;
+  }
+  current.next = newNode;
+  newNode.prev = current;
+}`
+        }
+      },
+      circular: {
+        structure: `class CircularNode {
+  value: number;
+  next: Node;
+  
+  constructor(value: number) {
+    this.value = value;
+    this.next = this;
+  }
+}`,
+        operations: {
+          insertAtBeginning: `insertAtBeginning(value: number): void {
+  const newNode = new CircularNode(value);
+  if (!this.head) {
+    newNode.next = newNode;
+    this.head = newNode;
+    return;
+  }
+  let current = this.head;
+  while (current.next !== this.head) {
+    current = current.next;
+  }
+  newNode.next = this.head;
+  current.next = newNode;
+  this.head = newNode;
+}`
+        }
+      }
+    };
+
+    return codes[type];
+  }
+
 
   // Helper functions
   const generateNodeId = () => {
@@ -319,6 +456,8 @@ function LinkedListVisualizerPage() {
       addToHistory("Cannot search in empty list")
       return
     }
+
+    setCurrentOperation("search")
 
     let curr: ListNode | null = head
     let position = 1
@@ -689,10 +828,78 @@ function deleteAtPosition(position) {
     return deletedValue;
 }`,
       },
+      "search": {
+        title: "Search Node",
+        steps: [
+          "1. Check if list is empty",
+          "2. Start from head node",
+          "3. Compare current node's value with target",
+          "4. If found, return position",
+          "5. Move to next node",
+          "6. Repeat until target found or end reached",
+          "7. Handle circular list to avoid infinite loop",
+        ],
+        code: `// Singly Linked List
+function search(value) {
+    if (!head) return -1;
+    
+    let current = head;
+    let position = 1;
+    
+    while (current) {
+        if (current.value === value) {
+            return position;
+        }
+        current = current.next;
+        position++;
+    }
+    
+    return -1;
+}
+
+// Doubly Linked List
+function search(value) {
+    if (!head) return -1;
+    
+    let current = head;
+    let position = 1;
+    
+    while (current) {
+        if (current.value === value) {
+            return position;
+        }
+        current = current.next;
+        position++;
+    }
+    
+    return -1;
+}
+
+// Circular Linked List
+function search(value) {
+    if (!head) return -1;
+    
+    let current = head;
+    let position = 1;
+    
+    do {
+        if (current.value === value) {
+            return position;
+        }
+        current = current.next;
+        position++;
+    } while (current && current !== head);
+    
+    return -1;
+}`,
+      },
     }
 
     return codes[operation as CodeOperationType] || { title: "", steps: [], code: "" }
   }
+
+  // Add this state near other useState declarations
+  const [selectedOperation, setSelectedOperation] = useState<string>("");
 
   const nodes = toArray()
 
@@ -700,14 +907,14 @@ function deleteAtPosition(position) {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+        <div className="max-w-7xl mx-auto p-4 md:p-6 lg:px-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
+            <div className="flex items-center space-x-3 min-h-[110px]">
               <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
                 <List className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Interactive Linked List Visualizer
                 </h1>
                 <p className="mt-1 text-gray-600">Learn linked lists through step-by-step animations</p>
@@ -718,15 +925,15 @@ function deleteAtPosition(position) {
                 onClick={() => setShowTutorial(!showTutorial)}
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
               >
-                <BookOpen className="w-4 h-4" />
+                <BookOpen className="w-5 h-5 md:w-6 md:h-6" />
                 <span>Tutorial</span>
               </button>
               <button
-                onClick={() => setShowCode(!showCode)}
+                onClick={() => setShowCode(prev => !prev)}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
-                <Code className="w-4 h-4" />
-                <span>Code</span>
+                <Code className="w-5 h-5 md:w-6 md:h-6" />
+                <span>{showCode ? 'Hide Code' : 'Show Code'}</span>
               </button>
             </div>
           </div>
@@ -1096,6 +1303,40 @@ function deleteAtPosition(position) {
           </div>
         </div>
       </main>
+
+      {showCode && (
+        <div className="mt-4 bg-gray-800 rounded-lg p-4">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              className={`px-4 py-2 rounded ${
+                !selectedOperation ? 'bg-blue-500' : 'bg-gray-700'
+              } text-white hover:opacity-90 transition-opacity`}
+              onClick={() => setSelectedOperation("")}
+            >
+              Structure
+            </button>
+            {Object.keys(getLinkedListCode(listType).operations).map((op) => (
+              <button
+                key={op}
+                className={`px-4 py-2 rounded ${
+                  selectedOperation === op ? 'bg-blue-500' : 'bg-gray-700'
+                } text-white hover:opacity-90 transition-opacity`}
+                onClick={() => setSelectedOperation(op)}
+              >
+                {op.replace(/([A-Z])/g, ' $1').trim()}
+              </button>
+            ))}
+          </div>
+          
+          <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto">
+            <code className="text-white font-mono text-sm">
+              {selectedOperation
+                ? getLinkedListCode(listType).operations[selectedOperation]
+                : getLinkedListCode(listType).structure}
+            </code>
+          </pre>
+        </div>
+      )}
     </div>
   )
 }
