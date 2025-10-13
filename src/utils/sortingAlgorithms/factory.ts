@@ -6,6 +6,7 @@ import { InsertionSort } from "./insertionSort"
 import { QuickSort } from "./quickSort"
 import { MergeSort } from "./mergeSort"
 import { HeapSort } from "./heapSort"
+import { RadixSort } from "./radixSort"
 
 /**
  * Factory class for creating sorting algorithm instances
@@ -19,6 +20,7 @@ export class SortingAlgorithmFactory {
     [SortingAlgorithms.MergeSort, new MergeSort()],
     [SortingAlgorithms.QuickSort, new QuickSort()],
     [SortingAlgorithms.HeapSort, new HeapSort()],
+    [SortingAlgorithms.RadixSort, new RadixSort()]
   ])
 
   /**

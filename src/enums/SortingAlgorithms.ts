@@ -5,4 +5,5 @@ export enum SortingAlgorithms {
   QuickSort,
   MergeSort,
   HeapSort,
+  RadixSort,
 }

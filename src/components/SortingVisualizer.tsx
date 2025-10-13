@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useEffect, useState } from "react"
 import { Button } from "./ui/button"
@@ -40,7 +38,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     setSteps(newSteps)
     setCurrentStep(0)
 
-    // Calculate sort metrics
     const comparisons = newSteps.filter((step) => step.comparing?.length).length
     const swaps = newSteps.filter((step) => step.swapping?.length).length
     setSortResult({
@@ -48,7 +45,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
       swaps,
       steps: newSteps.length,
     })
-  }, [algorithm, inputArray, generateSteps])
+  }, [algorithm, inputArray])
 
   // Auto-play functionality
   useEffect(() => {
@@ -98,14 +95,14 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
 
   const getElementColorHex = (index: number): string => {
     const step = steps[currentStep]
-    if (!step) return "#3b82f6" // blue-500
+    if (!step) return "#3b82f6"
 
-    if (step.sorted?.includes(index)) return "#22c55e" // green-500
-    if (step.swapping?.includes(index)) return "#ef4444" // red-500
-    if (step.comparing?.includes(index)) return "#eab308" // yellow-500
-    if (step.pivot === index) return "#a855f7" // purple-500
+    if (step.sorted?.includes(index)) return "#22c55e"
+    if (step.swapping?.includes(index)) return "#ef4444"
+    if (step.comparing?.includes(index)) return "#eab308"
+    if (step.pivot === index) return "#a855f7"
 
-    return "#3b82f6" // blue-500
+    return "#3b82f6"
   }
 
   const prepareCanvasElements = () => {
@@ -129,7 +126,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
 
   return (
     <div className="space-y-6">
-      {/* Sort Result Summary */}
       {sortResult && (
         <Card className="border-2 border-dashed border-gray-300">
           <CardContent className="p-4 md:p-6">
@@ -162,7 +158,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         </Card>
       )}
 
-      {/* Array Visualization */}
       <div className="w-full bg-white rounded-lg p-4 md:p-6 shadow-sm border">
         <div className="w-full flex items-center justify-between mb-4">
           <h3 className="w-[60%] text-base md:text-lg font-semibold flex items-center" title="Array Visualization">
@@ -176,7 +171,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         </div>
 
         {steps[currentStep]?.array.length >= 100 ? (
-          // Canvas-based visualization for large arrays
           <div className="flex justify-center">
             <ZoomableArrayCanvas
               elements={prepareCanvasElements()}
@@ -185,7 +179,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
             />
           </div>
         ) : (
-          // DOM-based visualization for small arrays
           <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
             {steps[currentStep]?.array.map((value, index) => (
               <div key={index} className="relative">
@@ -201,7 +194,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         )}
       </div>
 
-      {/* Legend */}
       <div className="flex flex-wrap items-center justify-center gap-4 text-sm bg-white rounded-lg p-4 shadow-sm border">
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-blue-500 rounded"></div>
@@ -225,52 +217,43 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="bg-white rounded-lg p-4 shadow-sm border">
-        <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex items-center justify-center md:justify-between flex-wrap gap-4 md:gap-2 bg-white rounded-lg p-4 shadow-sm border">
+        <div className="flex space-x-2">
+          <Button onClick={handleReset} variant="secondary">
+            <RotateCcw className="w-4 h-4 mr-1" />
+            Reset
+          </Button>
+          <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary">
+            Previous
+          </Button>
+          <Button onClick={togglePlay} variant={isPlaying ? "secondary" : "primary"} size="sm">
+            {isPlaying ? <Pause className="w-4 h-4 mr-1" /> : <Play className="w-4 h-4 mr-1" />}
+            {isPlaying ? "Pause" : "Play"}
+          </Button>
+          <Button onClick={handleNext} disabled={currentStep === steps.length - 1}>
+            Next
+          </Button>
+        </div>
+        <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <Button onClick={handleReset} variant="secondary" size="sm">
-              <RotateCcw className="w-4 h-4 mr-1" />
-              Reset
-            </Button>
-            <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary" size="sm">
-              Previous
-            </Button>
-            <Button 
-              onClick={togglePlay} 
-              variant={isPlaying ? "secondary" : "primary"}
-              size="sm"
+            <label className="text-sm text-gray-600">Speed:</label>
+            <select 
+              value={playSpeed} 
+              onChange={(e) => setPlaySpeed(Number(e.target.value))}
+              className="text-sm border rounded px-2 py-1"
             >
-              {isPlaying ? <Pause className="w-4 h-4 mr-1" /> : <Play className="w-4 h-4 mr-1" />}
-              {isPlaying ? "Pause" : "Play"}
-            </Button>
-            <Button onClick={handleNext} disabled={currentStep === steps.length - 1} size="sm">
-              Next
-            </Button>
+              <option value={2000}>0.5x</option>
+              <option value={1000}>1x</option>
+              <option value={500}>2x</option>
+              <option value={250}>4x</option>
+            </select>
           </div>
-
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Speed:</label>
-              <select 
-                value={playSpeed} 
-                onChange={(e) => setPlaySpeed(Number(e.target.value))}
-                className="text-sm border rounded px-2 py-1"
-              >
-                <option value={2000}>0.5x</option>
-                <option value={1000}>1x</option>
-                <option value={500}>2x</option>
-                <option value={250}>4x</option>
-              </select>
-            </div>
-            <Badge variant="default" className="text-sm">
-              Step {currentStep + 1} of {steps.length}
-            </Badge>
-          </div>
+          <Badge variant="default" className="text-sm">
+            Step {currentStep + 1} of {steps.length}
+          </Badge>
         </div>
       </div>
 
-      {/* Step Description */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center">
@@ -283,7 +266,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         </CardContent>
       </Card>
 
-      {/* Code Display */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Code Execution</CardTitle>
@@ -295,7 +277,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         </CardContent>
       </Card>
 
-      {/* Complete Algorithm Code - Show only when at the last step */}
       {currentStep === steps.length - 1 && (
         <Card>
           <CardHeader>
@@ -307,7 +288,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
             </pre>
             <div className="mt-4 p-3 bg-blue-50 rounded-md">
               <p className="text-sm text-blue-800">
-                <strong>💡 Complete Implementation:</strong> This is the full {algorithm.name} algorithm that you just
+                <strong>Complete Implementation:</strong> This is the full {algorithm.name} algorithm that you just
                 visualized step by step. You can copy this code and use it in your own projects!
               </p>
             </div>
