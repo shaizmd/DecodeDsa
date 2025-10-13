@@ -4,93 +4,23 @@ import { ArrowUpDown, Clock, Code2, GitCompare, Eye } from "lucide-react";
 import SortingVisualizer from "../components/SortingVisualizer";
 import ParallelSortingVisualizer from "../components/ParallelSortingVisualizer";
 import { Link } from "react-router-dom";
+import { getAvailableAlgorithms } from "../utils/sortingAlgorithms";
+import type Algorithm from "../types/algorithms";
+import { SortingAlgorithms } from "../enums/SortingAlgorithms";
 
-interface SortingAlgorithm {
-  name: string;
-  description: string;
-  timeComplexity: string;
-  spaceComplexity: string;
-  bestCase: string;
-  worstCase: string;
-}
-
-const sortingAlgorithms: SortingAlgorithm[] = [
-  {
-    name: "Bubble Sort",
-    description:
-      "A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.",
-    timeComplexity: "O(n²)",
-    spaceComplexity: "O(1)",
-    bestCase: "O(n) - Already sorted",
-    worstCase: "O(n²) - Reverse sorted",
-  },
-  {
-    name: "Selection Sort",
-    description:
-      "A simple sorting algorithm that divides the input into a sorted and unsorted region, and repeatedly selects the smallest element from the unsorted region.",
-    timeComplexity: "O(n²)",
-    spaceComplexity: "O(1)",
-    bestCase: "O(n²) - Not improved by sorted data",
-    worstCase: "O(n²) - Not improved by sorted data",
-  },
-  {
-    name: "Insertion Sort",
-    description:
-      "A simple sorting algorithm that builds the final sorted array one item at a time by comparing each new item with the already sorted portion.",
-    timeComplexity: "O(n²)",
-    spaceComplexity: "O(1)",
-    bestCase: "O(n) - Already sorted",
-    worstCase: "O(n²) - Reverse sorted",
-  },
-  {
-    name: "Merge Sort",
-    description:
-      "A divide-and-conquer algorithm that recursively breaks down the problem into smaller subproblems until they become simple enough to solve directly.",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(n)",
-    bestCase: "O(n log n)",
-    worstCase: "O(n log n)",
-  },
-  {
-    name: "Quick Sort",
-    description:
-      "A divide-and-conquer algorithm that picks an element as pivot and partitions the array around the pivot.",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(log n)",
-    bestCase: "O(n log n)",
-    worstCase: "O(n²) - Poor pivot choices",
-  },
-  {
-    name: "Heap Sort",
-    description:
-      "A comparison-based sorting algorithm that uses a binary heap data structure. It divides its input into a sorted and an unsorted region.",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(1)",
-    bestCase: "O(n log n)",
-    worstCase: "O(n log n)",
-  },
-  {
-    name: "Radix Sort",
-    description:
-      "A non-comparison-based sorting algorithm that sorts numbers by processing individual digits. It uses counting sort as a subroutine to achieve linear time complexity for integer keys.",
-    timeComplexity: "O(nk)",
-    spaceComplexity: "O(n + k)",
-    bestCase: "O(nk)",
-    worstCase: "O(nk)",
-  },
-];
+const sortingAlgorithms = getAvailableAlgorithms();
 
 function SortingAlgorithmsPage() {
   const [selectedAlgorithm, setSelectedAlgorithm] =
-    useState<SortingAlgorithm | null>(null);
+    useState<Algorithm<SortingAlgorithms> | null>(null);
   const [selectedAlgorithm2, setSelectedAlgorithm2] =
-    useState<SortingAlgorithm | null>(null);
+    useState<Algorithm<SortingAlgorithms> | null>(null);
   const [inputArray, setInputArray] = useState<string>("");
   const [showVisualization, setShowVisualization] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const vizRef = useRef<HTMLDivElement | null>(null);
 
-  const handleAlgorithmSelect = (algorithm: SortingAlgorithm) => {
+  const handleAlgorithmSelect = (algorithm: Algorithm<SortingAlgorithms>) => {
     setSelectedAlgorithm(algorithm);
     setInputArray("64 34 25 12 22 11 90");
     setShowVisualization(true);
@@ -321,13 +251,13 @@ function SortingAlgorithmsPage() {
                   <div ref={vizRef} className="pt-8 mt-8 border-t">
                     {comparisonMode && selectedAlgorithm2 ? (
                       <ParallelSortingVisualizer
-                        algorithm1={selectedAlgorithm.name}
-                        algorithm2={selectedAlgorithm2.name}
+                        algorithm1={selectedAlgorithm}
+                        algorithm2={selectedAlgorithm2}
                         inputArray={inputArray}
                       />
                     ) : (
                       <SortingVisualizer
-                        algorithm={selectedAlgorithm.name}
+                        algorithm={selectedAlgorithm}
                         inputArray={inputArray}
                       />
                     )}
