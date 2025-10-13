@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Search, Clock, Code2 } from "lucide-react";
-import SearchingVisualizer from "../components/SearchingVisualizer";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Search, Clock, Code2, GitCompare, Eye } from 'lucide-react';
+import SearchingVisualizer from '../components/SearchingVisualizer';
+import ParallelSearchingVisualizer from '../components/ParallelSearchingVisualizer';
 
 interface SearchingAlgorithm {
   name: string;
@@ -34,11 +34,12 @@ const searchingAlgorithms: SearchingAlgorithm[] = [
 ];
 
 function SearchingAlgorithmsPage() {
-  const [selectedAlgorithm, setSelectedAlgorithm] =
-    useState<SearchingAlgorithm | null>(null);
-  const [inputArray, setInputArray] = useState<string>("");
-  const [targetValue, setTargetValue] = useState<string>("");
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<SearchingAlgorithm | null>(null);
+  const [selectedAlgorithm2, setSelectedAlgorithm2] = useState<SearchingAlgorithm | null>(null);
+  const [inputArray, setInputArray] = useState<string>('');
+  const [targetValue, setTargetValue] = useState<string>('');
   const [showVisualization, setShowVisualization] = useState(false);
+  const [comparisonMode, setComparisonMode] = useState(false);
 
   const handleAlgorithmSelect = (algorithm: SearchingAlgorithm) => {
     setSelectedAlgorithm(algorithm);
@@ -53,30 +54,62 @@ function SearchingAlgorithmsPage() {
     }
   };
 
-  const handleInputSubmit = (e: React.FormEvent) => {
+   const handleInputSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputArray.trim() && targetValue.trim()) {
-      setShowVisualization(true);
+      // In comparison mode, both must be selected
+      if (comparisonMode) {
+        if (selectedAlgorithm && selectedAlgorithm2) {
+          setShowVisualization(true);
+        } else {
+          alert('Please select two algorithms to compare.');
+        }
+      } else {
+        setShowVisualization(true);
+      }
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <Link to={"/"}>
-              <div className="p-2 bg-gradient-to-r from-green-500 cursor-pointer to-emerald-500 rounded-lg">
+        <div className="max-w-7xl mx-auto py-4 px-4 md:p-6 lg:px-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
+            <div className="flex items-center space-x-3 min-h-[110px]">
+              <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
                 <Search className="w-6 h-6 text-white" />
               </div>
-            </Link>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-              Searching Algorithms Visualizer
-            </h1>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  Searching Algorithms Visualizer
+                </h1>
+                <p className="text-sm md:text-base md:mt-2 text-gray-600">
+                  {comparisonMode ? "Compare Linear Search vs. Binary Search" : "Explore how different searching algorithms find elements in arrays"}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setComparisonMode(false)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
+                  !comparisonMode ? "bg-white shadow-sm text-green-600" : "text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                <Eye className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="text-sm font-medium">Single View</span>
+              </button>
+              <button
+                onClick={() => setComparisonMode(true)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
+                  comparisonMode ? "bg-white shadow-sm text-emerald-600" : "text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                <GitCompare className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="text-sm font-medium">Compare</span>
+              </button>
+            </div>
           </div>
-          <p className="mt-2 text-gray-600">
-            Explore how different searching algorithms find elements in arrays
-          </p>
         </div>
       </header>
 
@@ -85,27 +118,59 @@ function SearchingAlgorithmsPage() {
           {searchingAlgorithms.map((algorithm) => (
             <div
               key={algorithm.name}
-              className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${
-                selectedAlgorithm?.name === algorithm.name
-                  ? "border-green-500 ring-2 ring-green-200"
-                  : "border-gray-200 hover:border-green-300"
-              }`}
-              onClick={() => handleAlgorithmSelect(algorithm)}
+                className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${
+                  comparisonMode
+                    ? selectedAlgorithm?.name === algorithm.name
+                      ? "border-green-500 ring-2 ring-green-200" 
+                      : selectedAlgorithm2?.name === algorithm.name
+                      ? "border-purple-600 ring-2 ring-purple-200" 
+                      : "border-gray-200 hover:border-green-300"
+                    : selectedAlgorithm?.name === algorithm.name
+                    ? "border-green-500 ring-2 ring-green-200" 
+                    : "border-gray-200 hover:border-green-300"
+                }`}
+              onClick={() =>{
+                if(comparisonMode){
+                  if(!selectedAlgorithm){
+                    setSelectedAlgorithm(algorithm)
+                  }
+                  else if(!selectedAlgorithm2 &&  algorithm.name !== selectedAlgorithm.name)
+                    setSelectedAlgorithm2(algorithm)
+                  else if(selectedAlgorithm.name === algorithm.name)
+                    setSelectedAlgorithm(null);
+                  else if(selectedAlgorithm2?.name === algorithm.name)
+                    setSelectedAlgorithm2(null);
+                  else
+                    setSelectedAlgorithm2(algorithm);
+                }
+                else
+                  handleAlgorithmSelect(algorithm);
+              } }
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {algorithm.name}
-                  </h3>
-                  <div className="p-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg">
-                    <Search className="w-5 h-5 text-green-600" />
+            <div className = "p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{algorithm.name}</h3>
+              <div className="flex items-center space-x-2">
+                {/* Badge for Algorithm 1 */}
+                {comparisonMode && selectedAlgorithm?.name === algorithm.name && (
+                  <div className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
+                    Algorithm 1
                   </div>
+                )}
+                {/* Badge for Algorithm 2 */}
+                {comparisonMode && selectedAlgorithm2?.name === algorithm.name && (
+                  <div className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded">
+                    Algorithm 2
+                  </div>
+                )}
+                <div className="p-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg">
+                  <Search className="w-5 h-5 text-green-600" />
                 </div>
-
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {algorithm.description}
-                </p>
-
+              </div>
+            </div>
+                
+                <p className="text-gray-600 mb-6 leading-relaxed">{algorithm.description}</p>
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center space-x-2 mb-2">
@@ -151,7 +216,7 @@ function SearchingAlgorithmsPage() {
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
           ))}
         </div>
 
@@ -159,7 +224,7 @@ function SearchingAlgorithmsPage() {
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200">
             <div className="p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Visualize {selectedAlgorithm.name}
+                 {comparisonMode ? "Compare Searching Algorithms" : `Visualize ${selectedAlgorithm.name}`}
               </h3>
 
               {selectedAlgorithm.name === "Binary Search" && (
@@ -207,23 +272,35 @@ function SearchingAlgorithmsPage() {
                     />
                   </div>
                 </div>
-
+                
+                <p className="text-sm text-gray-500">
+                  💡 <strong>Tip:</strong> For arrays with 100+ elements, zoom and pan controls will be automatically enabled for better visualization.
+                </p>
+                
                 <button
                   type="submit"
                   className="w-full md:w-auto inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg shadow-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:-translate-y-0.5"
                 >
                   <Search className="w-5 h-5 mr-2" />
-                  Start Search Visualization
+                   {comparisonMode ? "Start Comparison" : "Start Search Visualization"}
                 </button>
               </form>
 
               {showVisualization && (
                 <div className="mt-8 border-t pt-8">
-                  <SearchingVisualizer
-                    algorithm={selectedAlgorithm.name}
-                    inputArray={inputArray}
-                    targetValue={parseInt(targetValue)}
-                  />
+                  {comparisonMode && selectedAlgorithm2 ? (
+                    // ---> THIS IS WHERE IT IS CALLED <---
+                    <ParallelSearchingVisualizer
+                      inputArray={inputArray}
+                      targetValue={parseInt(targetValue)}
+                    />
+                  ) : !comparisonMode && selectedAlgorithm ? (
+                    <SearchingVisualizer
+                      algorithm={selectedAlgorithm.name}
+                      inputArray={inputArray}
+                      targetValue={parseInt(targetValue)}
+                    />
+                  ) : null}
                 </div>
               )}
             </div>
