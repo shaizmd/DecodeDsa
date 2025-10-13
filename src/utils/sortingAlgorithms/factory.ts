@@ -1,4 +1,3 @@
-import type Algorithm from "../../types/algorithms"
 import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
 import { BubbleSort } from "./bubbleSort"
 import { SelectionSort } from "./selectionSort"
@@ -7,13 +6,14 @@ import { QuickSort } from "./quickSort"
 import { MergeSort } from "./mergeSort"
 import { HeapSort } from "./heapSort"
 import { RadixSort } from "./radixSort"
+import { SortingAlgorithm } from "../../types/algorithms"
 
 /**
  * Factory class for creating sorting algorithm instances
  * Implements the Factory Pattern for better extensibility
  */
 export class SortingAlgorithmFactory {
-  private static algorithms: Map<SortingAlgorithms, Algorithm<SortingAlgorithms>> = new Map([
+  private static algorithms: Map<SortingAlgorithms, SortingAlgorithm> = new Map([
     [SortingAlgorithms.BubbleSort, new BubbleSort()],
     [SortingAlgorithms.SelectionSort, new SelectionSort()],
     [SortingAlgorithms.InsertionSort, new InsertionSort()],
@@ -29,7 +29,7 @@ export class SortingAlgorithmFactory {
    * @returns The sorting algorithm instance
    * @throws Error if algorithm is not found
    */
-  static getAlgorithm(algorithmName: SortingAlgorithms): Algorithm {
+  static getAlgorithm(algorithmName: SortingAlgorithms): SortingAlgorithm {
     const algorithm = this.algorithms.get(algorithmName)
     if (!algorithm) {
       throw new Error(`Sorting algorithm "${algorithmName}" not found`)
@@ -41,7 +41,7 @@ export class SortingAlgorithmFactory {
    * Get all available sorting algorithm names
    * @returns Array of algorithm names
    */
-  static getAvailableAlgorithms(): Algorithm<SortingAlgorithms>[] {
+  static getAvailableAlgorithms(): SortingAlgorithm[] {
     return Array.from(this.algorithms.values())
   }
 }

@@ -1,8 +1,8 @@
 import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
-import type Algorithm from "../../types/algorithms"
-import Step from "../../types/steps"
+import { SortingAlgorithm } from "../../types/algorithms"
+import { SortStep } from "../../types/steps"
 
-export class RadixSort implements Algorithm<SortingAlgorithms> {
+export class RadixSort implements SortingAlgorithm {
   name = "Radix Sort"
   description = "A non-comparison-based sorting algorithm that sorts numbers by processing individual digits. It uses counting sort as a subroutine to achieve linear time complexity for integer keys."
   timeComplexity = "O(nk)"
@@ -49,7 +49,7 @@ function countingSort(arr, exp) {
     return max
   }
 
-  private countingSort = (arr: number[], exp: number, steps: Step[]): void => {
+  private countingSort = (arr: number[], exp: number, steps: SortStep[]): void => {
     const n = arr.length
     const output = new Array(n)
     const count = new Array(10).fill(0)
@@ -104,8 +104,8 @@ function countingSort(arr, exp) {
     })
   }
 
-  generateSteps(array: number[]): Step[] {
-    const steps: Step[] = []
+  generateSteps(array: number[]): SortStep[] {
+    const steps: SortStep[] = []
     const arr = [...array]
     const max = this.getMax(arr)
 

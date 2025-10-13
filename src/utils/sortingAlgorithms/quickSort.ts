@@ -1,8 +1,8 @@
 import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
-import type Algorithm from "../../types/algorithms"
-import Step from "../../types/steps"
+import { SortingAlgorithm } from "../../types/algorithms"
+import { SortStep } from "../../types/steps"
 
-export class QuickSort implements Algorithm<SortingAlgorithms> {
+export class QuickSort implements SortingAlgorithm {
   name = "Quick Sort"
   description = "A divide-and-conquer algorithm that picks an element as pivot and partitions the array around the pivot."
   timeComplexity = "O(n log n)"
@@ -37,8 +37,8 @@ function partition(arr, low, high) {
   return i + 1;
 }`
 
-  generateSteps(array: number[]): Step[] {
-    const steps: Step[] = []
+  generateSteps(array: number[]): SortStep[] {
+    const steps: SortStep[] = []
     const arr = [...array]
 
     steps.push({
@@ -59,7 +59,7 @@ function partition(arr, low, high) {
     return steps
   }
 
-  private quickSortHelper(arr: number[], low: number, high: number, steps: Step[], depth = 0): void {
+  private quickSortHelper(arr: number[], low: number, high: number, steps: SortStep[], depth = 0): void {
     if (low < high) {
       steps.push({
         array: [...arr],
@@ -81,7 +81,7 @@ function partition(arr, low, high) {
     }
   }
 
-  private partition(arr: number[], low: number, high: number, steps: Step[]): number {
+  private partition(arr: number[], low: number, high: number, steps: SortStep[]): number {
     const pivot = arr[high]
     let i = low - 1
 

@@ -2,36 +2,12 @@ import React, { useState } from 'react';
 import { Search, Clock, Code2, GitCompare, Eye } from 'lucide-react';
 import SearchingVisualizer from '../components/SearchingVisualizer';
 import ParallelSearchingVisualizer from '../components/ParallelSearchingVisualizer';
-
-interface SearchingAlgorithm {
-  name: string;
-  description: string;
-  timeComplexity: string;
-  spaceComplexity: string;
-  bestCase: string;
-  worstCase: string;
-}
-
-const searchingAlgorithms: SearchingAlgorithm[] = [
-  {
-    name: 'Linear Search',
-    description: 'A simple search algorithm that checks every element in the array sequentially until the target is found or the array ends.',
-    timeComplexity: 'O(n)',
-    spaceComplexity: 'O(1)',
-    bestCase: 'O(1) - Target is first element',
-    worstCase: 'O(n) - Target is last element or not found'
-  },
-  {
-    name: 'Binary Search',
-    description: 'An efficient search algorithm that works on sorted arrays by repeatedly dividing the search interval in half.',
-    timeComplexity: 'O(log n)',
-    spaceComplexity: 'O(1)',
-    bestCase: 'O(1) - Target is middle element',
-    worstCase: 'O(log n) - Maximum divisions needed'
-  }
-];
+import { getAvailableAlgorithms } from '../utils/searchingAlgorithms';
+import type { SearchingAlgorithm } from '../types/algorithms';
 
 function SearchingAlgorithmsPage() {
+  const searchingAlgorithms = getAvailableAlgorithms();
+  
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<SearchingAlgorithm | null>(null);
   const [selectedAlgorithm2, setSelectedAlgorithm2] = useState<SearchingAlgorithm | null>(null);
   const [inputArray, setInputArray] = useState<string>('');
@@ -271,7 +247,7 @@ function SearchingAlgorithmsPage() {
                     />
                   ) : !comparisonMode && selectedAlgorithm ? (
                     <SearchingVisualizer
-                      algorithm={selectedAlgorithm.name}
+                      algorithm={selectedAlgorithm}
                       inputArray={inputArray}
                       targetValue={parseInt(targetValue)}
                     />
