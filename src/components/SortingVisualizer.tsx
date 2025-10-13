@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
-import { ArrowUpDown, Code } from "lucide-react"
+import { ArrowUpDown, Code, Play, Pause, RotateCcw } from "lucide-react"
 import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 
 interface SortingVisualizerProps {
@@ -201,6 +201,8 @@ const mergeSort = (arr: number[], steps: Step[]): Step[] => {
       array: [...arr],
       description: `Divide: Splitting array from index ${left} to ${right} at middle ${mid}`,
       code: `// Divide phase (depth ${depth})\nlet mid = Math.floor((${left} + ${right}) / 2); // ${mid}`,
+      pivot: mid,
+      comparing: Array.from({ length: right - left + 1 }, (_, i) => left + i).filter(idx => idx !== mid),
     })
 
     mergeSortHelper(arr, left, mid, depth + 1)
@@ -214,6 +216,7 @@ const mergeSort = (arr: number[], steps: Step[]): Step[] => {
       array: [...arr],
       description: `Merge: Combining [${leftArr.join(", ")}] and [${rightArr.join(", ")}]`,
       code: `// Merge phase\nleft = [${leftArr.join(", ")}]\nright = [${rightArr.join(", ")}]`,
+      comparing: Array.from({ length: leftArr.length }, (_, i) => left + i).concat(Array.from({ length: rightArr.length }, (_, i) => mid + 1 + i)),
     })
 
     let i = 0,
@@ -227,6 +230,7 @@ const mergeSort = (arr: number[], steps: Step[]): Step[] => {
           array: [...arr],
           description: `${leftArr[i]} ≤ ${rightArr[j]}, so place ${leftArr[i]} at position ${k}`,
           code: `arr[${k}] = ${leftArr[i]}; // ${leftArr[i]} ≤ ${rightArr[j]}`,
+          sorted: [k + i],
         })
         i++
       } else {
@@ -235,6 +239,7 @@ const mergeSort = (arr: number[], steps: Step[]): Step[] => {
           array: [...arr],
           description: `${rightArr[j]} < ${leftArr[i]}, so place ${rightArr[j]} at position ${k}`,
           code: `arr[${k}] = ${rightArr[j]}; // ${rightArr[j]} < ${leftArr[i]}`,
+          sorted: [k + i],
         })
         j++
       }
@@ -247,6 +252,7 @@ const mergeSort = (arr: number[], steps: Step[]): Step[] => {
         array: [...arr],
         description: `Copy remaining element ${leftArr[i]} to position ${k}`,
         code: `arr[${k}] = ${leftArr[i]}; // Copy remaining`,
+        sorted: Array.from({ length: k + 1 }, (_, idx) => idx).filter(idx => idx >= left),
       })
       i++
       k++
@@ -258,6 +264,7 @@ const mergeSort = (arr: number[], steps: Step[]): Step[] => {
         array: [...arr],
         description: `Copy remaining element ${rightArr[j]} to position ${k}`,
         code: `arr[${k}] = ${rightArr[j]}; // Copy remaining`,
+        sorted: Array.from({ length: k + 1 }, (_, idx) => idx).filter(idx => idx >= mid + 1),
       })
       j++
       k++
@@ -440,6 +447,8 @@ const heapify = (arr: number[], n: number, i: number, steps: Step[]): void => {
 const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputArray }) => {
   const [steps, setSteps] = useState<Step[]>([])
   const [currentStep, setCurrentStep] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [playSpeed, setPlaySpeed] = useState(1000) // milliseconds
   const [sortResult, setSortResult] = useState<SortResult | null>(null)
 
   const generateSteps = useCallback((algorithm: string, array: number[]): Step[] => {
@@ -490,6 +499,19 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     })
   }, [algorithm, inputArray, generateSteps])
 
+  // Auto-play functionality
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isPlaying && currentStep < steps.length - 1) {
+      interval = setInterval(() => {
+        setCurrentStep(prev => prev + 1)
+      }, playSpeed)
+    } else if (currentStep >= steps.length - 1) {
+      setIsPlaying(false)
+    }
+    return () => clearInterval(interval)
+  }, [isPlaying, currentStep, steps.length, playSpeed])
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
@@ -504,6 +526,11 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
 
   const handleReset = () => {
     setCurrentStep(0)
+    setIsPlaying(false)
+  }
+
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying)
   }
 
   const getElementColor = (index: number): string => {
@@ -822,21 +849,48 @@ function heapify(arr, n, i) {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-center md:justify-between flex-wrap gap-4 md:gap-2 bg-white rounded-lg p-4 shadow-sm border">
-        <div className="flex space-x-2">
-          <Button onClick={handleReset} variant="secondary">
-            Reset
-          </Button>
-          <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary">
-            Previous
-          </Button>
-          <Button onClick={handleNext} disabled={currentStep === steps.length - 1}>
-            Next
-          </Button>
+      <div className="bg-white rounded-lg p-4 shadow-sm border">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center space-x-2">
+            <Button onClick={handleReset} variant="secondary" size="sm">
+              <RotateCcw className="w-4 h-4 mr-1" />
+              Reset
+            </Button>
+            <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary" size="sm">
+              Previous
+            </Button>
+            <Button 
+              onClick={togglePlay} 
+              variant={isPlaying ? "secondary" : "primary"}
+              size="sm"
+            >
+              {isPlaying ? <Pause className="w-4 h-4 mr-1" /> : <Play className="w-4 h-4 mr-1" />}
+              {isPlaying ? "Pause" : "Play"}
+            </Button>
+            <Button onClick={handleNext} disabled={currentStep === steps.length - 1} size="sm">
+              Next
+            </Button>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <label className="text-sm text-gray-600">Speed:</label>
+              <select 
+                value={playSpeed} 
+                onChange={(e) => setPlaySpeed(Number(e.target.value))}
+                className="text-sm border rounded px-2 py-1"
+              >
+                <option value={2000}>0.5x</option>
+                <option value={1000}>1x</option>
+                <option value={500}>2x</option>
+                <option value={250}>4x</option>
+              </select>
+            </div>
+            <Badge variant="default" className="text-sm">
+              Step {currentStep + 1} of {steps.length}
+            </Badge>
+          </div>
         </div>
-        <Badge variant="default" className="text-sm">
-          Step {currentStep + 1} of {steps.length}
-        </Badge>
       </div>
 
       {/* Step Description */}
