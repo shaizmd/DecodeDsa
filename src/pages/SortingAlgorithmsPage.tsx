@@ -5,22 +5,21 @@ import SortingVisualizer from "../components/SortingVisualizer";
 import ParallelSortingVisualizer from "../components/ParallelSortingVisualizer";
 import { Link } from "react-router-dom";
 import { getAvailableAlgorithms } from "../utils/sortingAlgorithms";
-import type Algorithm from "../types/algorithms";
-import { SortingAlgorithms } from "../enums/SortingAlgorithms";
+import { SortingAlgorithm } from "../types/algorithms";
 
 const sortingAlgorithms = getAvailableAlgorithms();
 
 function SortingAlgorithmsPage() {
   const [selectedAlgorithm, setSelectedAlgorithm] =
-    useState<Algorithm<SortingAlgorithms> | null>(null);
+    useState<SortingAlgorithm | null>(null);
   const [selectedAlgorithm2, setSelectedAlgorithm2] =
-    useState<Algorithm<SortingAlgorithms> | null>(null);
+    useState<SortingAlgorithm | null>(null);
   const [inputArray, setInputArray] = useState<string>("");
   const [showVisualization, setShowVisualization] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const vizRef = useRef<HTMLDivElement | null>(null);
 
-  const handleAlgorithmSelect = (algorithm: Algorithm<SortingAlgorithms>) => {
+  const handleAlgorithmSelect = (algorithm: SortingAlgorithm) => {
     setSelectedAlgorithm(algorithm);
     setInputArray("64 34 25 12 22 11 90");
     setShowVisualization(true);

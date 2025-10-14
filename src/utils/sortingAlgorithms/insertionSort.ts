@@ -1,8 +1,8 @@
 import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
-import type Algorithm from "../../types/algorithms"
-import Step from "../../types/steps"
+import { SortingAlgorithm } from "../../types/algorithms"
+import { SortStep } from "../../types/steps"
 
-export class InsertionSort implements Algorithm<SortingAlgorithms> {
+export class InsertionSort implements SortingAlgorithm {
   name = "Insertion Sort"
   description = "A simple sorting algorithm that builds the final sorted array one item at a time by comparing each new item with the already sorted portion."
   timeComplexity = "O(n²)"
@@ -29,8 +29,8 @@ export class InsertionSort implements Algorithm<SortingAlgorithms> {
   return arr;
 }`
 
-  generateSteps(array: number[]): Step[] {
-    const steps: Step[] = []
+  generateSteps(array: number[]): SortStep[] {
+    const steps: SortStep[] = []
     const arr = [...array]
 
     steps.push({

@@ -10,7 +10,7 @@ import { generateSteps } from "../utils/sortingAlgorithms"
 import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 import Algorithm from "../types/algorithms"
 import { SortingAlgorithms } from "../enums/SortingAlgorithms"
-import Step from "../types/steps"
+import { SortStep } from "../types/steps"
 
 interface ParallelSortingVisualizerProps {
   algorithm1: Algorithm<SortingAlgorithms>
@@ -29,8 +29,8 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
   algorithm2, 
   inputArray 
 }) => {
-  const [steps1, setSteps1] = useState<Step[]>([])
-  const [steps2, setSteps2] = useState<Step[]>([])
+  const [steps1, setSteps1] = useState<SortStep[]>([])
+  const [steps2, setSteps2] = useState<SortStep[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [playSpeed, setPlaySpeed] = useState(1000) // milliseconds
@@ -95,7 +95,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
     setIsPlaying(!isPlaying)
   }
 
-  const getElementColor = (index: number, steps: Step[], stepIndex: number): string => {
+  const getElementColor = (index: number, steps: SortStep[], stepIndex: number): string => {
     const step = steps[stepIndex]
     if (!step) return "bg-blue-500"
 
@@ -107,7 +107,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
     return "bg-blue-500"
   }
 
-  const getElementColorHex = (index: number, steps: Step[], stepIndex: number): string => {
+  const getElementColorHex = (index: number, steps: SortStep[], stepIndex: number): string => {
     const step = steps[stepIndex]
     if (!step) return "#3b82f6" // blue-500
 
@@ -119,7 +119,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
     return "#3b82f6" // blue-500
   }
 
-  const prepareCanvasElements = (steps: Step[], stepIndex: number) => {
+  const prepareCanvasElements = (steps: SortStep[], stepIndex: number) => {
     const step = steps[stepIndex]
     if (!step) return []
 

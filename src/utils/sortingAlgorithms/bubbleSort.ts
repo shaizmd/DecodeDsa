@@ -1,8 +1,8 @@
 import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
-import type Algorithm from "../../types/algorithms"
-import Step from "../../types/steps"
+import { SortingAlgorithm } from "../../types/algorithms"
+import { SortStep } from "../../types/steps"
 
-export class BubbleSort implements Algorithm<SortingAlgorithms> {
+export class BubbleSort implements SortingAlgorithm {
   name = "Bubble Sort"
   description = "A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order."
   timeComplexity = "O(n²)"
@@ -32,8 +32,8 @@ export class BubbleSort implements Algorithm<SortingAlgorithms> {
   return arr;
 }`
 
-  generateSteps(array: number[]): Step[] {
-    const steps: Step[] = []
+  generateSteps(array: number[]): SortStep[] {
+    const steps: SortStep[] = []
     const arr = [...array]
 
     steps.push({

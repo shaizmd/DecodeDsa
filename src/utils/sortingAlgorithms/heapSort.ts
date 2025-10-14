@@ -1,8 +1,8 @@
 import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
-import type Algorithm from "../../types/algorithms"
-import Step from "../../types/steps"
+import { SortingAlgorithm } from "../../types/algorithms"
+import { SortStep } from "../../types/steps"
 
-export class HeapSort implements Algorithm<SortingAlgorithms> {
+export class HeapSort implements SortingAlgorithm {
   name = "Heap Sort"
   description = "A comparison-based sorting algorithm that uses a binary heap data structure to sort elements."
   timeComplexity = "O(n log n)"
@@ -47,8 +47,8 @@ function heapify(arr, n, i) {
   }
 }`
 
-  generateSteps(array: number[]): Step[] {
-    const steps: Step[] = []
+  generateSteps(array: number[]): SortStep[] {
+    const steps: SortStep[] = []
     const arr = [...array]
 
     steps.push({
@@ -106,7 +106,7 @@ function heapify(arr, n, i) {
     return steps
   }
 
-  private heapify(arr: number[], n: number, i: number, steps: Step[]): void {
+  private heapify(arr: number[], n: number, i: number, steps: SortStep[]): void {
     let largest = i
     const left = 2 * i + 1
     const right = 2 * i + 2
