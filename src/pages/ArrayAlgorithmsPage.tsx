@@ -8,9 +8,7 @@ import {
   Hash, 
   TrendingUp, 
   Binary, 
-  Layers, 
-  RotateCcw, 
-  List, 
+  Layers,
   Grid,
   ArrowRight
 } from "lucide-react"

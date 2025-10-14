@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, Grid, ChevronLeft, ChevronRight, Code, Copy, Check } from "lucide-react"
+import { ArrowLeft, Grid, ChevronLeft, ChevronRight, Code } from "lucide-react"
 import { Button } from "../../components/ui/button"
 
 interface MatrixCell {
@@ -28,7 +28,7 @@ function TwoDArraysPage() {
   const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<"spiral" | "rotate" | "search" | "set-zeros">("spiral")
   const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  const [copiedCode, setCopiedCode] = useState(false)
+  
   const [searchTarget, setSearchTarget] = useState<number>(0)
 
   const resetVisualization = () => {
@@ -434,26 +434,8 @@ return False`,
     }
   }
 
-  const copyToClipboard = async (text: string, setCopied: (value: boolean) => void) => {
-    try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text)
-      } else {
-        const textarea = document.createElement('textarea')
-        textarea.value = text
-        textarea.style.position = 'fixed'
-        textarea.style.opacity = '0'
-        document.body.appendChild(textarea)
-        textarea.select()
-        document.execCommand('copy')
-        document.body.removeChild(textarea)
-      }
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    } catch (e) {
-      console.error('Failed to copy', e)
-    }
-  }
+  
+  
 
   // Helper type guard
   function isNumberArray(val: unknown): val is number[] {
