@@ -931,9 +931,9 @@ function search(value) {
   const nodes = toArray()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto p-4 md:p-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
             <div className="flex items-center space-x-3 min-h-[110px]">
@@ -944,7 +944,7 @@ function search(value) {
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Interactive Linked List Visualizer
                 </h1>
-                <p className="mt-1 text-gray-600">
+                <p className="mt-1 text-gray-600 dark:text-gray-300">
                   Learn linked lists through step-by-step animations
                 </p>
               </div>
@@ -991,7 +991,7 @@ function search(value) {
                 : "The last node points back to the first node, forming a circle."}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Clock className="w-4 h-4 text-green-600" />
                   <span className="font-semibold text-green-800">
@@ -1003,7 +1003,7 @@ function search(value) {
                   Search: O(n)
                 </p>
               </div>
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Target className="w-4 h-4 text-purple-600" />
                   <span className="font-semibold text-purple-800">
@@ -1023,8 +1023,8 @@ function search(value) {
         )}
 
         {/* List Type Selector */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             Choose Linked List Type
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1040,13 +1040,13 @@ function search(value) {
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   listType === type
                     ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    : "border-gray-200 dark:border-slate-700 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
                 <div className="text-lg font-semibold capitalize">
                   {type} Linked List
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
+                <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                   {type === "singly" && "→ One-way connections"}
                   {type === "doubly" && "↔ Two-way connections"}
                   {type === "circular" && "↻ Circular connections"}
@@ -1059,8 +1059,8 @@ function search(value) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Controls Panel */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 sticky top-8">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                 Operations
               </h2>
 
@@ -1227,13 +1227,13 @@ function search(value) {
           {/* Visualization Panel */}
           <div className="lg:col-span-2 space-y-8">
             {/* Main Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   {listType.charAt(0).toUpperCase() + listType.slice(1)} Linked
                   List
                 </h2>
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                   <span>Nodes: {nodes.length}</span>
                 </div>
               </div>
@@ -1284,8 +1284,8 @@ function search(value) {
             </div>
 
             {/* Operation History */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                 Operation History
               </h2>
               <div className="max-h-60 overflow-y-auto space-y-2">
@@ -1308,9 +1308,9 @@ function search(value) {
 
             {/* Code Implementation Section */}
             {currentOperation && (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                     {
                       getOperationCode(currentOperation as CodeOperationType)
                         .title
@@ -1424,3 +1424,5 @@ function search(value) {
 }
 
 export default LinkedListVisualizerPage;
+
+

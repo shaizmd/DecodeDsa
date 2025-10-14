@@ -42,7 +42,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
@@ -61,8 +61,8 @@ export default function ContactPage() {
             {/* Contact Information */}
             <div className="lg:col-span-1 space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
-                <p className="text-gray-600 mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-8">
                   Feel free to reach out through any of these channels, or simply fill out the form.
                 </p>
               </div>
@@ -73,9 +73,9 @@ export default function ContactPage() {
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                    <p className="text-gray-600">support@decodedsa.com</p>
-                    <p className="text-gray-600">contact@decodedsa.com</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Email</h3>
+                    <p className="text-gray-600 dark:text-gray-300">support@decodedsa.com</p>
+                    <p className="text-gray-600 dark:text-gray-300">contact@decodedsa.com</p>
                   </div>
                 </div>
 
@@ -84,9 +84,9 @@ export default function ContactPage() {
                     <Phone className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-600">Mon-Fri, 9AM - 6PM EST</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Phone</h3>
+                    <p className="text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
+                    <p className="text-gray-600 dark:text-gray-300">Mon-Fri, 9AM - 6PM EST</p>
                   </div>
                 </div>
 
@@ -95,16 +95,16 @@ export default function ContactPage() {
                     <MapPin className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Office</h3>
-                    <p className="text-gray-600">123 Algorithm Street</p>
-                    <p className="text-gray-600">San Francisco, CA 94102</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Office</h3>
+                    <p className="text-gray-600 dark:text-gray-300">123 Algorithm Street</p>
+                    <p className="text-gray-600 dark:text-gray-300">San Francisco, CA 94102</p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-2xl">
-                <h3 className="font-semibold text-gray-900 mb-2">Quick Response Time</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Quick Response Time</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   We typically respond within 24 hours during business days. For urgent matters, please call us directly.
                 </p>
               </div>
@@ -112,8 +112,8 @@ export default function ContactPage() {
 
             {/* Contact Form */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 border border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send us a Message</h2>
 
                 {isSubmitted && (
                   <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center space-x-3">
@@ -128,7 +128,7 @@ export default function ContactPage() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Full Name *
                       </label>
                       <div className="relative">
@@ -147,7 +147,7 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Email Address *
                       </label>
                       <div className="relative">
@@ -168,7 +168,7 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Phone Number
                       </label>
                       <div className="relative">
@@ -186,7 +186,7 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Subject *
                       </label>
                       <div className="relative">
@@ -206,7 +206,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="message" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                       Message *
                     </label>
                     <textarea
@@ -248,14 +248,14 @@ export default function ContactPage() {
       {/* FAQ Teaser */}
       <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Still Have Questions?</h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Still Have Questions?</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Check out our FAQ section for quick answers to common questions, or browse our documentation for detailed guides.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/#faq"
-              className="inline-flex items-center px-6 py-3 bg-white text-gray-700 font-semibold rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+              className="inline-flex items-center px-6 py-3 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold rounded-xl border-2 border-gray-200 dark:border-slate-700 hover:border-blue-300 hover:bg-blue-50 transition-all"
             >
               View FAQ
             </a>
@@ -271,3 +271,5 @@ export default function ContactPage() {
     </div>
   );
 }
+
+

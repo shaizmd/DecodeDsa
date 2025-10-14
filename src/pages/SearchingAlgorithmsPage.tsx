@@ -45,8 +45,8 @@ function SearchingAlgorithmsPage() {
   };
 
   return (
-     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-4 px-4 md:p-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
             <div className="flex items-center space-x-3 min-h-[110px]">
@@ -54,20 +54,20 @@ function SearchingAlgorithmsPage() {
                 <Search className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
                   Searching Algorithms Visualizer
                 </h1>
-                <p className="text-sm md:text-base md:mt-2 text-gray-600">
+                <p className="text-sm md:text-base md:mt-2 text-gray-600 dark:text-gray-300">
                   {comparisonMode ? "Compare Linear Search vs. Binary Search" : "Explore how different searching algorithms find elements in arrays"}
                 </p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+            <div className="flex items-center space-x-2 bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
               <button
                 onClick={() => setComparisonMode(false)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
-                  !comparisonMode ? "bg-white shadow-sm text-green-600" : "text-gray-600 hover:text-gray-800"
+                  !comparisonMode ? "bg-white dark:bg-slate-600 shadow-sm text-green-600 dark:text-green-400" : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
                 }`}
               >
                 <Eye className="w-5 h-5 md:w-6 md:h-6" />
@@ -76,7 +76,7 @@ function SearchingAlgorithmsPage() {
               <button
                 onClick={() => setComparisonMode(true)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
-                  comparisonMode ? "bg-white shadow-sm text-emerald-600" : "text-gray-600 hover:text-gray-800"
+                  comparisonMode ? "bg-white dark:bg-slate-600 shadow-sm text-emerald-600 dark:text-emerald-400" : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
                 }`}
               >
                 <GitCompare className="w-5 h-5 md:w-6 md:h-6" />
@@ -92,12 +92,12 @@ function SearchingAlgorithmsPage() {
           {searchingAlgorithms.map((algorithm) => (
             <div
               key={algorithm.name}
-                className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${
+                className={`bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${
                   comparisonMode
                     ? selectedAlgorithm?.name === algorithm.name
-                      ? "border-green-500 ring-2 ring-green-200" 
+                      ? "border-green-500 ring-2 ring-green-200 dark:ring-green-800" 
                       : selectedAlgorithm2?.name === algorithm.name
-                      ? "border-purple-600 ring-2 ring-purple-200" 
+                      ? "border-purple-600 ring-2 ring-purple-200 dark:ring-purple-800" 
                       : "border-gray-200 hover:border-green-300"
                     : selectedAlgorithm?.name === algorithm.name
                     ? "border-green-500 ring-2 ring-green-200" 
@@ -123,49 +123,49 @@ function SearchingAlgorithmsPage() {
             >
             <div className = "p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{algorithm.name}</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{algorithm.name}</h3>
               <div className="flex items-center space-x-2">
                 {/* Badge for Algorithm 1 */}
                 {comparisonMode && selectedAlgorithm?.name === algorithm.name && (
-                  <div className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
+                  <div className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs font-medium rounded">
                     Algorithm 1
                   </div>
                 )}
                 {/* Badge for Algorithm 2 */}
                 {comparisonMode && selectedAlgorithm2?.name === algorithm.name && (
-                  <div className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded">
+                  <div className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs font-medium rounded">
                     Algorithm 2
                   </div>
                 )}
-                <div className="p-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg">
-                  <Search className="w-5 h-5 text-green-600" />
+                <div className="p-2 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 rounded-lg">
+                  <Search className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </div>
                 
-                <p className="text-gray-600 mb-6 leading-relaxed">{algorithm.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{algorithm.description}</p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-3">
                     <div className="flex items-center space-x-2 mb-2">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm font-medium text-gray-700">
+                      <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Time Complexity
                       </span>
                     </div>
-                    <p className="text-lg font-bold text-green-600">
+                    <p className="text-lg font-bold text-green-600 dark:text-green-400">
                       {algorithm.timeComplexity}
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-3">
                     <div className="flex items-center space-x-2 mb-2">
-                      <Code2 className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm font-medium text-gray-700">
+                      <Code2 className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Space Complexity
                       </span>
                     </div>
-                    <p className="text-lg font-bold text-blue-600">
+                    <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                       {algorithm.spaceComplexity}
                     </p>
                   </div>
@@ -173,10 +173,10 @@ function SearchingAlgorithmsPage() {
 
                 <div className="mt-4 space-y-2">
                   <div className="text-sm">
-                    <span className="font-medium text-green-700">
+                    <span className="font-medium text-green-700 dark:text-green-400">
                       Best Case:
                     </span>
-                    <span className="text-gray-600 ml-2">
+                    <span className="text-gray-600 dark:text-gray-300 ml-2">
                       {algorithm.bestCase}
                     </span>
                   </div>
@@ -286,3 +286,4 @@ function SearchingAlgorithmsPage() {
 }
 
 export default SearchingAlgorithmsPage;
+

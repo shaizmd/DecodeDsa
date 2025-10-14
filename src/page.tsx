@@ -135,27 +135,27 @@ export default function Page() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
         <div className="container relative px-6 py-24 mx-auto text-center">
-          <div className="inline-flex items-center px-4 py-2 mb-6 font-medium text-blue-800 bg-blue-100 rounded-full">
+          <div className="inline-flex items-center px-4 py-2 mb-6 font-medium text-blue-800 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 rounded-full">
             <Zap className="w-4 h-4 mr-2" />
             Empower Your DSA Journey
           </div>
-          <h1 className="mb-6 text-5xl font-extrabold leading-tight text-gray-900 md:text-6xl">
+          <h1 className="mb-6 text-5xl font-extrabold leading-tight text-gray-900 dark:text-white md:text-6xl">
             Master{" "}
-            <span className="text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
+            <span className="text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text">
               Data Structures
             </span>{" "}
             &{" "}
-            <span className="text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text">
+            <span className="text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text">
               Algorithms
             </span>{" "}
             Visually
           </h1>
-          <p className="max-w-3xl mx-auto mb-10 text-lg text-gray-600 md:text-xl">
+          <p className="max-w-3xl mx-auto mb-10 text-lg text-gray-600 dark:text-gray-300 md:text-xl">
             Experience algorithm learning like never before — intuitive,
             interactive, and deeply visual.
           </p>
@@ -170,7 +170,7 @@ export default function Page() {
             </Link>
             <a
               href="#features"
-              className="inline-flex items-center px-8 py-4 font-semibold text-gray-700 transition-all border-2 border-gray-300 rounded-xl hover:border-gray-400 hover:bg-gray-50"
+              className="inline-flex items-center px-8 py-4 font-semibold text-gray-700 dark:text-gray-200 transition-all border-2 border-gray-300 dark:border-gray-600 rounded-xl hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-slate-800"
             >
               <BookOpen className="w-5 h-5 mr-2" /> Learn More
             </a>
@@ -182,12 +182,12 @@ export default function Page() {
  
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-white dark:bg-slate-900">
         <div className="container px-6 mx-auto text-center">
-          <h2 className="mb-6 text-3xl font-bold text-gray-900">
+          <h2 className="mb-6 text-3xl font-bold text-gray-900 dark:text-white">
             Why Choose Our Platform?
           </h2>
-          <p className="max-w-2xl mx-auto mb-12 text-gray-600">
+          <p className="max-w-2xl mx-auto mb-12 text-gray-600 dark:text-gray-300">
             A next-gen platform that transforms abstract concepts into
             interactive, visual stories.
           </p>
@@ -195,29 +195,29 @@ export default function Page() {
             {features.map((f, i) => (
               <div
                 key={i}
-                className="p-6 transition-all shadow-md rounded-2xl hover:shadow-xl bg-gradient-to-br from-slate-50 to-white"
+                className="p-6 transition-all shadow-md rounded-2xl hover:shadow-xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700"
               >
                 <div className="inline-flex items-center justify-center w-16 h-16 mb-4 text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl">
                   <f.icon className="w-8 h-8" />
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
                   {f.title}
                 </h3>
-                <p className="text-gray-600">{f.description}</p>
+                <p className="text-gray-600 dark:text-gray-300">{f.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
-           <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
+           <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800 dark:to-slate-900">
         <div className="container grid grid-cols-2 gap-8 px-6 mx-auto text-center md:grid-cols-4">
           {stats.map((s, i) => (
             <div key={i}>
-              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-white shadow-md rounded-2xl">
-                <s.icon className="w-8 h-8 text-blue-600" />
+              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-white dark:bg-slate-700 shadow-md rounded-2xl">
+                <s.icon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900">{s.value}</h3>
-              <p className="text-gray-600">{s.label}</p>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{s.value}</h3>
+              <p className="text-gray-600 dark:text-gray-300">{s.label}</p>
             </div>
           ))}
         </div>
@@ -293,12 +293,12 @@ export default function Page() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-white">
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
         <div className="container px-6 mx-auto text-center">
-          <h2 className="mb-6 text-3xl font-bold text-gray-900">
+          <h2 className="mb-6 text-3xl font-bold text-gray-900 dark:text-white">
             Explore Categories
           </h2>
-          <p className="max-w-2xl mx-auto mb-12 text-gray-600">
+          <p className="max-w-2xl mx-auto mb-12 text-gray-600 dark:text-gray-300">
             Dive deep into topics — from sorting and searching to advanced data
             structures.
           </p>
@@ -307,7 +307,7 @@ export default function Page() {
             {categories.map((cat) => (
               <div
                 key={cat.title}
-                className="overflow-hidden transition-transform transform border border-gray-100 shadow-lg rounded-2xl hover:shadow-2xl hover:-translate-y-2"
+                className="overflow-hidden transition-transform transform border border-gray-100 dark:border-slate-700 shadow-lg rounded-2xl hover:shadow-2xl hover:-translate-y-2 bg-white dark:bg-slate-800"
               >
                 <div
                   className={`h-32 bg-gradient-to-r ${cat.color} flex items-center justify-center`}
@@ -315,10 +315,10 @@ export default function Page() {
                   <cat.icon className="w-12 h-12 text-white" />
                 </div>
                 <div className="p-6 text-left">
-                  <h3 className="mb-2 text-xl font-bold text-gray-900">
+                  <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
                     {cat.title}
                   </h3>
-                  <p className="mb-6 text-sm text-gray-600">
+                  <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
                     {cat.description}
                   </p>
                   <div className="space-y-3">
@@ -326,18 +326,18 @@ export default function Page() {
                       <Link
                         key={algo.name}
                         to={algo.path}
-                        className="block p-3 transition-all border border-transparent bg-gray-50 rounded-xl hover:bg-blue-50 hover:border-blue-200"
+                        className="block p-3 transition-all border border-transparent bg-gray-50 dark:bg-slate-700 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-600 hover:border-blue-200 dark:hover:border-blue-500"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="font-semibold text-gray-900">
+                            <h4 className="font-semibold text-gray-900 dark:text-white">
                               {algo.name}
                             </h4>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                               {algo.description}
                             </p>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-gray-400" />
+                          <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                         </div>
                       </Link>
                     ))}
