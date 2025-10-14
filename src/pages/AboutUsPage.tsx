@@ -16,7 +16,6 @@ import {
   Github,
   Linkedin,
   Twitter,
-  Mail,
   ArrowUp,
 } from "lucide-react";
 
