@@ -12,7 +12,7 @@ import {
   Target,
   Clock,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+
 
 // Enhanced Node interface with animation states
 interface ListNode {

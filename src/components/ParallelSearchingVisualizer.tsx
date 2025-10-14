@@ -1,6 +1,8 @@
 import React from 'react';
 import SearchingVisualizer from './SearchingVisualizer';
 import { Info } from 'lucide-react';
+import { SearchingAlgorithms } from '../enums/SearchingAlgorithms';
+import { getAvailableAlgorithms } from '../utils/searchingAlgorithms';
 
 // This is the "rulebook" for the props. We are telling TypeScript
 // that this component MUST receive an inputArray and a targetValue.
@@ -12,6 +14,10 @@ interface ParallelSearchingVisualizerProps {
 const ParallelSearchingVisualizer: React.FC<ParallelSearchingVisualizerProps> = ({ inputArray, targetValue }) => {
   const arrayLength = inputArray.split(/[\s,]+/).filter(n => n).length;
   const isLargeArray = arrayLength >= 100;
+  const availableAlgorithms = getAvailableAlgorithms();
+
+  const linearSearchAlgorithm = availableAlgorithms.find(alg => alg.algorithm === SearchingAlgorithms.LinearSearch);
+  const binarySearchAlgorithm = availableAlgorithms.find(alg => alg.algorithm === SearchingAlgorithms.BinarySearch);
 
   return (
     <div className="space-y-6">
@@ -32,7 +38,7 @@ const ParallelSearchingVisualizer: React.FC<ParallelSearchingVisualizerProps> = 
         <div className="bg-gray-50 rounded-lg p-4 border">
           <h3 className="text-lg font-bold text-center mb-4 text-gray-800">Linear Search</h3>
           <SearchingVisualizer
-            algorithm="Linear Search"
+            algorithm={linearSearchAlgorithm!}
             inputArray={inputArray}
             targetValue={targetValue}
           />
@@ -42,7 +48,7 @@ const ParallelSearchingVisualizer: React.FC<ParallelSearchingVisualizerProps> = 
         <div className="bg-gray-50 rounded-lg p-4 border">
           <h3 className="text-lg font-bold text-center mb-4 text-gray-800">Binary Search</h3>
           <SearchingVisualizer
-            algorithm="Binary Search"
+            algorithm={binarySearchAlgorithm!}
             inputArray={inputArray}
             targetValue={targetValue}
           />

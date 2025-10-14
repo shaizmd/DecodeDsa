@@ -1,8 +1,8 @@
 import { SortingAlgorithms } from "../../enums/SortingAlgorithms"
-import type Algorithm from "../../types/algorithms"
-import Step from "../../types/steps"
+import { SortingAlgorithm } from "../../types/algorithms"
+import { SortStep } from "../../types/steps"
 
-export class MergeSort implements Algorithm<SortingAlgorithms> {
+export class MergeSort implements SortingAlgorithm {
   name = "Merge Sort"
   description = "A divide-and-conquer algorithm that recursively breaks down the problem into smaller subproblems until they become simple enough to solve directly."
   timeComplexity = "O(n log n)"
@@ -49,8 +49,8 @@ function merge(left, right) {
   return result;
 }`
 
-  generateSteps(array: number[]): Step[] {
-    const steps: Step[] = []
+  generateSteps(array: number[]): SortStep[] {
+    const steps: SortStep[] = []
     const arr = [...array]
 
     steps.push({
@@ -71,7 +71,7 @@ function merge(left, right) {
     return steps
   }
 
-  private mergeSortHelper(arr: number[], left: number, right: number, steps: Step[], depth = 0): void {
+  private mergeSortHelper(arr: number[], left: number, right: number, steps: SortStep[], depth = 0): void {
     if (left >= right) return
 
     const mid = Math.floor((left + right) / 2)

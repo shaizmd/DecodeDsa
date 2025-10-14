@@ -6,12 +6,11 @@ import { Badge } from "./ui/badge"
 import { ArrowUpDown, Code, Play, Pause, RotateCcw } from "lucide-react"
 import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 import { generateSteps } from "../utils/sortingAlgorithms"
-import type Algorithm from "../types/algorithms"
-import { SortingAlgorithms } from "../enums/SortingAlgorithms"
-import Step from "../types/steps"
+import { SortStep } from "../types/steps"
+import { SortingAlgorithm } from "../types/algorithms"
 
 interface SortingVisualizerProps {
-  algorithm: Algorithm<SortingAlgorithms>
+  algorithm: SortingAlgorithm
   inputArray: string
 }
 
@@ -22,7 +21,7 @@ interface SortResult {
 }
 
 const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputArray }) => {
-  const [steps, setSteps] = useState<Step[]>([])
+  const [steps, setSteps] = useState<SortStep[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [playSpeed, setPlaySpeed] = useState(1000) // milliseconds

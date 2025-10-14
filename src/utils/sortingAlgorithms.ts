@@ -7,8 +7,8 @@
 
 import { SortingAlgorithmFactory } from "./sortingAlgorithms/factory"
 import { SortingAlgorithms } from "../enums/SortingAlgorithms"
-import type Algorithm from "../types/algorithms"
-import Step from "../types/steps"
+import { SortStep } from "../types/steps"
+import { SortingAlgorithm } from "../types/algorithms"
 
 /**
  * Generate sorting steps for a given algorithm
@@ -17,7 +17,7 @@ import Step from "../types/steps"
  * @returns Array of steps showing the sorting process
  * @throws Error if algorithm is not found
  */
-export const generateSteps = (algorithm: SortingAlgorithms, array: number[]): Step[] => {
+export const generateSteps = (algorithm: SortingAlgorithms, array: number[]): SortStep[] => {
   try {
     const sortingAlgorithm = SortingAlgorithmFactory.getAlgorithm(algorithm)
     return sortingAlgorithm.generateSteps(array)
@@ -34,6 +34,6 @@ export const generateSteps = (algorithm: SortingAlgorithms, array: number[]): St
   }
 }
 
-export const getAvailableAlgorithms = (): Algorithm<SortingAlgorithms>[] => {
+export const getAvailableAlgorithms = (): SortingAlgorithm[] => {
   return SortingAlgorithmFactory.getAvailableAlgorithms()
 }
