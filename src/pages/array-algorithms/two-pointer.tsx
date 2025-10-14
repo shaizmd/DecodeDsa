@@ -283,13 +283,13 @@ return []`
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
+              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+                <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg">
                 <ArrowRight className="w-6 h-6 text-white" />
@@ -304,15 +304,15 @@ return []`
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Select Algorithm</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
           <div className="flex gap-4">
             <button
               onClick={() => setSelectedAlgorithm("two-sum")}
               className={`px-4 py-2 rounded-lg ${
                 selectedAlgorithm === "two-sum"
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Two Sum
@@ -322,7 +322,7 @@ return []`
               className={`px-4 py-2 rounded-lg ${
                 selectedAlgorithm === "three-sum"
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Three Sum
@@ -331,11 +331,11 @@ return []`
         </div>
 
         {/* Array and Target Input */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Array (comma-separated numbers)
               </label>
               <input
@@ -348,7 +348,7 @@ return []`
               />
             </div>
             <div>
-              <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Target Sum
               </label>
               <input
@@ -373,35 +373,35 @@ return []`
         {steps.length > 0 && (
           <>
             {/* Step Navigation */}
-            <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Step {currentStep + 1} of {steps.length}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Step {currentStep + 1} of {steps.length}</h2>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
                     disabled={currentStep === 0}
-                    className="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
                     onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
                     disabled={currentStep === steps.length - 1}
-                    className="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
                   >
                     <ChevronRight className="w-6 h-6" />
                   </button>
                 </div>
               </div>
-              <p className="text-gray-600 mb-4">{steps[currentStep].description}</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">{steps[currentStep].description}</p>
               <Button onClick={()=> setCurrentStep(0)} variant="secondary">
                 Reset
               </Button>
             </div>
 
             {/* Array Visualization */}
-            <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Array Visualization</h2>
+            <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div
@@ -415,7 +415,7 @@ return []`
                         ? "bg-purple-500 text-white"
                         : element.isPointer3
                         ? "bg-orange-500 text-white"
-                        : "bg-gray-100 text-gray-700"
+                        : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {element.value}
@@ -425,32 +425,22 @@ return []`
             </div>
 
             {/* Code Display */}
-            <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200"
                 >
                   <Code className="w-5 h-5" />
                   {showFullCode ? "Show Step Code" : "Show Full Code"}
                 </button>
               </div>
-              <div className="relative">
-                <button
-                  className="absolute top-2 right-6 inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white shadow"
-                  onClick={() => copyToClipboard(showFullCode ? getFullCode() : steps[currentStep].code, setCopiedCode)}
-                  aria-label="Copy code"
-                >
-                  {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copiedCode ? 'Copied' : 'Copy'}
-                </button>
-                <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
-                  <code className="text-sm text-gray-800">
-                    {showFullCode ? getFullCode() : steps[currentStep].code}
-                  </code>
-                </pre>
-              </div>
+              <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
+                <code className="text-sm text-gray-800">
+                  {showFullCode ? getFullCode() : steps[currentStep].code}
+                </code>
+              </pre>
             </div>
           </>
         )}
@@ -460,3 +450,4 @@ return []`
 }
 
 export default TwoPointerPage 
+

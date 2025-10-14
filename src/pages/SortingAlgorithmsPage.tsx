@@ -38,8 +38,8 @@ function SortingAlgorithmsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-4 px-4 md:p-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
             <div className="flex items-center space-x-3 min-h-[110px]">
@@ -49,10 +49,10 @@ function SortingAlgorithmsPage() {
                 </div>
               </Link>
               <div className="p-2">
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
                   Sorting Algorithms Visualizer
                 </h1>
-                <p className="text-sm md:text-base mt-2 text-gray-600">
+                <p className="text-sm md:text-base mt-2 text-gray-600 dark:text-gray-300">
                   {comparisonMode
                     ? "Compare two sorting algorithms side by side"
                     : "Explore how different sorting algorithms organize data step by step"}
@@ -61,12 +61,12 @@ function SortingAlgorithmsPage() {
             </div>
 
             {/* Mode Toggle */}
-            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+            <div className="flex items-center space-x-2 bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
               <button
                 onClick={() => setComparisonMode(false)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${!comparisonMode
-                    ? "bg-white shadow-sm text-blue-600"
-                    : "text-gray-600 hover:text-gray-800"
+                    ? "bg-white dark:bg-slate-600 shadow-sm text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
                   }`}
               >
                 <Eye className="w-5 h-5 md:w-6 md:h-6" />
@@ -75,8 +75,8 @@ function SortingAlgorithmsPage() {
               <button
                 onClick={() => setComparisonMode(true)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${comparisonMode
-                    ? "bg-white shadow-sm text-purple-600"
-                    : "text-gray-600 hover:text-gray-800"
+                    ? "bg-white dark:bg-slate-600 shadow-sm text-purple-600 dark:text-purple-400"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
                   }`}
               >
                 <GitCompare className="w-5 h-5 md:w-6 md:h-6" />
@@ -92,12 +92,12 @@ function SortingAlgorithmsPage() {
           {sortingAlgorithms.map((algorithm) => (
             <div
               key={algorithm.name}
-              className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${comparisonMode
+              className={`bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${comparisonMode
                   ? selectedAlgorithm?.name === algorithm.name
-                    ? "border-blue-500 ring-2 ring-blue-200"
+                    ? "border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800"
                     : selectedAlgorithm2?.name === algorithm.name
-                      ? "border-purple-500 ring-2 ring-purple-200"
-                      : "border-gray-200 hover:border-blue-300"
+                      ? "border-purple-500 ring-2 ring-purple-200 dark:ring-purple-800"
+                      : "border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600"
                   : selectedAlgorithm?.name === algorithm.name
                     ? "border-blue-500 ring-2 ring-blue-200"
                     : "border-gray-200 hover:border-blue-300"
@@ -125,53 +125,53 @@ function SortingAlgorithmsPage() {
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     {algorithm.name}
                   </h3>
                   <div className="flex items-center space-x-2">
                     {comparisonMode &&
                       selectedAlgorithm?.name === algorithm.name && (
-                        <div className="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded">
+                        <div className="px-2 py-1 text-xs font-medium text-blue-800 dark:text-blue-200 bg-blue-100 dark:bg-blue-900 rounded">
                           Algorithm 1
                         </div>
                       )}
                     {comparisonMode &&
                       selectedAlgorithm2?.name === algorithm.name && (
-                        <div className="px-2 py-1 text-xs font-medium text-purple-800 bg-purple-100 rounded">
+                        <div className="px-2 py-1 text-xs font-medium text-purple-800 dark:text-purple-200 bg-purple-100 dark:bg-purple-900 rounded">
                           Algorithm 2
                         </div>
                       )}
-                    <div className="p-2 rounded-lg bg-gradient-to-r from-blue-100 to-purple-100">
-                      <ArrowUpDown className="w-5 h-5 text-blue-600" />
+                    <div className="p-2 rounded-lg bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900">
+                      <ArrowUpDown className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
                   </div>
                 </div>
 
-                <p className="mb-6 leading-relaxed text-gray-600">
+                <p className="mb-6 leading-relaxed text-gray-600 dark:text-gray-300">
                   {algorithm.description}
                 </p>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="p-3 rounded-lg bg-gray-50">
+                  <div className="p-3 rounded-lg bg-gray-50 dark:bg-slate-700">
                     <div className="flex items-center mb-2 space-x-2">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm font-medium text-gray-700">
+                      <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Time Complexity
                       </span>
                     </div>
-                    <p className="text-lg font-bold text-blue-600">
+                    <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                       {algorithm.timeComplexity}
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-gray-50">
+                  <div className="p-3 rounded-lg bg-gray-50 dark:bg-slate-700">
                     <div className="flex items-center mb-2 space-x-2">
-                      <Code2 className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm font-medium text-gray-700">
+                      <Code2 className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Space Complexity
                       </span>
                     </div>
-                    <p className="text-lg font-bold text-purple-600">
+                    <p className="text-lg font-bold text-purple-600 dark:text-purple-400">
                       {algorithm.spaceComplexity}
                     </p>
                   </div>
@@ -289,3 +289,4 @@ function SortingAlgorithmsPage() {
 }
 
 export default SortingAlgorithmsPage;
+

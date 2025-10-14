@@ -663,13 +663,13 @@ postfix_result = infix_to_postfix(infix_result)`,
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Link to="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
+                <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
                 <Calculator className="w-6 h-6 text-white" />
@@ -684,9 +684,9 @@ postfix_result = infix_to_postfix(infix_result)`,
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Info */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Expression Notation Converter</h2>
-          <p className="text-gray-600 mb-4">
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Expression Notation Converter</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
             Convert mathematical expressions between infix, prefix, and postfix notations with step-by-step visualization.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -706,8 +706,8 @@ postfix_result = infix_to_postfix(infix_result)`,
         </div>
 
         {/* Conversion Type Selection */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Select Conversion Type</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Conversion Type</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {conversionOptions.map((option) => (
               <button
@@ -720,19 +720,19 @@ postfix_result = infix_to_postfix(infix_result)`,
                 className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
                   conversionType === option.value
                     ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    : "border-gray-200 dark:border-slate-700 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
                 <div className="font-semibold">{option.label}</div>
-                <div className="text-sm text-gray-600 mt-1">Example: {option.example}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">Example: {option.example}</div>
               </button>
             ))}
           </div>
         </div>
 
         {/* Input Section */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input Expression</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input Expression</h2>
           <div className="flex flex-col gap-4">
             <div>
               <label htmlFor="expression-input" className="block text-sm font-medium text-gray-700 mb-2">
@@ -772,8 +772,8 @@ postfix_result = infix_to_postfix(infix_result)`,
         {steps.length > 0 && (
           <div className="space-y-8">
             {/* Expression Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Expression Processing</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Expression Processing</h2>
               <div className="space-y-4">
                 {/* Input Expression */}
                 <div>
@@ -809,8 +809,8 @@ postfix_result = infix_to_postfix(infix_result)`,
             </div>
 
             {/* Stack Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Stack State</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Stack State</h2>
               <div className="flex flex-col-reverse items-center gap-2 min-h-[100px]">
                 {steps[currentStep].stack.length === 0 ? (
                   <div className="text-gray-500 italic">Stack is empty</div>
@@ -836,8 +836,8 @@ postfix_result = infix_to_postfix(infix_result)`,
             </div>
 
             {/* Output Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Output</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Output</h2>
               <div className="flex flex-wrap gap-2 justify-center min-h-[60px] items-center">
                 {steps[currentStep].output.length === 0 ? (
                   <div className="text-gray-500 italic">Output is empty</div>
@@ -855,8 +855,8 @@ postfix_result = infix_to_postfix(infix_result)`,
             </div>
 
             {/* Step Information */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
@@ -868,9 +868,9 @@ postfix_result = infix_to_postfix(infix_result)`,
                       disabled={currentStep === 0}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-600" />
+                      <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-300">
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
@@ -878,7 +878,7 @@ postfix_result = infix_to_postfix(infix_result)`,
                       disabled={currentStep === steps.length - 1}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-600" />
+                      <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
                   </div>
                 </div>
@@ -886,9 +886,9 @@ postfix_result = infix_to_postfix(infix_result)`,
             </div>
 
             {/* Code Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
@@ -903,8 +903,8 @@ postfix_result = infix_to_postfix(infix_result)`,
             </div>
 
             {/* Algorithm Insights */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Algorithm Insights</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Algorithm Insights</h2>
               <div className="space-y-3 text-sm">
                 <div className="p-3 bg-blue-50 rounded-lg">
                   <div className="font-semibold text-blue-800">Stack Usage:</div>
@@ -934,3 +934,5 @@ postfix_result = infix_to_postfix(infix_result)`,
 }
 
 export default ExpressionConverterPage
+
+

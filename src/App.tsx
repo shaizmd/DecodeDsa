@@ -45,9 +45,9 @@ function App() {
   }, []);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
       <Sidebar />
-      <main className="flex-1 lg:ml-72">
+      <main className="flex-1 lg:ml-72 dark:text-white">
         <Routes>
            <Route path="/sorting" element={<SortingAlgorithmsPage />} />
       <Route path="/searching" element={<SearchingAlgorithmsPage />} />

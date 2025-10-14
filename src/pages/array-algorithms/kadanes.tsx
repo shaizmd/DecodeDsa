@@ -258,13 +258,13 @@ return maxSoFar  # ${maxSoFar}`,
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
+              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+                <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
                 <TrendingUp className="w-6 h-6 text-white" />
@@ -279,9 +279,9 @@ return maxSoFar  # ${maxSoFar}`,
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Info */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Maximum Subarray Problem</h2>
-          <p className="text-gray-600 mb-4">
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Maximum Subarray Problem</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
             Kadane's algorithm efficiently finds the maximum sum of any contiguous subarray in O(n) time.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -301,11 +301,11 @@ return maxSoFar  # ${maxSoFar}`,
         </div>
 
         {/* Input Section */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Array (comma-separated numbers)
               </label>
               <input
@@ -342,8 +342,8 @@ return maxSoFar  # ${maxSoFar}`,
         {steps.length > 0 && (
           <div className="space-y-8">
             {/* Array Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Array Visualization</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div key={index} className="text-center">
@@ -355,12 +355,12 @@ return maxSoFar  # ${maxSoFar}`,
                             ? "bg-blue-100 text-blue-700 shadow-md border-2 border-blue-300"
                             : element.isHighlighted
                               ? "bg-purple-100 text-purple-700 shadow-md"
-                              : "bg-gray-100 text-gray-700"
+                              : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {element.value}
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">i={index}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">i={index}</div>
                   </div>
                 ))}
               </div>
@@ -383,8 +383,8 @@ return maxSoFar  # ${maxSoFar}`,
             </div>
 
             {/* Algorithm State */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Algorithm State</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Algorithm State</h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="p-4 bg-purple-50 rounded-lg text-center">
                   <div className="text-2xl font-bold text-purple-600">{steps[currentStep].maxSoFar}</div>
@@ -406,30 +406,30 @@ return maxSoFar  # ${maxSoFar}`,
             </div>
 
             {/* Step Information */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
                       disabled={currentStep === 0}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-600" />
+                      <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-300">
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
                       onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
                       disabled={currentStep === steps.length - 1}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-600" />
+                      <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
                   </div>
                 </div>
@@ -441,13 +441,13 @@ return maxSoFar  # ${maxSoFar}`,
 
             {/* Animation Controls */}
             {steps.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Animation Controls</h2>
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Animation Controls</h2>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => setCurrentStep(0)}
-                      className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+                      className="p-2 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200"
                     >
                       <RotateCcw className="w-4 h-4" />
                     </button>
@@ -459,12 +459,12 @@ return maxSoFar  # ${maxSoFar}`,
                       <span>{isRunning ? "Pause" : "Play"}</span>
                     </button>
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-600 dark:text-gray-300">
                     Step {currentStep + 1} of {steps.length}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Animation Speed</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Animation Speed</label>
                   <input
                     type="range"
                     min="200"
@@ -474,7 +474,7 @@ return maxSoFar  # ${maxSoFar}`,
                     onChange={(e) => setAnimationSpeed(Number(e.target.value))}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <span>Fast</span>
                     <span>Slow</span>
                   </div>
@@ -483,9 +483,9 @@ return maxSoFar  # ${maxSoFar}`,
             )}
 
             {/* Code Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-purple-600 hover:text-purple-700"
@@ -494,24 +494,14 @@ return maxSoFar  # ${maxSoFar}`,
                   <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
                 </button>
               </div>
-              <div className="relative">
-                <button
-                  className="absolute top-2 right-6 inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white shadow"
-                  onClick={() => copyToClipboard(showFullCode ? getFullCode() : (steps[currentStep]?.code ?? ''), setCopiedCode)}
-                  aria-label="Copy code"
-                >
-                  {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copiedCode ? 'Copied' : 'Copy'}
-                </button>
-                <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
-                  <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep]?.code}</code>
-                </pre>
-              </div>
+              <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
+                <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep]?.code}</code>
+              </pre>
             </div>
 
             {/* Algorithm Insights */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Algorithm Insights</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Algorithm Insights</h2>
               <div className="space-y-3 text-sm">
                 <div className="p-3 bg-purple-50 rounded-lg">
                   <div className="font-semibold text-purple-800">Key Principle:</div>
@@ -533,3 +523,5 @@ return maxSoFar  # ${maxSoFar}`,
 }
 
 export default KadanesAlgorithm
+
+

@@ -112,23 +112,23 @@ function ArrayAlgorithmsPage() {
       case "Hard":
         return "bg-red-100 text-red-800"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 dark:bg-slate-700 text-gray-800"
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
               <Target className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
                 Array Algorithms
               </h1>
-              <p className="mt-1 text-gray-600">Master essential array algorithms with interactive visualizations</p>
+              <p className="mt-1 text-gray-600 dark:text-gray-300">Master essential array algorithms with interactive visualizations</p>
             </div>
           </div>
         </div>
@@ -136,8 +136,8 @@ function ArrayAlgorithmsPage() {
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Difficulty Filter */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 px-4 py-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Filter by Difficulty</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 px-4 py-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Filter by Difficulty</h2>
           <div className="flex flex-wrap gap-3">
             {["All", "Easy", "Medium", "Hard"].map((difficulty) => (
               <button
@@ -146,7 +146,7 @@ function ArrayAlgorithmsPage() {
                 className={`px-3.5 py-2 rounded-lg font-medium transition-all duration-200 ${
                   selectedDifficulty === difficulty
                     ? "bg-blue-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "bg-gray-100 dark:bg-slate-700 dark:bg-slate-700 text-gray-700 dark:text-gray-300 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
               >
                 {difficulty}
@@ -159,7 +159,7 @@ function ArrayAlgorithmsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAlgorithms.map((algorithm) => (
             <Link key={algorithm.name} to={algorithm.path} className="group">
-              <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gray-200 transform hover:-translate-y-2">
+              <div className="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-slate-700 hover:border-gray-200 dark:border-slate-700 dark:hover:border-slate-600 transform hover:-translate-y-2">
                 {/* Algorithm Header */}
                 <div className={`h-32 bg-gradient-to-r ${algorithm.color} relative overflow-hidden`}>
                   <div className="absolute inset-0 bg-black/10"></div>
@@ -178,22 +178,22 @@ function ArrayAlgorithmsPage() {
 
                 {/* Algorithm Content */}
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {algorithm.name}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">{algorithm.description}</p>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300 text-sm mb-4 leading-relaxed">{algorithm.description}</p>
 
                   {/* Complexity Info */}
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-500">Time:</span>
-                      <span className="font-mono text-green-600 bg-green-50 px-2 py-1 rounded">
+                      <span className="text-gray-500 dark:text-gray-400 dark:text-gray-400">Time:</span>
+                      <span className="font-mono text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">
                         {algorithm.timeComplexity}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-500">Space:</span>
-                      <span className="font-mono text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                      <span className="text-gray-500 dark:text-gray-400 dark:text-gray-400">Space:</span>
+                      <span className="font-mono text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
                         {algorithm.spaceComplexity}
                       </span>
                     </div>
@@ -212,7 +212,7 @@ function ArrayAlgorithmsPage() {
 
         {/* Learning Path Section */}
         <div className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Recommended Learning Path</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Recommended Learning Path</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="text-lg font-semibold text-blue-900 mb-3">Beginner Path</h3>
@@ -268,3 +268,5 @@ function ArrayAlgorithmsPage() {
 }
 
 export default ArrayAlgorithmsPage
+
+

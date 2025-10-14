@@ -6,4 +6,5 @@ export enum SortingAlgorithms {
   MergeSort,
   HeapSort,
   RadixSort,
+  ShellSort,
 }
