@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Code } from "lucide-react"
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Code, Copy, Check } from "lucide-react"
 import { Button } from "../../components/ui/button"
 
 interface ArrayElement {
@@ -28,6 +28,28 @@ function TwoPointerPage() {
   const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<"two-sum" | "three-sum">("two-sum")
   const [showFullCode, setShowFullCode] = useState<boolean>(false)
+  const [copiedCode, setCopiedCode] = useState(false)
+
+  const copyToClipboard = async (text: string, setCopied: (value: boolean) => void) => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+      }
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch (e) {
+      console.error('Failed to copy', e)
+    }
+  }
 
   const resetVisualization = () => {
     setSteps([])
@@ -414,11 +436,21 @@ return []`
                   {showFullCode ? "Show Step Code" : "Show Full Code"}
                 </button>
               </div>
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">
-                  {showFullCode ? getFullCode() : steps[currentStep].code}
-                </code>
-              </pre>
+              <div className="relative">
+                <button
+                  className="absolute top-2 right-6 inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white shadow"
+                  onClick={() => copyToClipboard(showFullCode ? getFullCode() : steps[currentStep].code, setCopiedCode)}
+                  aria-label="Copy code"
+                >
+                  {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {copiedCode ? 'Copied' : 'Copy'}
+                </button>
+                <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+                  <code className="text-sm text-gray-800">
+                    {showFullCode ? getFullCode() : steps[currentStep].code}
+                  </code>
+                </pre>
+              </div>
             </div>
           </>
         )}
