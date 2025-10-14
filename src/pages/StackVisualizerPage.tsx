@@ -16,7 +16,7 @@ import {
   ArrowDown,
   RotateCcw,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+
 
 interface StackOperation {
   name: string;
