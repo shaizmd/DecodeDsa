@@ -97,7 +97,7 @@ export default function ZoomableViz({ width = 800, height = 400, children, initi
   }, [])
 
   return (
-    <div className="border rounded bg-white shadow-sm" style={{ width }}>
+    <div className="bg-white border rounded shadow-sm" style={{ width }}>
       <svg ref={svgRef} width={width} height={height} className="block touch-pan-y">
         <g data-viz-root>{children}</g>
       </svg>

@@ -22,7 +22,7 @@ const ParallelSearchingVisualizer: React.FC<ParallelSearchingVisualizerProps> = 
   return (
     <div className="space-y-6">
       {isLargeArray && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start space-x-3">
+        <div className="flex items-start p-4 space-x-3 border border-blue-200 rounded-lg bg-blue-50">
           <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-blue-800">
             <strong>Large Array Detected ({arrayLength} elements)</strong>
@@ -33,10 +33,10 @@ const ParallelSearchingVisualizer: React.FC<ParallelSearchingVisualizerProps> = 
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Left Panel: Always shows Linear Search */}
-        <div className="bg-gray-50 rounded-lg p-4 border">
-          <h3 className="text-lg font-bold text-center mb-4 text-gray-800">Linear Search</h3>
+        <div className="p-4 border rounded-lg bg-gray-50">
+          <h3 className="mb-4 text-lg font-bold text-center text-gray-800">Linear Search</h3>
           <SearchingVisualizer
             algorithm={linearSearchAlgorithm!}
             inputArray={inputArray}
@@ -45,8 +45,8 @@ const ParallelSearchingVisualizer: React.FC<ParallelSearchingVisualizerProps> = 
         </div>
 
         {/* Right Panel: Always shows Binary Search */}
-        <div className="bg-gray-50 rounded-lg p-4 border">
-          <h3 className="text-lg font-bold text-center mb-4 text-gray-800">Binary Search</h3>
+        <div className="p-4 border rounded-lg bg-gray-50">
+          <h3 className="mb-4 text-lg font-bold text-center text-gray-800">Binary Search</h3>
           <SearchingVisualizer
             algorithm={binarySearchAlgorithm!}
             inputArray={inputArray}

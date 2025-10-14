@@ -1,5 +1,9 @@
-import { Routes, Route } from "react-router-dom"
-import HomePage from "./page"
+import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import Lenis from "lenis";
+import Sidebar from "./components/sidebar";
+import Home from "./page";
+import Placeholder from "./placeholder";
 import SortingAlgorithmsPage from "./pages/SortingAlgorithmsPage"
 import SearchingAlgorithmsPage from "./pages/SearchingAlgorithmsPage"
 import StackVisualizerPage from "./pages/StackVisualizerPage"
@@ -19,18 +23,13 @@ import ExpressionConverterPage from "./pages/ExpressionConverterPage"
 import GraphVisualizerPage from "./pages/GraphVisualizerPages"
 import AboutUsPage from "./pages/AboutUsPage"
 import ContactPage from "./pages/ContactPage"
-import Lenis from 'lenis'
-import { useEffect } from "react"
-
 function App() {
   useEffect(() => {
-    const lenis = new Lenis(({
+    const lenis = new Lenis({
       duration: 2.5,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smooth: true,
-      smoothTouch: false,
       wheelMultiplier: 0.7,
-    } as unknown) as any);
+    });
 
     let rafId = 0;
     function raf(time: number) {
@@ -41,14 +40,16 @@ function App() {
 
     return () => {
       cancelAnimationFrame(rafId);
-      if (typeof (lenis as any).destroy === 'function') (lenis as any).destroy();
+      if (typeof lenis.destroy === "function") lenis.destroy();
     };
   }, []);
-// ...existing code...
+
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/sorting" element={<SortingAlgorithmsPage />} />
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <main className="flex-1 lg:ml-72">
+        <Routes>
+           <Route path="/sorting" element={<SortingAlgorithmsPage />} />
       <Route path="/searching" element={<SearchingAlgorithmsPage />} />
       <Route path="/data-structures/stack" element={<StackVisualizerPage />} />
       <Route path="/data-structures/queue" element={<QueueVisualizerPage />} />
@@ -67,8 +68,12 @@ function App() {
       <Route path="/operations/expression-converter" element={<ExpressionConverterPage />} />
       <Route path="/about" element={<AboutUsPage />} />
       <Route path="/contact" element={<ContactPage />} />
-    </Routes>
-  )
+      <Route path="/" element={<Home />} />
+      <Route path="*" element={<Placeholder />} />
+        </Routes>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
