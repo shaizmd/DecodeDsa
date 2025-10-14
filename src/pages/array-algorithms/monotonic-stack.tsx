@@ -419,13 +419,13 @@ return result`,
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
+              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+                <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg">
                 <Layers className="w-6 h-6 text-white" />
@@ -440,15 +440,15 @@ return result`,
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Select Algorithm</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setSelectedAlgorithm("next-greater")}
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "next-greater"
                   ? "bg-indigo-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Next Greater Element
@@ -458,7 +458,7 @@ return result`,
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "next-smaller"
                   ? "bg-indigo-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Next Smaller Element
@@ -468,7 +468,7 @@ return result`,
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "daily-temps"
                   ? "bg-indigo-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Daily Temperatures
@@ -477,11 +477,11 @@ return result`,
         </div>
 
         {/* Input Section */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Array (comma-separated numbers)
               </label>
               <input
@@ -509,8 +509,8 @@ return result`,
         {steps.length > 0 && (
           <div className="space-y-8">
             {/* Array Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Array Visualization</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div key={index} className="text-center">
@@ -520,7 +520,7 @@ return result`,
                           ? "bg-indigo-500 text-white"
                           : element.isProcessed
                             ? "bg-indigo-100 text-indigo-700"
-                            : "bg-gray-100 text-gray-700"
+                            : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {element.value}
@@ -528,18 +528,18 @@ return result`,
                     {element.hasResult && (
                       <div className="mt-2 text-sm font-medium text-green-600">{element.result}</div>
                     )}
-                    <div className="mt-1 text-xs text-gray-500">{index}</div>
+                    <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{index}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Stack Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Stack State</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Stack State</h2>
               <div className="flex flex-col-reverse items-center gap-2 min-h-[100px]">
                 {steps[currentStep].stack.length === 0 ? (
-                  <div className="text-gray-500 italic">Stack is empty</div>
+                  <div className="text-gray-500 dark:text-gray-400 italic">Stack is empty</div>
                 ) : (
                   steps[currentStep].stack.map((element, index) => (
                     <div
@@ -547,12 +547,12 @@ return result`,
                       className={`w-20 h-12 flex items-center justify-center rounded-lg border-2 transition-all duration-200 ${
                         element.isActive
                           ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                          : "border-gray-300 bg-gray-50 text-gray-700"
+                          : "border-gray-300 bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       <div className="text-center">
                         <div className="text-sm font-semibold">{element.value}</div>
-                        <div className="text-xs text-gray-500">i:{element.index}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">i:{element.index}</div>
                       </div>
                     </div>
                   ))
@@ -561,30 +561,30 @@ return result`,
             </div>
 
             {/* Step Information */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
                       disabled={currentStep === 0}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-600" />
+                      <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-300">
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
                       onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
                       disabled={currentStep === steps.length - 1}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-600" />
+                      <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
                   </div>
                 </div>
@@ -595,9 +595,9 @@ return result`,
             </div>
 
             {/* Code Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-indigo-600 hover:text-indigo-700"
@@ -606,7 +606,7 @@ return result`,
                   <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
                 </button>
               </div>
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+              <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
                 <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep].code}</code>
               </pre>
             </div>
@@ -618,3 +618,5 @@ return result`,
 }
 
 export default MonotonicStackPage
+
+

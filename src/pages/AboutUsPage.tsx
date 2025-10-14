@@ -98,7 +98,7 @@ export default function AboutUsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
@@ -123,7 +123,7 @@ export default function AboutUsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/sorting"
-              className="inline-flex items-center px-8 py-4 bg-white text-indigo-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+              className="inline-flex items-center px-8 py-4 bg-white dark:bg-slate-800 text-indigo-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
             >
               <Rocket className="w-5 h-5 mr-2" /> Start Learning Now
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -147,16 +147,16 @@ export default function AboutUsPage() {
                 <Target className="w-4 h-4 mr-2" />
                 Our Mission
               </div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
                 Democratizing Algorithm Education
               </h2>
-              <p className="text-gray-600 text-lg mb-6">
+              <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
                 Our mission is to make Data Structures and Algorithms accessible
                 to everyone, regardless of their background or learning style.
                 We believe that visual, interactive learning breaks down
                 barriers and accelerates understanding.
               </p>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 dark:text-gray-300 text-lg">
                 By combining cutting-edge web technologies with pedagogical
                 best practices, we're creating a platform where learners can
                 not just read about algorithms—they can see them, interact with
@@ -196,10 +196,10 @@ export default function AboutUsPage() {
       <section className="py-20 bg-gradient-to-br from-slate-50 to-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Our Core Values
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               The principles that guide everything we do at DecodeDSA
             </p>
           </div>
@@ -207,17 +207,17 @@ export default function AboutUsPage() {
             {teamValues.map((value, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-2"
+                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-2"
               >
                 <div
                   className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${value.color} text-white rounded-2xl mb-4`}
                 >
                   <value.icon className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   {value.title}
                 </h3>
-                <p className="text-gray-600">{value.description}</p>
+                <p className="text-gray-600 dark:text-gray-300">{value.description}</p>
               </div>
             ))}
           </div>
@@ -228,10 +228,10 @@ export default function AboutUsPage() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Our Journey
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               From a simple idea to a thriving learning platform
             </p>
           </div>
@@ -259,7 +259,7 @@ export default function AboutUsPage() {
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl opacity-75 group-hover:opacity-100 blur-sm group-hover:blur transition-all duration-500"></div>
                       
                       {/* Card content */}
-                      <div className="relative bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] border-2 border-transparent group-hover:border-purple-200">
+                      <div className="relative bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] border-2 border-transparent group-hover:border-purple-200">
                         {/* Subtle corner gradient accent */}
                         <div className={`absolute ${index % 2 === 0 ? 'top-0 right-0' : 'top-0 left-0'} w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full filter blur-3xl opacity-40 group-hover:opacity-60 transition-opacity duration-500 -z-10`}></div>
                         
@@ -270,12 +270,12 @@ export default function AboutUsPage() {
                         </div>
                         
                         {/* Title with gradient on hover */}
-                        <h3 className="text-2xl font-bold text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 mb-3 transition-all duration-300">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 mb-3 transition-all duration-300">
                           {milestone.title}
                         </h3>
                         
                         {/* Description */}
-                        <p className="text-gray-600 text-lg leading-relaxed">
+                        <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                           {milestone.description}
                         </p>
                         
@@ -296,7 +296,7 @@ export default function AboutUsPage() {
                       
                       {/* Inner dot with icon */}
                       <div className="relative w-8 h-8 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full border-4 border-white shadow-xl shadow-purple-500/50 group-hover:shadow-purple-500/80 group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
+                        <div className="w-2.5 h-2.5 bg-white dark:bg-slate-800 rounded-full animate-pulse"></div>
                       </div>
                     </div>
                   </div>
@@ -320,10 +320,10 @@ export default function AboutUsPage() {
                 <Award className="w-4 h-4 mr-2" />
                 What We Offer
               </div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
                 Everything You Need to Master DSA
               </h2>
-              <p className="text-gray-600 text-lg mb-8">
+              <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
                 DecodeDSA provides comprehensive, interactive learning
                 experiences designed to help you understand algorithms deeply
                 and intuitively.
@@ -334,35 +334,35 @@ export default function AboutUsPage() {
                     <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mr-3 mt-1">
                       <CheckCircle2 className="w-4 h-4 text-white" />
                     </div>
-                    <p className="text-gray-700 text-lg">{feature}</p>
+                    <p className="text-gray-700 dark:text-gray-300 text-lg">{feature}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg text-center">
                 <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   120+
                 </div>
-                <p className="text-gray-600">Algorithms</p>
+                <p className="text-gray-600 dark:text-gray-300">Algorithms</p>
               </div>
-              <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg text-center">
                 <div className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
                   50K+
                 </div>
-                <p className="text-gray-600">Learners</p>
+                <p className="text-gray-600 dark:text-gray-300">Learners</p>
               </div>
-              <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg text-center">
                 <div className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent mb-2">
                   300+
                 </div>
-                <p className="text-gray-600">Visualizations</p>
+                <p className="text-gray-600 dark:text-gray-300">Visualizations</p>
               </div>
-              <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg text-center">
                 <div className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   30+
                 </div>
-                <p className="text-gray-600">Countries</p>
+                <p className="text-gray-600 dark:text-gray-300">Countries</p>
               </div>
             </div>
           </div>
@@ -384,7 +384,7 @@ export default function AboutUsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/sorting"
-              className="inline-flex items-center px-8 py-4 bg-white text-indigo-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+              className="inline-flex items-center px-8 py-4 bg-white dark:bg-slate-800 text-indigo-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
             >
               <Rocket className="w-5 h-5 mr-2" /> Begin Your Journey
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -553,3 +553,5 @@ export default function AboutUsPage() {
     </div>
   );
 }
+
+

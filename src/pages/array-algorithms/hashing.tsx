@@ -499,13 +499,13 @@ return None`,
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
+              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+                <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg">
                 <Hash className="w-6 h-6 text-white" />
@@ -520,15 +520,15 @@ return None`,
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Select Algorithm</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button
               onClick={() => setSelectedAlgorithm("frequency")}
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "frequency"
                   ? "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Frequency Count
@@ -538,7 +538,7 @@ return None`,
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "two-sum"
                   ? "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Two Sum (Hash)
@@ -548,7 +548,7 @@ return None`,
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "duplicates"
                   ? "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Find Duplicates
@@ -558,7 +558,7 @@ return None`,
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "first-unique"
                   ? "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               First Unique
@@ -567,11 +567,11 @@ return None`,
         </div>
 
         {/* Input Section */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Array (comma-separated {selectedAlgorithm === "two-sum" ? "numbers" : "values"})
               </label>
               <input
@@ -585,7 +585,7 @@ return None`,
             </div>
             {selectedAlgorithm === "two-sum" && (
               <div>
-                <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Target Sum
                 </label>
                 <input
@@ -612,8 +612,8 @@ return None`,
         {steps.length > 0 && (
           <div className="space-y-8">
             {/* Array Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Array Visualization</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div
@@ -625,7 +625,7 @@ return None`,
                           ? "bg-red-500 text-white"
                           : element.isHighlighted
                             ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
+                            : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {element.value}
@@ -635,17 +635,17 @@ return None`,
             </div>
 
             {/* Hash Map Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Hash Map</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Hash Map</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {steps[currentStep].hashMap.map((entry, index) => (
                   <div
                     key={index}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                      entry.isActive ? "border-red-500 bg-red-50" : "border-gray-200 bg-gray-50"
+                      entry.isActive ? "border-red-500 bg-red-50" : "border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700"
                     }`}
                   >
-                    <div className="text-sm font-medium text-gray-700">{entry.key}</div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{entry.key}</div>
                     <div className="text-lg font-bold text-red-600">{entry.value}</div>
                   </div>
                 ))}
@@ -653,12 +653,12 @@ return None`,
             </div>
 
             {/* Step Information */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
                     {steps[currentStep].result && (
                       <p className="text-green-600 font-semibold mt-2">{steps[currentStep].result}</p>
                     )}
@@ -667,19 +667,19 @@ return None`,
                     <button
                       onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
                       disabled={currentStep === 0}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-600" />
+                      <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-300">
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
                       onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
                       disabled={currentStep === steps.length - 1}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-600" />
+                      <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
                   </div>
                 </div>
@@ -690,9 +690,9 @@ return None`,
             </div>
 
             {/* Code Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-red-600 hover:text-red-700"
@@ -701,7 +701,7 @@ return None`,
                   <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
                 </button>
               </div>
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+              <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
                 <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep].code}</code>
               </pre>
             </div>
@@ -713,3 +713,5 @@ return None`,
 }
 
 export default HashingPage
+
+

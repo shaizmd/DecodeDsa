@@ -324,13 +324,13 @@ def reverse_all_bits(nums):
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-6 h-6 text-gray-600" />
+              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+                <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg">
                 <Binary className="w-6 h-6 text-white" />
@@ -345,15 +345,15 @@ def reverse_all_bits(nums):
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Select Algorithm</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button
               onClick={() => setSelectedAlgorithm("single-number")}
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "single-number"
                   ? "bg-yellow-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Single Number
@@ -363,7 +363,7 @@ def reverse_all_bits(nums):
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "count-bits"
                   ? "bg-yellow-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Count Set Bits
@@ -373,7 +373,7 @@ def reverse_all_bits(nums):
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "power-of-two"
                   ? "bg-yellow-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Power of Two
@@ -383,7 +383,7 @@ def reverse_all_bits(nums):
               className={`px-4 py-2 rounded-lg text-sm ${
                 selectedAlgorithm === "reverse-bits"
                   ? "bg-yellow-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Reverse Bits
@@ -392,11 +392,11 @@ def reverse_all_bits(nums):
         </div>
 
         {/* Input Section */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Input</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Numbers (0-255, comma-separated)
               </label>
               <input
@@ -422,8 +422,8 @@ def reverse_all_bits(nums):
         {steps.length > 0 && (
           <div className="space-y-8">
             {/* Binary Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Binary Representation</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Binary Representation</h2>
               <div className="space-y-4">
                 {steps[currentStep].numbers.map((element, index) => (
                   <div
@@ -433,7 +433,7 @@ def reverse_all_bits(nums):
                         ? "bg-yellow-100 border-2 border-yellow-500"
                         : element.isResult
                           ? "bg-green-100 border-2 border-green-500"
-                          : "bg-gray-50"
+                          : "bg-gray-50 dark:bg-slate-700"
                     }`}
                   >
                     <div className="w-12 text-center font-semibold">{element.value}</div>
@@ -449,7 +449,7 @@ def reverse_all_bits(nums):
                         </span>
                       ))}
                     </div>
-                    <div className="text-sm text-gray-500">(Index {index})</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">(Index {index})</div>
                   </div>
                 ))}
               </div>
@@ -457,16 +457,16 @@ def reverse_all_bits(nums):
 
             {/* Operation Display */}
             {steps[currentStep].operation && (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Current Operation</h2>
-                <div className="font-mono text-lg bg-gray-50 p-4 rounded-lg">{steps[currentStep].operation}</div>
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Current Operation</h2>
+                <div className="font-mono text-lg bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">{steps[currentStep].operation}</div>
               </div>
             )}
 
             {/* Result Display */}
             {steps[currentStep] && typeof steps[currentStep].result !== 'undefined' && (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Result</h2>
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Result</h2>
                 <div className="text-2xl font-bold text-green-600">
                   {typeof steps[currentStep].result === "boolean"
                     ? steps[currentStep].result?.toString()
@@ -476,30 +476,30 @@ def reverse_all_bits(nums):
             )}
 
             {/* Step Information */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Step Information</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
                       disabled={currentStep === 0}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronLeft className="w-6 h-6 text-gray-600" />
+                      <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-300">
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
                       onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
                       disabled={currentStep === steps.length - 1}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ChevronRight className="w-6 h-6 text-gray-600" />
+                      <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
                   </div>
                 </div>
@@ -510,9 +510,9 @@ def reverse_all_bits(nums):
             </div>
 
             {/* Code Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-yellow-600 hover:text-yellow-700"
@@ -521,7 +521,7 @@ def reverse_all_bits(nums):
                   <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
                 </button>
               </div>
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+              <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
                 <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep].code}</code>
               </pre>
             </div>
@@ -533,3 +533,5 @@ def reverse_all_bits(nums):
 }
 
 export default BitManipulationPage
+
+

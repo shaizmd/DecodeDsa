@@ -12,7 +12,10 @@ import {
   ChevronDown,
   ChevronRight,
   Brain,
+  Moon,
+  Sun,
 } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface SubItem {
   name: string;
@@ -30,6 +33,7 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const navItems: NavItem[] = [
     {
@@ -122,12 +126,12 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-72 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl z-40 transition-transform duration-300 flex flex-col ${
+        className={`fixed top-0 left-0 h-screen w-72 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-800 dark:text-white shadow-2xl z-40 transition-all duration-300 flex flex-col ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-slate-700/50">
+        <div className="p-6 border-b border-slate-300 dark:border-slate-700">
           <Link
             to="/"
             className="flex items-center gap-3 group"
@@ -137,16 +141,16 @@ export default function Sidebar() {
               <Brain className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
+              <h1 className="text-xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text">
                 DecodeDsa
               </h1>
-              <p className="text-xs text-slate-400">Master Algorithms</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400">Master Algorithms</p>
             </div>
           </Link>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
           {navItems.map((item) => (
             <div key={item.name}>
               {item.subItems ? (
@@ -157,7 +161,7 @@ export default function Sidebar() {
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
                       isParentActive(item.subItems)
                         ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
-                        : "text-slate-300 hover:bg-slate-800/50"
+                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800/50"
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -173,7 +177,7 @@ export default function Sidebar() {
 
                   {/* Sub Items */}
                   {expandedSections.includes(item.name) && (
-                    <div className="pl-4 mt-2 ml-4 space-y-1 border-l-2 border-slate-700">
+                    <div className="pl-4 mt-2 ml-4 space-y-1 border-l-2 border-slate-300 dark:border-slate-700">
                       {item.subItems.map((subItem) => (
                         <Link
                           key={subItem.path}
@@ -182,7 +186,7 @@ export default function Sidebar() {
                           className={`block px-4 py-2 rounded-lg text-sm transition-all ${
                             isActive(subItem.path)
                               ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
-                              : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800/50"
                           }`}
                         >
                           {subItem.name}
@@ -199,7 +203,7 @@ export default function Sidebar() {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     isActive(item.path)
                       ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
-                      : "text-slate-300 hover:bg-slate-800/50"
+                      : "text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800/50"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -211,12 +215,35 @@ export default function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-700/50">
+        <div className="p-4 border-t border-slate-300 dark:border-slate-700 space-y-3">
+          {/* Theme Toggle Button */}
+          <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-200 dark:bg-slate-800">
+            <div className="flex items-center gap-2">
+              <Sun className="w-4 h-4 text-slate-700 dark:text-slate-500" />
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Theme</span>
+            </div>
+            
+            {/* Toggle Switch */}
+            <button
+              onClick={toggleTheme}
+              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-slate-400 dark:bg-blue-600"
+              aria-label="Toggle theme"
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+            
+            <Moon className="w-4 h-4 text-slate-500 dark:text-slate-300" />
+          </div>
+          
           <div className="p-4 border bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl backdrop-blur-sm border-blue-500/20">
-            <p className="mb-2 text-xs text-slate-300">
+            <p className="mb-2 text-xs text-slate-700 dark:text-slate-300">
               Interactive DSA Learning
             </p>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Visualize, Learn, Master
             </p>
           </div>

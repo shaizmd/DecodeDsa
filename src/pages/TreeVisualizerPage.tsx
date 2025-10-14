@@ -545,9 +545,9 @@ function TreeVisualizerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto py-4 px-4 md:p-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
             <div className="flex items-center space-x-3 min-h-[90px]">
@@ -558,7 +558,7 @@ function TreeVisualizerPage() {
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                   Advanced Tree Visualizer
                 </h1>
-                <p className="mt-1 text-gray-600">Explore all types of trees with interactive animations</p>
+                <p className="mt-1 text-gray-600 dark:text-gray-300">Explore all types of trees with interactive animations</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -591,14 +591,14 @@ function TreeVisualizerPage() {
             </div>
             <p className="text-green-800 mb-4">{tutorialContent[treeType].description}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Clock className="w-4 h-4 text-green-600" />
                   <span className="font-semibold text-green-800">Time Complexity</span>
                 </div>
                 <p className="text-sm text-green-700">{tutorialContent[treeType].complexity}</p>
               </div>
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Target className="w-4 h-4 text-blue-600" />
                   <span className="font-semibold text-blue-800">Use Case</span>
@@ -610,8 +610,8 @@ function TreeVisualizerPage() {
         )}
 
         {/* Tree Type Selector */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Choose Tree Type</h2>
+        <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Choose Tree Type</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
             {(["binary", "bst", "avl", "redblack", "heap", "btree", "bplus"] as TreeType[]).map((type) => (
               <button
@@ -623,7 +623,7 @@ function TreeVisualizerPage() {
                 className={`p-3 rounded-xl border-2 transition-all duration-200 text-sm ${
                   treeType === type
                     ? "border-green-500 bg-green-50 text-green-700"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    : "border-gray-200 dark:border-slate-700 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
                 <div className="font-semibold capitalize">
@@ -647,8 +647,8 @@ function TreeVisualizerPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Controls Panel */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Operations</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 sticky top-8">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Operations</h2>
 
               {/* Input Controls */}
               <div className="space-y-4 mb-6">
@@ -776,10 +776,10 @@ function TreeVisualizerPage() {
           {/* Visualization Panel */}
           <div className="lg:col-span-3 space-y-8">
             {/* Main Visualization */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">{tutorialContent[treeType].title}</h2>
-                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{tutorialContent[treeType].title}</h2>
+                <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
                   {treeType === "heap" && <span>Heap Size: {heapArray.length}</span>}
                   {(treeType === "binary" || treeType === "bst" || treeType === "avl" || treeType === "redblack") &&
                     root && <span>Height: {getHeight(root)}</span>}
@@ -797,8 +797,8 @@ function TreeVisualizerPage() {
             </div>
 
             {/* Operation History */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Operation History</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Operation History</h2>
               <div className="max-h-60 overflow-y-auto space-y-2">
                 {operationHistory.length === 0 ? (
                   <p className="text-gray-500 italic">No operations performed yet</p>
@@ -1019,3 +1019,5 @@ function BTreeRenderer({ root }: { root: BTreeNode }) {
 }
 
 export default TreeVisualizerPage
+
+
