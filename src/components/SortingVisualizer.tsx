@@ -169,7 +169,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
           </div>
         </div>
 
-        {steps[currentStep]?.array.length >= 100 ? (
+        {steps[currentStep]?.array.length >= 15 ? (
           <div className="flex justify-center">
             <ZoomableArrayCanvas
               elements={prepareCanvasElements()}
