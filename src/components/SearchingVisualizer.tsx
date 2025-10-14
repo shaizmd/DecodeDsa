@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
-import { CheckCircle, XCircle, Search, Target, Play, Pause, RotateCcw } from "lucide-react"
+import { CheckCircle, XCircle, Search, Target, Play, Pause, RotateCcw, Copy, Check } from "lucide-react"
 import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
 import { generateSteps as generateSearchSteps } from "../utils/searchingAlgorithms"
 import { SearchStep } from "../types/steps"
@@ -24,6 +24,32 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
   const [isPlaying, setIsPlaying] = useState(false)
   const [playSpeed, setPlaySpeed] = useState(1000) // milliseconds
   const [searchResult, setSearchResult] = useState<{ found: boolean; index: number; comparisons: number } | null>(null)  
+  const [copiedStep, setCopiedStep] = useState(false)
+  const [copiedFull, setCopiedFull] = useState(false)
+
+  const copyToClipboard = async (
+    text: string,
+    setCopied: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+      }
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch (error) {
+      console.error('Failed to copy to clipboard', error)
+    }
+  }
 
   useEffect(() => {
     const array = inputArray
@@ -318,9 +344,19 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
           <CardTitle className="text-lg">Code Execution</CardTitle>
         </CardHeader>
         <CardContent>
-          <pre className="bg-gray-900 text-green-400 p-4 rounded-md overflow-x-auto text-sm font-mono">
-            <code>{steps[currentStep]?.code}</code>
-          </pre>
+          <div className="relative">
+            <button
+              className="absolute top-2 right-2 inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white shadow"
+              onClick={() => copyToClipboard(steps[currentStep]?.code ?? '', setCopiedStep)}
+              aria-label="Copy step code"
+            >
+              {copiedStep ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copiedStep ? 'Copied' : 'Copy'}
+            </button>
+            <pre className="bg-gray-900 text-green-400 p-4 rounded-md overflow-x-auto text-sm font-mono">
+              <code>{steps[currentStep]?.code}</code>
+            </pre>
+          </div>
         </CardContent>
       </Card>
 
@@ -331,9 +367,19 @@ const SearchingVisualizer: React.FC<SearchingVisualizerProps> = ({ algorithm, in
             <CardTitle className="text-lg">Complete {algorithm.name} Implementation</CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-md overflow-x-auto text-sm font-mono max-h-96 overflow-y-auto">
-              <code>{algorithm.code}</code>
-            </pre>
+            <div className="relative">
+              <button
+                className="absolute top-2 right-6 inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white shadow"
+                onClick={() => copyToClipboard(algorithm.code ?? '', setCopiedFull)}
+                aria-label="Copy full implementation"
+              >
+                {copiedFull ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copiedFull ? 'Copied' : 'Copy'}
+              </button>
+              <pre className="bg-gray-900 text-green-400 p-4 rounded-md overflow-x-auto text-sm font-mono max-h-96 overflow-y-auto">
+                <code>{algorithm.code}</code>
+              </pre>
+            </div>
             <div className="mt-4 p-3 bg-green-50 rounded-md">
               <p className="text-sm text-green-800">
                 <strong>💡 Complete Implementation:</strong> This is the full {algorithm.name} algorithm that you just
