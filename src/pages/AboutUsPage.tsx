@@ -10,6 +10,7 @@ import {
   Code2,
   Brain,
   Zap,
+  ChevronRight,
   ArrowRight,
   CheckCircle2,
   Github,
