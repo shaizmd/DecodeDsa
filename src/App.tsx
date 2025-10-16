@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Lenis from "lenis";
 import Sidebar from "./components/sidebar";
 import PageLoader from "./components/PageLoader";
@@ -44,8 +44,23 @@ const GraphVisualizerPage = lazy(() => import("./pages/GraphVisualizerPages"));
 const AboutUsPage = lazy(() => import("./pages/AboutUsPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 
+// Loading fallback component
+const LoadingFallback = ({ isDark }: { isDark: boolean }) => (
+  <PageLoader isDark={isDark} />
+);
+
 function App() {
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const { theme } = useTheme();
+
+  useEffect(() => {
+    // initial load time
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -69,10 +84,12 @@ function App() {
 
   return (
     <>
+      {isInitialLoad && <PageLoader isDark={theme === "dark"} />}
+
       <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
         <Sidebar />
         <main className="flex-1 lg:ml-72 dark:text-white">
-          <Suspense fallback={<PageLoader isDark={theme === "dark"} />}>
+          <Suspense fallback={<LoadingFallback isDark={theme === "dark"} />}>
             <Routes>
               <Route path="/sorting" element={<SortingAlgorithmsPage />} />
               <Route path="/searching" element={<SearchingAlgorithmsPage />} />
