@@ -73,18 +73,24 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
   }, [algorithm, inputArray])
 
   // Keyboard navigation accessibility
-useEffect(() => {
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "ArrowLeft") {
-      handlePrevious()
-    } else if (event.key === "ArrowRight") {
-      handleNext()
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        // Handle previous
+        if (currentStep > 0) {
+          setCurrentStep(currentStep - 1)
+        }
+      } else if (event.key === "ArrowRight") {
+        // Handle next
+        if (currentStep < steps.length - 1) {
+          setCurrentStep(currentStep + 1)
+        }
+      }
     }
-  }
 
-  window.addEventListener("keydown", handleKeyDown)
-  return () => window.removeEventListener("keydown", handleKeyDown)
-}, [currentStep, steps.length])
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [currentStep, steps.length])
 
 
   // Auto-play functionality
