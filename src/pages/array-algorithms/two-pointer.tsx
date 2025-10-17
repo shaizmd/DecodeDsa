@@ -26,9 +26,8 @@ function TwoPointerPage() {
   const [steps, setSteps] = useState<Step[]>([])
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<"two-sum" | "three-sum">("two-sum")
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<"two-sum" | "three-sum" | "container-with-most-water">("two-sum")
   const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  
 
   const resetVisualization = () => {
     setSteps([])
@@ -74,11 +73,11 @@ array.sort()`
         code: `# Check sum of elements at left and right pointers
 sum = array[left] + array[right]
 if sum == target:
-    return [left, right]
+  return [left, right]
 elif sum < target:
-    left += 1
+  left += 1
 else:
-    right -= 1`
+  right -= 1`
       })
 
       const sum = sortedArray[left] + sortedArray[right]
@@ -160,11 +159,11 @@ array.sort()`
           code: `# Check sum of three elements
 sum = array[i] + array[left] + array[right]
 if sum == target:
-    return [i, left, right]
+  return [i, left, right]
 elif sum < target:
-    left += 1
+  left += 1
 else:
-    right -= 1`
+  right -= 1`
         })
 
         const sum = sortedArray[i] + sortedArray[left] + sortedArray[right]
@@ -205,17 +204,131 @@ return []`
     return newSteps
   }
 
+  const generateContainerWithMostWaterSteps = (heights: number[]) => {
+    const newSteps: Step[] = []
+    let left = 0
+    let right = heights.length - 1
+    let maxArea = 0
+
+    // Initial state
+    newSteps.push({
+      array: heights.map(h => ({
+        value: h,
+        isHighlighted: false,
+        isPointer1: false,
+        isPointer2: false,
+        isPointer3: false
+      })),
+      description: "Initial array of heights.",
+      code: `left, right = 0, len(heights) - 1
+max_area = 0`
+    })
+
+    while (left < right) {
+      const currentLeft = left
+      const currentRight = right
+
+      const width = right - left
+      const height = Math.min(heights[left], heights[right])
+      const currentArea = width * height
+
+      // Calculation step
+      newSteps.push({
+        array: heights.map((h, i) => ({
+          value: h,
+          isHighlighted: false,
+          isPointer1: i === currentLeft,
+          isPointer2: i === currentRight,
+          isPointer3: false
+        })),
+        description: `Calculating area: width (${width}) * height (${height}) = ${currentArea}. Current max area: ${maxArea}.`,
+        code: `width = right - left
+height = min(heights[left], heights[right])
+current_area = width * height`
+      })
+
+      if (currentArea > maxArea) {
+        maxArea = currentArea
+        // Max area updated step
+        newSteps.push({
+          array: heights.map((h, i) => ({
+            value: h,
+            isHighlighted: i === currentLeft || i === currentRight,
+            isPointer1: i === currentLeft,
+            isPointer2: i === currentRight,
+            isPointer3: false
+          })),
+          description: `New maximum area found: ${maxArea}.`,
+          code: "max_area = max(max_area, current_area)"
+        })
+      }
+
+      // Pointer movement step
+      if (heights[left] < heights[right]) {
+        newSteps.push({
+          array: heights.map((h, i) => ({
+            value: h,
+            isHighlighted: false,
+            isPointer1: i === currentLeft,
+            isPointer2: i === currentRight,
+            isPointer3: false
+          })),
+          description: `Moving left pointer because height at left (${heights[currentLeft]}) is smaller than height at right (${heights[currentRight]}).`,
+          code: `if heights[left] < heights[right]:
+    left += 1`
+        })
+        left++
+      } else {
+        newSteps.push({
+          array: heights.map((h, i) => ({
+            value: h,
+            isHighlighted: false,
+            isPointer1: i === currentLeft,
+            isPointer2: i === currentRight,
+            isPointer3: false
+          })),
+          description: `Moving right pointer because height at right (${heights[currentRight]}) is not smaller than height at left (${heights[currentLeft]}).`,
+          code: `else:
+    right -= 1`
+        })
+        right--
+      }
+    }
+
+    // Final state
+    newSteps.push({
+      array: heights.map(h => ({
+        value: h,
+        isHighlighted: false,
+        isPointer1: false,
+        isPointer2: false,
+        isPointer3: false
+      })),
+      description: `Finished. The maximum area is ${maxArea}.`,
+      code: "return max_area"
+    })
+
+    return newSteps
+  }
+
   const handleVisualize = () => {
     try {
-      const numbers = arrayInput.split(',').map(num => parseInt(num.trim()))
+      const numbers = arrayInput.split(",").map(num => parseInt(num.trim()))
       if (numbers.some(isNaN)) {
         throw new Error("Invalid number in array")
       }
       resetVisualization()
       setIsVisualizing(true)
-      const newSteps = selectedAlgorithm === "two-sum" 
-        ? generateTwoSumSteps(numbers)
-        : generateThreeSumSteps(numbers)
+
+      let newSteps: Step[]
+      if (selectedAlgorithm === "two-sum") {
+        newSteps = generateTwoSumSteps(numbers)
+      } else if (selectedAlgorithm === "three-sum") {
+        newSteps = generateThreeSumSteps(numbers)
+      } else {
+        newSteps = generateContainerWithMostWaterSteps(numbers)
+      }
+
       setSteps(newSteps)
       setIsVisualizing(false)
     } catch (err) {
@@ -226,38 +339,55 @@ return []`
   const getFullCode = () => {
     if (selectedAlgorithm === "two-sum") {
       return `def two_sum(array, target):
-    # Sort the array
-    array.sort()
-    left, right = 0, len(array) - 1
+  # Sort the array
+  array.sort()
+  left, right = 0, len(array) - 1
+  
+  while left < right:
+      sum = array[left] + array[right]
+      if sum == target:
+          return [left, right]
+      elif sum < target:
+          left += 1
+      else:
+          right -= 1
+  
+  return []  # No solution found`
+    } else if (selectedAlgorithm === "three-sum") {
+      return `def three_sum(array, target):
+  # Sort the array
+  array.sort()
+  
+  for i in range(len(array) - 2):
+      left, right = i + 1, len(array) - 1
+      
+      while left < right:
+          sum = array[i] + array[left] + array[right]
+          if sum == target:
+              return [i, left, right]
+          elif sum < target:
+              left += 1
+          else:
+              right -= 1
+  
+  return []  # No solution found`
+    } else {
+      return `def max_area(heights):
+    left, right = 0, len(heights) - 1
+    max_area = 0
     
     while left < right:
-        sum = array[left] + array[right]
-        if sum == target:
-            return [left, right]
-        elif sum < target:
+        width = right - left
+        height = min(heights[left], heights[right])
+        current_area = width * height
+        max_area = max(max_area, current_area)
+        
+        if heights[left] < heights[right]:
             left += 1
         else:
             right -= 1
-    
-    return []  # No solution found`
-    } else {
-      return `def three_sum(array, target):
-    # Sort the array
-    array.sort()
-    
-    for i in range(len(array) - 2):
-        left, right = i + 1, len(array) - 1
-        
-        while left < right:
-            sum = array[i] + array[left] + array[right]
-            if sum == target:
-                return [i, left, right]
-            elif sum < target:
-                left += 1
-            else:
-                right -= 1
-    
-    return []  # No solution found`
+            
+    return max_area`
     }
   }
 
@@ -285,10 +415,10 @@ return []`
         {/* Algorithm Selection */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <button
               onClick={() => setSelectedAlgorithm("two-sum")}
-              className={`px-4 py-2 rounded-lg ${
+              className={`px-4 py-2 rounded-lg transition-colors ${
                 selectedAlgorithm === "two-sum"
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
@@ -298,13 +428,23 @@ return []`
             </button>
             <button
               onClick={() => setSelectedAlgorithm("three-sum")}
-              className={`px-4 py-2 rounded-lg ${
+              className={`px-4 py-2 rounded-lg transition-colors ${
                 selectedAlgorithm === "three-sum"
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
               Three Sum
+            </button>
+            <button
+              onClick={() => setSelectedAlgorithm("container-with-most-water")}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                selectedAlgorithm === "container-with-most-water"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
+              }`}
+            >
+              Container With Most Water
             </button>
           </div>
         </div>
@@ -322,23 +462,25 @@ return []`
                 type="text"
                 value={arrayInput}
                 onChange={(e) => setArrayInput(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., 1, 2, 3, 4, 5"
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., 1, 8, 6, 2, 5, 4, 8, 3, 7"
               />
             </div>
-            <div>
-              <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Target Sum
-              </label>
-              <input
-                id="target-input"
-                type="number"
-                value={target}
-                onChange={(e) => setTarget(parseInt(e.target.value))}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter target sum"
-              />
-            </div>
+            {(selectedAlgorithm === "two-sum" || selectedAlgorithm === "three-sum") && (
+              <div>
+                <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Target Sum
+                </label>
+                <input
+                  id="target-input"
+                  type="number"
+                  value={target}
+                  onChange={(e) => setTarget(parseInt(e.target.value))}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter target sum"
+                />
+              </div>
+            )}
             <button
               onClick={handleVisualize}
               disabled={isVisualizing}
@@ -359,20 +501,20 @@ return []`
                   <button
                     onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
                     disabled={currentStep === 0}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-50"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
                     onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
                     disabled={currentStep === steps.length - 1}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-50"
                   >
                     <ChevronRight className="w-6 h-6" />
                   </button>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">{steps[currentStep].description}</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 min-h-[40px]">{steps[currentStep].description}</p>
               <Button onClick={()=> setCurrentStep(0)} variant="secondary">
                 Reset
               </Button>
@@ -409,14 +551,14 @@ return []`
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600"
                 >
                   <Code className="w-5 h-5" />
                   {showFullCode ? "Show Step Code" : "Show Full Code"}
                 </button>
               </div>
-              <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">
+              <pre className="bg-gray-50 dark:bg-slate-900 p-4 rounded-lg overflow-x-auto">
+                <code className="text-sm text-gray-800 dark:text-gray-300">
                   {showFullCode ? getFullCode() : steps[currentStep].code}
                 </code>
               </pre>
@@ -428,5 +570,4 @@ return []`
   )
 }
 
-export default TwoPointerPage 
-
+export default TwoPointerPage
